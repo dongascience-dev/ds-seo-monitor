@@ -205,6 +205,82 @@ export function Insights({ insights }) {
   );
 }
 
+/**
+ * 검색어 한 줄의 성격을 표시한다.
+ *
+ * 같은 "클릭 감소"라도 원인이 둘이고 대응이 다르다.
+ *   - 순위는 그대로인데 노출이 사라졌다 → 그 키워드를 찾는 사람이 준 것. 할 일 없음
+ *   - 순위가 밀렸다 → 경쟁에서 진 것. 볼 일이 있음
+ * 해석은 붙이지 않고 사실만 라벨로 적어 읽는 사람이 판단하게 한다.
+ */
+const QueryTag = ({ q }) => {
+  if (q.clicks >= q.prevClicks) return null;
+  const moved =
+    q.prevPosition !== null && q.position !== null ? q.position - q.prevPosition : null;
+  if (moved !== null && moved > 2) {
+    return <span className="pill crit" style={{ fontSize: 10 }}>순위 하락</span>;
+  }
+  const impDrop =
+    q.prevImpressions > 0 ? 1 - q.impressions / q.prevImpressions : 0;
+  if (impDrop > 0.5) {
+    return <span className="pill info" style={{ fontSize: 10 }}>노출만 감소</span>;
+  }
+  return null;
+};
+
+/** 기사 하나를 펼쳤을 때 나오는 검색어 내역. */
+const QueryDetail = ({ r }) => (
+  <details style={{ marginTop: 4 }}>
+    <summary style={{ cursor: 'pointer', fontSize: 11.5, color: 'var(--muted)' }}>
+      검색어 {r.queries.length}개
+      {/*
+        page+query 조합은 희소 검색어가 익명화로 빠진다. 커버리지가 낮은데
+        그대로 두면 "숫자가 안 맞는다"로 읽히므로 얼마나 보이는지 밝힌다.
+      */}
+      {r.queryCoverage === 0 && <> · 이번 주 검색어는 확인되지 않음 (전주 기준)</>}
+      {r.queryCoverage > 0 && r.queryCoverage < 100 && (
+        <> · 이번 주 클릭의 {r.queryCoverage}%가 확인됨</>
+      )}
+    </summary>
+    <table style={{ minWidth: 0, marginTop: 6, fontSize: 12 }}>
+      <thead>
+        <tr>
+          <th>검색어</th>
+          <th className="n">클릭</th>
+          <th className="n">전주</th>
+          <th className="n">노출</th>
+          <th className="n">전주</th>
+          <th className="n">순위</th>
+          <th className="n">전주</th>
+          <th />
+        </tr>
+      </thead>
+      <tbody>
+        {r.queries.map((q) => (
+          <tr key={q.key}>
+            <td>{q.key}</td>
+            <td className="n">{nf(q.clicks)}</td>
+            <td className="n" style={{ color: 'var(--muted)', fontWeight: 500 }}>
+              {nf(q.prevClicks)}
+            </td>
+            <td className="n">{nf(q.impressions)}</td>
+            <td className="n" style={{ color: 'var(--muted)', fontWeight: 500 }}>
+              {nf(q.prevImpressions)}
+            </td>
+            <td className="n">{q.position?.toFixed(1) ?? '—'}</td>
+            <td className="n" style={{ color: 'var(--muted)', fontWeight: 500 }}>
+              {q.prevPosition?.toFixed(1) ?? '—'}
+            </td>
+            <td>
+              <QueryTag q={q} />
+            </td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  </details>
+);
+
 const Row = ({ r, isUrl }) => {
   const d = change(r.clicks, r.prevClicks);
   const from =
@@ -221,6 +297,7 @@ const Row = ({ r, isUrl }) => {
         ) : (
           r.key
         )}
+        {r.queries?.length > 0 && <QueryDetail r={r} />}
       </td>
       <td className="n">{nf(r.clicks)}</td>
       <td className="n" style={{ color: 'var(--muted)', fontWeight: 500 }}>

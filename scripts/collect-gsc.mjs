@@ -316,6 +316,84 @@ function diff(currentRows, previousRows) {
   };
 }
 
+/** 표에 검색어를 붙일 페이지 수. 이 만큼만 붙여 JSON 이 커지는 것을 막는다. */
+const QUERY_PAGES = 25;
+const QUERIES_PER_PAGE = 8;
+
+/**
+ * page+query 응답을 페이지별로 묶는다.
+ *
+ * 페이지마다 따로 조회하면 표에 올리는 60여 건에 대해 수백 번을 불러야 한다.
+ * `dimensions: ['page','query']` 한 번이면 같은 정보를 얻는다.
+ *
+ * 주의 — 이 조합은 **클릭의 상당수가 익명화로 사라진다**. 실측(닷컴
+ * 2026-09-21~27): page 단독 29,301 클릭인데 page+query 는 11,004 (62% 손실).
+ * 구글이 개인 식별 우려가 있는 희소 검색어를 빼기 때문이다. 다만 클릭이 몰린
+ * 기사일수록 손실이 작다 — /ko/news/79903 은 2,501 중 2,495(99.8%)가 보였다.
+ * 그래서 커버리지를 함께 기록해 화면에서 밝힌다.
+ */
+function groupByPage(rows) {
+  const map = new Map();
+  for (const r of rows) {
+    const [page, q] = r.keys;
+    if (!map.has(page)) map.set(page, []);
+    map.get(page).push({
+      key: q,
+      clicks: r.clicks ?? 0,
+      impressions: r.impressions ?? 0,
+      ctr: r.ctr ?? 0,
+      position: r.position ?? null,
+    });
+  }
+  for (const list of map.values()) list.sort((a, b) => b.clicks - a.clicks);
+  return map;
+}
+
+/**
+ * 표에 올릴 페이지들에 그 페이지의 검색어를 붙인다.
+ *
+ * 전주 값도 같이 붙여야 "순위가 밀린 것"과 "그 검색어를 찾는 사람이 사라진 것"을
+ * 가를 수 있다. 둘은 같은 클릭 감소로 보이지만 대응이 전혀 다르다.
+ */
+function attachQueries(buckets, curMap, prevMap) {
+  const targets = new Map();
+  for (const list of [
+    buckets.top.slice(0, QUERY_PAGES),
+    buckets.risers,
+    buckets.fallers,
+  ]) {
+    for (const row of list) targets.set(row.key, row);
+  }
+
+  for (const [page, row] of targets) {
+    const cur = curMap.get(page) ?? [];
+    const prev = new Map((prevMap.get(page) ?? []).map((q) => [q.key, q]));
+    const keys = new Set([...cur.map((q) => q.key), ...prev.keys()]);
+
+    const merged = [...keys]
+      .map((k) => {
+        const c = cur.find((q) => q.key === k);
+        const p = prev.get(k);
+        return {
+          key: k,
+          clicks: c?.clicks ?? 0,
+          impressions: c?.impressions ?? 0,
+          position: c?.position ?? null,
+          prevClicks: p?.clicks ?? 0,
+          prevImpressions: p?.impressions ?? 0,
+          prevPosition: p?.position ?? null,
+        };
+      })
+      .sort((a, b) => Math.max(b.clicks, b.prevClicks) - Math.max(a.clicks, a.prevClicks))
+      .slice(0, QUERIES_PER_PAGE);
+
+    const seenClicks = cur.reduce((a, q) => a + q.clicks, 0);
+    row.queries = merged;
+    // 검색어로 확인되는 클릭 비율. 100% 가 아니면 화면에 그대로 적는다.
+    row.queryCoverage = row.clicks > 0 ? Math.round((seenClicks / row.clicks) * 100) : null;
+  }
+}
+
 // ── 수집 ────────────────────────────────────────────────────────────────────
 
 async function collectSurface({ type, regex, periods, withQueries, site }) {
@@ -354,6 +432,31 @@ async function collectSurface({ type, regex, periods, withQueries, site }) {
     ]);
     surface.queries = diff(curQ, prevQ);
     surface.queriesPrevWeek = diff(prevQ, beforeQ);
+
+    // 페이지별 검색어. 표에서 기사를 펼치면 "왜 빠졌나"를 볼 수 있다.
+    const [curPQ, prevPQ] = await Promise.all([
+      query(
+        {
+          ...range(periods.current),
+          ...base,
+          type,
+          dimensions: ['page', 'query'],
+          rowLimit: FETCH_N,
+        },
+        site,
+      ),
+      query(
+        {
+          ...range(periods.previous),
+          ...base,
+          type,
+          dimensions: ['page', 'query'],
+          rowLimit: FETCH_N,
+        },
+        site,
+      ),
+    ]);
+    attachQueries(surface.pages, groupByPage(curPQ), groupByPage(prevPQ));
   }
 
   // 이번 주 급상승 항목이 전주에도 오르고 있었는지 표시한다.
