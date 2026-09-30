@@ -35,6 +35,27 @@ const THEMES = [
   { key: 'dark', label: '어둡게', icon: '☾' },
 ];
 
+/**
+ * 수집이 멈춘 것을 화면에서 알아채게 한다.
+ *
+ * 워크플로가 깨져도 페이지는 옛 데이터를 그대로 보여준다. `Last updated` 를
+ * 들여다봐야만 알 수 있는데, 매일 여는 화면이 아니면 몇 주 뒤에야 눈치챈다.
+ *
+ * 기준은 `generatedAt`(수집이 돈 시각)이지 `dataThrough`(GSC 최신일)가 아니다.
+ * 후자는 GSC 자체 지연으로 늘 2~3일 뒤쳐져 있어 신호가 되지 못한다.
+ * 하루 1회 도는데 주말·지연을 감안해 3일부터 경고한다.
+ */
+const STALE_WARN_DAYS = 3;
+const STALE_CRIT_DAYS = 7;
+
+function staleness(isoDateTime) {
+  const t = Date.parse(isoDateTime ?? '');
+  if (Number.isNaN(t)) return null;
+  const days = Math.floor((Date.now() - t) / 86400000);
+  if (days < STALE_WARN_DAYS) return null;
+  return { days, level: days >= STALE_CRIT_DAYS ? 'crit' : 'warn' };
+}
+
 function applyTheme(key) {
   const root = document.documentElement;
   if (key === 'auto') delete root.dataset.theme;
@@ -139,6 +160,7 @@ export default function App() {
   if (!gsc) return <div className="state">불러오는 중…</div>;
 
   const { periods } = gsc;
+  const stale = staleness(gsc.generatedAt);
 
   return (
     <>
@@ -180,6 +202,15 @@ export default function App() {
       </header>
 
       <div className="wrap">
+        {stale && (
+          <div className={`banner ${stale.level}`} role="status">
+            <b>수집이 {stale.days}일째 돌지 않았습니다.</b> 화면의 모든 수치가 그만큼
+            오래된 값입니다. 마지막 수집 {fmtDateTime(gsc.generatedAt)} · GitHub Actions
+            의 <code>update</code> 워크플로가 실패하고 있는지 확인하세요. 서비스 계정 키
+            만료나 권한 회수가 흔한 원인입니다.
+          </div>
+        )}
+
         <div className="tabs" role="tablist" aria-label="보기 전환">
           {TABS.map((t) => (
             <button
