@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-09-30T01:12:09.538Z",
+  "generatedAt": "2026-09-30T01:23:31.603Z",
   "property": "properties/528374870",
   "dataThrough": "2026-09-27",
   "periods": {
@@ -282,17 +282,6 @@
           "suspicious": false
         },
         {
-          "country": "(not set)",
-          "sessions": 382,
-          "users": 382,
-          "views": 383,
-          "viewsPerSession": 1,
-          "prevSessions": 434,
-          "deltaSessions": -52,
-          "usersPerSession": 1,
-          "suspicious": false
-        },
-        {
           "country": "Malaysia",
           "sessions": 368,
           "users": 353,
@@ -302,9 +291,24 @@
           "deltaSessions": -53,
           "usersPerSession": 0.959,
           "suspicious": false
+        },
+        {
+          "country": "Italy",
+          "sessions": 329,
+          "users": 298,
+          "views": 332,
+          "viewsPerSession": 1.01,
+          "prevSessions": 354,
+          "deltaSessions": -25,
+          "usersPerSession": 0.906,
+          "suspicious": false
         }
       ],
-      "countryCount": 186,
+      "countryCount": 185,
+      "unknownCountry": {
+        "current": 382,
+        "previous": 434
+      },
       "channels": {
         "current": {
           "Direct": 125851,
@@ -721,7 +725,11 @@
           "suspicious": false
         }
       ],
-      "countryCount": 42,
+      "countryCount": 41,
+      "unknownCountry": {
+        "current": 3,
+        "previous": 5
+      },
       "channels": {
         "current": {
           "Direct": 3891,
@@ -976,17 +984,6 @@
           "suspicious": false
         },
         {
-          "country": "(not set)",
-          "sessions": 21,
-          "users": 21,
-          "views": 21,
-          "viewsPerSession": 1,
-          "prevSessions": 17,
-          "deltaSessions": 4,
-          "usersPerSession": 1,
-          "suspicious": false
-        },
-        {
           "country": "United Kingdom",
           "sessions": 19,
           "users": 16,
@@ -1128,9 +1125,24 @@
           "deltaSessions": 2,
           "usersPerSession": 1,
           "suspicious": false
+        },
+        {
+          "country": "Ireland",
+          "sessions": 3,
+          "users": 3,
+          "views": 4,
+          "viewsPerSession": 1.33,
+          "prevSessions": 22,
+          "deltaSessions": -19,
+          "usersPerSession": 1,
+          "suspicious": false
         }
       ],
-      "countryCount": 43,
+      "countryCount": 42,
+      "unknownCountry": {
+        "current": 21,
+        "previous": 17
+      },
       "channels": {
         "current": {
           "Display": 4346,

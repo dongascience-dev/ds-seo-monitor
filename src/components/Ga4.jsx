@@ -2,7 +2,6 @@ import {
   Bar,
   BarChart,
   CartesianGrid,
-  Cell,
   Legend,
   ResponsiveContainer,
   Tooltip,
@@ -21,14 +20,40 @@ const tip = (t) => ({
 });
 const ax = (t) => ({ stroke: t.axis, tick: { fill: t.axis, fontSize: 11 }, tickLine: false });
 
-/** 국가별 세션 — 이번 주 vs 전주. 확인 필요 국가는 막대를 비워 구분한다. */
+/**
+ * 확인 필요 국가를 **국가명**에 표시한다.
+ *
+ * 처음엔 막대를 반투명하게 칠했는데, 전주 막대도 회색이라 둘 다 "옅게" 보였다.
+ * 한국은 플래그되지 않았는데도 전주 막대(336,306)가 길고 옅어서 확인 필요로
+ * 읽혔다. 한 화면에서 두 가지가 같은 방식으로 흐려지면 안 된다.
+ */
+const CountryTick = ({ x, y, payload, flagged, t }) => {
+  const hit = flagged.has(payload.value);
+  return (
+    <text
+      x={x}
+      y={y}
+      dy={4}
+      textAnchor="end"
+      fontSize={11}
+      fontWeight={hit ? 700 : 400}
+      fill={hit ? t.crit : t.axis}
+    >
+      {hit ? '\u26a0 ' : ''}
+      {payload.value}
+    </text>
+  );
+};
+
+/** 국가별 세션 — 이번 주 vs 전주. */
 function CountryBars({ countries, color, limit = 12 }) {
   const t = useChartTheme();
-  const data = countries.slice(0, limit).map((c) => ({
+  const rows = countries.slice(0, limit);
+  const flagged = new Set(rows.filter((c) => c.suspicious).map((c) => c.country));
+  const data = rows.map((c) => ({
     name: c.country,
     이번주: c.sessions,
     전주: c.prevSessions,
-    suspicious: c.suspicious,
   }));
   if (!data.length) return <p className="p-note">데이터 없음</p>;
 
@@ -37,16 +62,18 @@ function CountryBars({ countries, color, limit = 12 }) {
       <BarChart data={data} layout="vertical" margin={{ top: 4, right: 16, left: 4, bottom: 0 }}>
         <CartesianGrid stroke={t.grid} horizontal={false} />
         <XAxis type="number" {...ax(t)} tickFormatter={compact} />
-        <YAxis type="category" dataKey="name" {...ax(t)} width={124} />
+        <YAxis
+          type="category"
+          dataKey="name"
+          stroke={t.axis}
+          tickLine={false}
+          width={124}
+          tick={<CountryTick flagged={flagged} t={t} />}
+        />
         <Tooltip contentStyle={tip(t)} formatter={(v) => nf(v)} />
         <Legend wrapperStyle={{ fontSize: 11.5, color: t.axis }} />
         <Bar dataKey="전주" fill={t.grid} radius={[0, 3, 3, 0]} isAnimationActive={false} />
-        <Bar dataKey="이번주" radius={[0, 3, 3, 0]} isAnimationActive={false}>
-          {data.map((d) => (
-            // 확인 필요 국가는 옅게 칠해 정상 유입과 섞이지 않게 한다.
-            <Cell key={d.name} fill={color} fillOpacity={d.suspicious ? 0.35 : 1} />
-          ))}
-        </Bar>
+        <Bar dataKey="이번주" fill={color} radius={[0, 3, 3, 0]} isAnimationActive={false} />
       </BarChart>
     </ResponsiveContainer>
   );
@@ -170,7 +197,10 @@ export function CountrySection({ ga4 }) {
                 <p className="p-note">
                   세션 {nf(svc.sessions.current)} (전주 {nf(svc.sessions.previous)} ·{' '}
                   <Delta cur={svc.sessions.current} prev={svc.sessions.previous} />) ·{' '}
-                  {svc.countryCount}개국 · <b>옅은 막대 = 확인 필요</b>
+                  {svc.countryCount}개국 · 회색은 전주 · <b>⚠ 표시 = 확인 필요</b>
+                  {svc.unknownCountry?.current > 0 && (
+                    <> · 국가 미상 {nf(svc.unknownCountry.current)}세션 제외</>
+                  )}
                 </p>
                 <CountryBars countries={svc.countries} color={s.hex} />
               </div>

@@ -37,8 +37,8 @@ export function useChartTheme() {
     return () => mq.removeEventListener('change', on);
   }, []);
   return dark
-    ? { grid: '#2a2839', axis: '#8a879f', tip: '#16151f', tipLine: '#2a2839', ink: '#fff' }
-    : { grid: '#e5e2ef', axis: '#8a879f', tip: '#fffffe', tipLine: '#e5e2ef', ink: '#100f1a' };
+    ? { grid: '#2a2839', axis: '#8a879f', tip: '#16151f', tipLine: '#2a2839', ink: '#fff', crit: '#ef6a6a' }
+    : { grid: '#e5e2ef', axis: '#8a879f', tip: '#fffffe', tipLine: '#e5e2ef', ink: '#100f1a', crit: '#d03b3b' };
 }
 
 const tooltipStyle = (t) => ({

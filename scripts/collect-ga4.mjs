@@ -262,10 +262,18 @@ async function aiLandingFor(hosts, period) {
   return rowsToObjects(res, ['landingPage'], ['sessions']);
 }
 
+/**
+ * GA4 가 국가를 못 잡은 세션. 국가가 아니므로 목록에서 빼되, 서비스 합계에는
+ * 남는다(실제로 일어난 세션이다). 빠진 양을 따로 적어 "국가 합 ≠ 총계"가
+ * 의아하지 않게 한다.
+ */
+const UNKNOWN_COUNTRY = '(not set)';
+
 /** 두 기간의 국가 목록을 합치고 증감·이상 표시를 붙인다. */
 function mergeCountries(cur, prev) {
   const p = new Map(prev.map((r) => [r.country, r]));
   return cur
+    .filter((r) => r.country && r.country !== UNKNOWN_COUNTRY)
     .map((r) => {
       const before = p.get(r.country);
       const vps = r.sessions > 0 ? r.screenPageViews / r.sessions : 0;
@@ -378,6 +386,10 @@ async function main() {
       },
       countries: countries.slice(0, 25),
       countryCount: countries.length,
+      unknownCountry: {
+        current: curC.find((r) => r.country === UNKNOWN_COUNTRY)?.sessions ?? 0,
+        previous: preC.find((r) => r.country === UNKNOWN_COUNTRY)?.sessions ?? 0,
+      },
       channels: { current: curCh, previous: preCh },
       ai: {
         channel: AI_CHANNEL,
