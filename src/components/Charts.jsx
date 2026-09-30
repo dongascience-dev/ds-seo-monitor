@@ -21,20 +21,36 @@ import {
 import { SERVICES, compact, nf, serviceHex, shortUrl } from '../lib/format.js';
 
 /**
- * 차트 축·격자 색은 CSS 변수를 못 쓴다 (Recharts 가 SVG 속성에 직접 넣는다).
- * 다크모드를 따라가도록 미디어 쿼리를 구독해 값을 바꾼다.
+ * 지금 화면이 어두운지 판정한다.
+ *
+ * CSS 는 `data-theme` 속성과 OS 설정을 함께 보는데, 차트 색은 CSS 변수를 못
+ * 쓴다(Recharts 가 SVG 속성에 직접 넣는다). 그래서 같은 판정을 JS 로 한 번 더
+ * 한다 — 둘이 어긋나면 배경만 어둡고 축은 밝은 화면이 된다.
  */
+const isDarkNow = () => {
+  if (typeof document === 'undefined') return false;
+  const forced = document.documentElement.dataset.theme;
+  if (forced === 'dark') return true;
+  if (forced === 'light') return false;
+  return window.matchMedia?.('(prefers-color-scheme: dark)').matches ?? false;
+};
+
 export function useChartTheme() {
-  const [dark, setDark] = useState(
-    () =>
-      typeof window !== 'undefined' &&
-      window.matchMedia?.('(prefers-color-scheme: dark)').matches,
-  );
+  const [dark, setDark] = useState(isDarkNow);
   useEffect(() => {
+    const sync = () => setDark(isDarkNow());
     const mq = window.matchMedia('(prefers-color-scheme: dark)');
-    const on = (e) => setDark(e.matches);
-    mq.addEventListener('change', on);
-    return () => mq.removeEventListener('change', on);
+    mq.addEventListener('change', sync);
+    // 수동 토글은 data-theme 속성을 바꾸므로 그것도 지켜본다.
+    const observer = new MutationObserver(sync);
+    observer.observe(document.documentElement, {
+      attributes: true,
+      attributeFilter: ['data-theme'],
+    });
+    return () => {
+      mq.removeEventListener('change', sync);
+      observer.disconnect();
+    };
   }, []);
   return dark
     ? { grid: '#2a2839', axis: '#8a879f', tip: '#16151f', tipLine: '#2a2839', ink: '#fff', crit: '#ef6a6a' }

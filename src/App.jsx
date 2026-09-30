@@ -25,6 +25,22 @@ const TABS = [
 
 const TAB_KEYS = new Set(TABS.map((t) => t.key));
 
+/**
+ * 화면 밝기. 기본은 OS 설정을 따라가고, 고정하고 싶으면 고를 수 있다.
+ * 공유 URL 이라 보는 사람마다 OS 설정이 다르다.
+ */
+const THEMES = [
+  { key: 'auto', label: '자동', icon: '◐' },
+  { key: 'light', label: '밝게', icon: '☀' },
+  { key: 'dark', label: '어둡게', icon: '☾' },
+];
+
+function applyTheme(key) {
+  const root = document.documentElement;
+  if (key === 'auto') delete root.dataset.theme;
+  else root.dataset.theme = key;
+}
+
 export default function App() {
   const [gsc, setGsc] = useState(null);
   const [history, setHistory] = useState([]);
@@ -43,6 +59,24 @@ export default function App() {
       return 'overview';
     }
   });
+
+  const [theme, setTheme] = useState(() => {
+    try {
+      const saved = localStorage.getItem('ds-seo-theme');
+      return THEMES.some((t) => t.key === saved) ? saved : 'auto';
+    } catch {
+      return 'auto';
+    }
+  });
+
+  useEffect(() => {
+    applyTheme(theme);
+    try {
+      localStorage.setItem('ds-seo-theme', theme);
+    } catch {
+      /* 시크릿 창 등에서 막힐 수 있다. 저장 실패가 화면을 막으면 안 된다. */
+    }
+  }, [theme]);
 
   // 뒤로가기 · 링크 직접 입력에도 따라간다.
   useEffect(() => {
@@ -128,6 +162,19 @@ export default function App() {
             <span className="chip">
               Last updated <b>{fmtDateTime(gsc.generatedAt)}</b>
             </span>
+            <div className="theme-switch" role="group" aria-label="화면 밝기">
+              {THEMES.map((t) => (
+                <button
+                  key={t.key}
+                  type="button"
+                  aria-pressed={theme === t.key}
+                  title={t.label}
+                  onClick={() => setTheme(t.key)}
+                >
+                  {t.icon}
+                </button>
+              ))}
+            </div>
           </div>
         </div>
       </header>
@@ -158,11 +205,31 @@ export default function App() {
                 <span className="eyebrow">Overview</span>
                 <h2>이번 주 vs 전주</h2>
               </div>
+              {/*
+                기간을 문장에 묻으면 "이번 주가 언제까지인지"를 매번 헤더에서
+                찾아야 한다. 두 구간을 나란히 드러낸다.
+              */}
+              <div className="range">
+                <span>
+                  이번 주{' '}
+                  <b>
+                    {fmtDate(periods.current.start)}~{fmtDate(periods.current.end)}
+                  </b>
+                  <small>{periods.current.days}일</small>
+                </span>
+                <span className="vs">vs</span>
+                <span>
+                  전주{' '}
+                  <b>
+                    {fmtDate(periods.previous.start)}~{fmtDate(periods.previous.end)}
+                  </b>
+                  <small>{periods.previous.days}일</small>
+                </span>
+              </div>
               <p className="sec-note">
-                전주는 <b>같은 요일 수</b>로 잘라 비교합니다 (
-                {fmtDate(periods.previous.start)}~{fmtDate(periods.previous.end)},{' '}
-                {periods.previous.days}일). 기간이 다르면 증감이 왜곡됩니다. 이번 주 전체
-                클릭은 웹 검색 {nf(totals.web)} · Discover {nf(totals.discover)} 입니다.
+                전주는 <b>같은 요일 수</b>로 잘라 비교합니다. 기간이 다르면 증감이
+                왜곡됩니다. 이번 주 전체 클릭은 웹 검색 {nf(totals.web)} · Discover{' '}
+                {nf(totals.discover)} 입니다.
               </p>
               <ServiceCards services={gsc.services} />
               <OverviewChange services={gsc.services} />
@@ -303,11 +370,24 @@ export default function App() {
                   <span className="eyebrow">{s.name}</span>
                   <h2>콘텐츠 · 검색어</h2>
                 </div>
-                <p className="sec-note">
-                  {gsc.services[s.key].host} · {fmtDate(periods.current.start)}~
-                  {fmtDate(periods.current.end)} vs {fmtDate(periods.previous.start)}~
-                  {fmtDate(periods.previous.end)}
-                </p>
+                <div className="range">
+                  <span>
+                    이번 주{' '}
+                    <b>
+                      {fmtDate(periods.current.start)}~{fmtDate(periods.current.end)}
+                    </b>
+                    <small>{periods.current.days}일</small>
+                  </span>
+                  <span className="vs">vs</span>
+                  <span>
+                    전주{' '}
+                    <b>
+                      {fmtDate(periods.previous.start)}~{fmtDate(periods.previous.end)}
+                    </b>
+                  </span>
+                  <span className="vs">·</span>
+                  <span className="mono">{gsc.services[s.key].host}</span>
+                </div>
                 <SurfaceBlock
                   surface={gsc.services[s.key].web}
                   label="웹 검색"
