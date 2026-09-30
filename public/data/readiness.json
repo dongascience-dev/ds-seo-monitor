@@ -1,0 +1,429 @@
+{
+  "measuredAt": "2026-09-30",
+  "generatedAt": "2026-09-30T00:24:21.047Z",
+  "source": "자동 측정 — robots.txt · sitemap.xml · 상세 페이지 크롤 (서비스당 최대 150건)",
+  "caveat": "배점(가중치)은 업계 표준이 아니라 이 문서의 선택이다. 충족률은 실측이므로 서비스 간 순서는 신뢰할 수 있으나, 절대 점수는 배점을 바꾸면 달라진다. \"핵심 상세 수록\" 항목의 분모(전체 콘텐츠 수)만 추정치이며 auto:false 로 표시했다.",
+  "services": [
+    "donga",
+    "dl",
+    "store"
+  ],
+  "serviceNames": {
+    "donga": "동아사이언스",
+    "dl": "d라이브러리",
+    "store": "DS스토어"
+  },
+  "axes": [
+    {
+      "key": "seo",
+      "label": "SEO",
+      "full": "검색엔진이 찾고 색인할 수 있는가",
+      "items": [
+        {
+          "name": "사이트맵 갱신",
+          "max": 25,
+          "auto": true,
+          "rule": "7일 내 갱신 25 / 1년 내 12 / 그 이상·없음 0",
+          "scores": {
+            "donga": 25,
+            "dl": 0,
+            "store": 0
+          },
+          "notes": {
+            "donga": "2026-09-29T15:43:00.000Z · 0일 전",
+            "dl": "2024-04-22T01:12:33+00:00 · 890일 전",
+            "store": "2024-03-05T05:20:22+00:00 · 938일 전"
+          }
+        },
+        {
+          "name": "핵심 상세 수록",
+          "max": 25,
+          "auto": false,
+          "rule": "전량(90%+) 25 / 롤링 수록(0.1%+) 12 / 흔적만 4 / 0건 0 — 분모는 추정치이고 단계 경계는 판단이다",
+          "scores": {
+            "donga": 12,
+            "dl": 4,
+            "store": 0
+          },
+          "notes": {
+            "donga": "360/80,094 · 0.45%",
+            "dl": "2/34,700 · 0.01%",
+            "store": "0/447 · 0.00%"
+          }
+        },
+        {
+          "name": "색인 낭비 없음",
+          "max": 15,
+          "auto": true,
+          "rule": "10% 미만 15 / 30% 미만 8 / 그 이상 0",
+          "scores": {
+            "donga": 0,
+            "dl": 0,
+            "store": 15
+          },
+          "notes": {
+            "donga": "중복·검색결과 180/561 · 32.1%",
+            "dl": "중복·검색결과 22/47 · 46.8%",
+            "store": "중복·검색결과 7/145 · 4.8%"
+          }
+        },
+        {
+          "name": "canonical",
+          "max": 15,
+          "auto": true,
+          "rule": "충족률 × 15 (연속값)",
+          "scores": {
+            "donga": 15,
+            "dl": 0,
+            "store": 15
+          },
+          "notes": {
+            "donga": "150/150 · 100.0%",
+            "dl": "0/84 · 0.0%",
+            "store": "150/150 · 100.0%"
+          }
+        },
+        {
+          "name": "meta description",
+          "max": 10,
+          "auto": true,
+          "rule": "충족률 × 10 (연속값)",
+          "scores": {
+            "donga": 7,
+            "dl": 9.4,
+            "store": 8
+          },
+          "notes": {
+            "donga": "105/150 · 70.0%",
+            "dl": "79/84 · 94.0%",
+            "store": "120/150 · 80.0%"
+          }
+        },
+        {
+          "name": "검색봇 허용",
+          "max": 10,
+          "auto": true,
+          "rule": "Googlebot · Bingbot · Yeti 전부 허용 10",
+          "scores": {
+            "donga": 10,
+            "dl": 10,
+            "store": 10
+          },
+          "notes": {
+            "donga": "Googlebot 허용 · Bingbot 허용 · Yeti 허용",
+            "dl": "Googlebot 허용 · Bingbot 허용 · Yeti 허용",
+            "store": "Googlebot 허용 · Bingbot 허용 · Yeti 허용"
+          }
+        }
+      ]
+    },
+    {
+      "key": "aeo",
+      "label": "AEO",
+      "full": "답변 엔진이 발췌할 수 있는가",
+      "items": [
+        {
+          "name": "구조화 데이터",
+          "max": 35,
+          "auto": true,
+          "rule": "충족률 × 35 (연속값)",
+          "scores": {
+            "donga": 35,
+            "dl": 0,
+            "store": 0
+          },
+          "notes": {
+            "donga": "150/150 · 100.0% · WebSite, NewsArticle",
+            "dl": "0/84 · 0.0%",
+            "store": "0/150 · 0.0%"
+          }
+        },
+        {
+          "name": "h1",
+          "max": 25,
+          "auto": true,
+          "rule": "충족률 × 25 (연속값)",
+          "scores": {
+            "donga": 25,
+            "dl": 0,
+            "store": 0
+          },
+          "notes": {
+            "donga": "150/150 · 100.0%",
+            "dl": "0/84 · 0.0%",
+            "store": "0/150 · 0.0%"
+          }
+        },
+        {
+          "name": "발췌 후보 요약문",
+          "max": 20,
+          "auto": true,
+          "rule": "meta description 충족률 × 20",
+          "scores": {
+            "donga": 14,
+            "dl": 18.8,
+            "store": 16
+          },
+          "notes": {
+            "donga": "105/150 · 70.0%",
+            "dl": "79/84 · 94.0%",
+            "store": "120/150 · 80.0%"
+          }
+        },
+        {
+          "name": "dateModified",
+          "max": 10,
+          "auto": true,
+          "rule": "충족률 × 10 (연속값)",
+          "scores": {
+            "donga": 0,
+            "dl": 0,
+            "store": 0
+          },
+          "notes": {
+            "donga": "0/150 · 0.0%",
+            "dl": "0/84 · 0.0%",
+            "store": "0/150 · 0.0%"
+          }
+        },
+        {
+          "name": "canonical",
+          "max": 10,
+          "auto": true,
+          "rule": "충족률 × 10 (연속값)",
+          "scores": {
+            "donga": 10,
+            "dl": 0,
+            "store": 10
+          },
+          "notes": {
+            "donga": "150/150 · 100.0%",
+            "dl": "0/84 · 0.0%",
+            "store": "150/150 · 100.0%"
+          }
+        }
+      ]
+    },
+    {
+      "key": "geo",
+      "label": "GEO",
+      "full": "생성 엔진이 가져갈 수 있는가",
+      "items": [
+        {
+          "name": "OAI-SearchBot",
+          "max": 20,
+          "auto": true,
+          "rule": "허용 20 / 차단 0",
+          "scores": {
+            "donga": 20,
+            "dl": 20,
+            "store": 20
+          },
+          "notes": {
+            "donga": "ChatGPT 검색 색인 · 허용",
+            "dl": "ChatGPT 검색 색인 · 허용",
+            "store": "ChatGPT 검색 색인 · 허용"
+          }
+        },
+        {
+          "name": "Claude-SearchBot",
+          "max": 20,
+          "auto": true,
+          "rule": "허용 20 / 차단 0",
+          "scores": {
+            "donga": 20,
+            "dl": 20,
+            "store": 20
+          },
+          "notes": {
+            "donga": "Claude 검색 색인 · 허용",
+            "dl": "Claude 검색 색인 · 허용",
+            "store": "Claude 검색 색인 · 허용"
+          }
+        },
+        {
+          "name": "PerplexityBot",
+          "max": 20,
+          "auto": true,
+          "rule": "허용 20 / 차단 0",
+          "scores": {
+            "donga": 20,
+            "dl": 20,
+            "store": 20
+          },
+          "notes": {
+            "donga": "Perplexity 색인 · 허용",
+            "dl": "Perplexity 색인 · 허용",
+            "store": "Perplexity 색인 · 허용"
+          }
+        },
+        {
+          "name": "ChatGPT-User",
+          "max": 40,
+          "auto": true,
+          "rule": "허용 40 / 차단 0",
+          "scores": {
+            "donga": 0,
+            "dl": 40,
+            "store": 40
+          },
+          "notes": {
+            "donga": "ChatGPT 실시간 인용 · 차단",
+            "dl": "ChatGPT 실시간 인용 · 허용",
+            "store": "ChatGPT 실시간 인용 · 허용"
+          }
+        }
+      ]
+    }
+  ],
+  "measurements": {
+    "donga": {
+      "robots": {
+        "status": 200,
+        "bots": {
+          "Googlebot": true,
+          "Bingbot": true,
+          "Yeti": true,
+          "OAI-SearchBot": true,
+          "Claude-SearchBot": true,
+          "PerplexityBot": true,
+          "ChatGPT-User": false
+        },
+        "raw": "User-agent: Googlebot\nUser-agent: Bingbot\nUser-agent: Yeti\nUser-agent: Meta-ExternalAgent\nUser-agent: Twitterbot\nUser-agent: facebookexternalhit\nUser-agent: OAI-SearchBot\nUser-agent: Claude-SearchBot\nUser-agent: PerplexityBot\nAllow: /\nDisallow: /api/\nDisallow: /_next/\n\nUser-agent: GPTBot\nUser-agent: ClaudeBot\nDisallow: /\n\nUser-agent: *\nDisallow: /\n\nSitemap: https://www.dongascience.com/sitemap.xml"
+      },
+      "sitemap": {
+        "ok": true,
+        "status": 200,
+        "total": 561,
+        "buckets": {
+          "detail": 360,
+          "duplicate": 180,
+          "search": 0,
+          "list": 18,
+          "other": 3
+        },
+        "newestLastmod": "2026-09-29T15:43:00.000Z",
+        "staleDays": 0,
+        "dynamic": true
+      },
+      "detail": {
+        "requested": 150,
+        "ok": 150,
+        "failed": 0,
+        "source": "사이트맵",
+        "h1": 150,
+        "jsonLd": 150,
+        "dateModified": 0,
+        "canonical": 150,
+        "description": 105,
+        "softNotFound": 0,
+        "jsonLdTypes": [
+          "WebSite",
+          "NewsArticle"
+        ]
+      },
+      "contentEstimate": {
+        "value": 80094,
+        "source": "기사 ID 무작위 400건 조회 (2026-09-29)"
+      }
+    },
+    "dl": {
+      "robots": {
+        "status": 200,
+        "bots": {
+          "Googlebot": true,
+          "Bingbot": true,
+          "Yeti": true,
+          "OAI-SearchBot": true,
+          "Claude-SearchBot": true,
+          "PerplexityBot": true,
+          "ChatGPT-User": true
+        },
+        "raw": "User-Agent: *\nAllow: /\n\n"
+      },
+      "sitemap": {
+        "ok": true,
+        "status": 200,
+        "total": 47,
+        "buckets": {
+          "detail": 2,
+          "duplicate": 0,
+          "search": 22,
+          "list": 23,
+          "other": 0
+        },
+        "newestLastmod": "2024-04-22T01:12:33+00:00",
+        "staleDays": 890,
+        "dynamic": false
+      },
+      "detail": {
+        "requested": 84,
+        "ok": 84,
+        "failed": 0,
+        "source": "사이트맵 + GSC 노출",
+        "h1": 0,
+        "jsonLd": 0,
+        "dateModified": 0,
+        "canonical": 0,
+        "description": 79,
+        "softNotFound": 0,
+        "jsonLdTypes": []
+      },
+      "contentEstimate": {
+        "value": 34700,
+        "source": "매체 4종 × 1986~2026 발행호 전수 961호 × 호당 평균 (2026-09-29)"
+      }
+    },
+    "store": {
+      "robots": {
+        "status": 200,
+        "bots": {
+          "Googlebot": true,
+          "Bingbot": true,
+          "Yeti": true,
+          "OAI-SearchBot": true,
+          "Claude-SearchBot": true,
+          "PerplexityBot": true,
+          "ChatGPT-User": true
+        },
+        "raw": "User-agent: *\nAllow: /\n\nsitemap: https://dsstore.dongascience.com/sitemap.xml"
+      },
+      "sitemap": {
+        "ok": true,
+        "status": 200,
+        "total": 145,
+        "buckets": {
+          "detail": 0,
+          "duplicate": 0,
+          "search": 7,
+          "list": 138,
+          "other": 0
+        },
+        "newestLastmod": "2024-03-05T05:20:22+00:00",
+        "staleDays": 938,
+        "dynamic": false
+      },
+      "detail": {
+        "requested": 150,
+        "ok": 150,
+        "failed": 0,
+        "source": "GSC 노출",
+        "h1": 0,
+        "jsonLd": 0,
+        "dateModified": 0,
+        "canonical": 150,
+        "description": 120,
+        "softNotFound": 0,
+        "jsonLdTypes": []
+      },
+      "contentEstimate": {
+        "value": 447,
+        "source": "GSC 노출 상품 수 (하한)"
+      }
+    }
+  },
+  "unmeasurable": [
+    "AI 개요·AI 모드 내 인용 점유율 — GSC searchAppearance 에 해당 표면이 없어 측정 수단이 없다.",
+    "프롬프트 테스트 인용률 — 수동 측정만 가능하며 아직 미실시."
+  ]
+}

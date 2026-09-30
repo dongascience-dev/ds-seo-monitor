@@ -1,0 +1,25 @@
+{
+  "name": "ds-seo-monitor",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "description": "동아사이언스 3개 서비스 SEO·AEO·GEO 모니터링",
+  "scripts": {
+    "collect": "npm run collect:gsc && npm run collect:ga4 && npm run collect:audit",
+    "collect:gsc": "node scripts/collect-gsc.mjs",
+    "collect:ga4": "node scripts/collect-ga4.mjs",
+    "collect:audit": "node scripts/collect-audit.mjs",
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "recharts": "^3.10.1"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-react": "^4.3.4",
+    "vite": "^6.0.7"
+  }
+}

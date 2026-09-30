@@ -1,0 +1,17 @@
+node_modules/
+dist/
+
+# 인증정보는 어떤 경우에도 커밋되지 않는다.
+# 수집은 환경변수(GSC_SERVICE_ACCOUNT_KEY_FILE / GSC_SERVICE_ACCOUNT_KEY)로만 키를 읽는다.
+.env
+.env.*
+*service-account*.json
+*-key.json
+gsc-reader.json
+credentials.json
+
+.DS_Store
+
+# IDE
+.idea/
+.vscode/

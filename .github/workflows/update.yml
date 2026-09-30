@@ -1,0 +1,101 @@
+# GSC 수집 → 빌드 → GitHub Pages 배포
+#
+# 수집과 배포를 한 워크플로에 둔 이유: GITHUB_TOKEN 으로 푸시한 커밋은 다른
+# 워크플로를 트리거하지 않는다. 따로 두면 수집 결과가 배포되지 않는다.
+name: update
+
+on:
+  schedule:
+    # 매일 00:20 UTC = 09:20 KST. GSC 는 2~3일 지연되므로 자주 돌릴 이유가 없다.
+    - cron: '20 0 * * *'
+  push:
+    branches: [main]
+  workflow_dispatch:
+    inputs:
+      backfill:
+        description: '과거 N주 backfill (비우면 생략)'
+        required: false
+        default: ''
+
+permissions:
+  contents: write   # 수집 결과 커밋
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - run: npm ci
+
+      # push 로 돌 때는 수집하지 않는다 — 코드만 바뀐 경우라 API 를 부를 이유가 없다.
+      - name: GSC 수집
+        if: github.event_name != 'push'
+        env:
+          GSC_SERVICE_ACCOUNT_KEY: ${{ secrets.GSC_SERVICE_ACCOUNT_KEY }}
+        run: |
+          if [ -z "$GSC_SERVICE_ACCOUNT_KEY" ]; then
+            echo "::error::secrets.GSC_SERVICE_ACCOUNT_KEY 가 없다. 설정 후 다시 실행한다."
+            exit 1
+          fi
+          node scripts/collect-gsc.mjs ${{ inputs.backfill && format('--backfill={0}', inputs.backfill) || '' }}
+
+      - name: GA4 수집 (국가 · AI 채널)
+        if: github.event_name != 'push'
+        env:
+          # GSC 와 같은 서비스 계정이다. 스코프만 analytics.readonly 로 바뀐다.
+          GSC_SERVICE_ACCOUNT_KEY: ${{ secrets.GSC_SERVICE_ACCOUNT_KEY }}
+        run: node scripts/collect-ga4.mjs
+
+      # 준비도 감사는 세 사이트를 450건쯤 크롤한다. 사이트맵·robots·마크업은
+      # 매일 바뀌는 값이 아니라 월요일에만 돌린다 (UTC 월요일 = KST 월요일 아침).
+      - name: 준비도 감사 (주 1회)
+        if: github.event_name != 'push'
+        env:
+          GSC_SERVICE_ACCOUNT_KEY: ${{ secrets.GSC_SERVICE_ACCOUNT_KEY }}
+          # 수동 실행은 요일과 무관하게 돌린다.
+          FORCE_AUDIT: ${{ github.event_name == 'workflow_dispatch' && 'yes' || '' }}
+        run: |
+          DOW=$(date -u +%u)   # 1=월요일
+          if [ "$DOW" = "1" ] || [ -n "$FORCE_AUDIT" ]; then
+            node scripts/collect-audit.mjs --max=150
+          else
+            echo "월요일이 아니고 수동 실행도 아니므로 건너뛴다 (오늘 DOW=$DOW)."
+          fi
+
+      - name: 수집 결과 커밋
+        if: github.event_name != 'push'
+        run: |
+          git config user.name  'github-actions[bot]'
+          git config user.email 'github-actions[bot]@users.noreply.github.com'
+          git add public/data
+          # 값이 그대로면 커밋하지 않는다 (빈 커밋 방지).
+          git diff --staged --quiet || git commit -m "chore: 데이터 갱신 ($(date -u +%Y-%m-%d))"
+          git push
+
+      - run: npm run build
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: dist
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deploy.outputs.page_url }}
+    steps:
+      - id: deploy
+        uses: actions/deploy-pages@v4

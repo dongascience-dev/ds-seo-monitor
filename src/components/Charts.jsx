@@ -1,0 +1,306 @@
+import { useEffect, useState } from 'react';
+import {
+  Bar,
+  BarChart,
+  CartesianGrid,
+  Cell,
+  Legend,
+  Line,
+  LineChart,
+  PolarAngleAxis,
+  PolarGrid,
+  PolarRadiusAxis,
+  Radar,
+  RadarChart,
+  ReferenceLine,
+  ResponsiveContainer,
+  Tooltip,
+  XAxis,
+  YAxis,
+} from 'recharts';
+import { SERVICES, compact, nf, serviceHex, shortUrl } from '../lib/format.js';
+
+/**
+ * 차트 축·격자 색은 CSS 변수를 못 쓴다 (Recharts 가 SVG 속성에 직접 넣는다).
+ * 다크모드를 따라가도록 미디어 쿼리를 구독해 값을 바꾼다.
+ */
+export function useChartTheme() {
+  const [dark, setDark] = useState(
+    () =>
+      typeof window !== 'undefined' &&
+      window.matchMedia?.('(prefers-color-scheme: dark)').matches,
+  );
+  useEffect(() => {
+    const mq = window.matchMedia('(prefers-color-scheme: dark)');
+    const on = (e) => setDark(e.matches);
+    mq.addEventListener('change', on);
+    return () => mq.removeEventListener('change', on);
+  }, []);
+  return dark
+    ? { grid: '#2a2839', axis: '#8a879f', tip: '#16151f', tipLine: '#2a2839', ink: '#fff' }
+    : { grid: '#e5e2ef', axis: '#8a879f', tip: '#fffffe', tipLine: '#e5e2ef', ink: '#100f1a' };
+}
+
+const tooltipStyle = (t) => ({
+  background: t.tip,
+  border: `1px solid ${t.tipLine}`,
+  borderRadius: 10,
+  fontSize: 12,
+  color: t.ink,
+  boxShadow: '0 8px 24px -12px rgba(0,0,0,.4)',
+});
+
+const axisProps = (t) => ({
+  stroke: t.axis,
+  tick: { fill: t.axis, fontSize: 11 },
+  tickLine: false,
+});
+
+/* ────────────────────────────────────────────────────────────────────────
+ * 1. 다중 선 — 주간 추세
+ *
+ * 서비스 간 규모가 1000배 차이라 한 축에 못 겹친다 (닷컴 Discover 8만 vs
+ * d라이브러리 200). 패널을 나눠 각자의 축으로 그린다. 한 축에 억지로 겹치면
+ * 작은 서비스가 바닥에 붙은 직선이 되어 추세를 읽을 수 없다.
+ * ──────────────────────────────────────────────────────────────────────── */
+export function TrendLines({ history, metric = 'clicks', surface = 'web' }) {
+  const t = useChartTheme();
+  const series = SERVICES.filter((s) =>
+    history.some((h) => h.services?.[s.key]?.[surface]),
+  );
+  if (!series.length) return null;
+
+  return (
+    <div className="grid-3">
+      {series.map((s) => {
+        const rows = history.map((h) => ({
+          week: h.weekEnd.slice(5).replace('-', '/'),
+          value: h.services?.[s.key]?.[surface]?.[metric] ?? null,
+        }));
+        const values = rows.map((r) => r.value).filter(Number.isFinite);
+        const max = Math.max(...values);
+        return (
+          <div className="panel" key={s.key}>
+            <h3>
+              {s.name}{' '}
+              <span style={{ fontWeight: 500, color: 'var(--muted)', fontSize: 11.5 }}>
+                — {surface === 'discover' ? 'Discover' : '웹 검색'}
+              </span>
+            </h3>
+            <p className="p-note">
+              최고 {nf(max)} · {rows.length}주 · 세로축은 패널마다 다름
+            </p>
+            <ResponsiveContainer width="100%" height={170}>
+              <LineChart data={rows} margin={{ top: 4, right: 8, left: -18, bottom: 0 }}>
+                <CartesianGrid stroke={t.grid} vertical={false} />
+                <XAxis dataKey="week" {...axisProps(t)} interval="preserveStartEnd" minTickGap={24} />
+                <YAxis {...axisProps(t)} tickFormatter={compact} width={48} />
+                <Tooltip
+                  contentStyle={tooltipStyle(t)}
+                  formatter={(v) => [nf(v), metric === 'clicks' ? '클릭' : '노출']}
+                  labelFormatter={(l) => `주 종료 ${l}`}
+                />
+                <Line
+                  type="monotone"
+                  dataKey="value"
+                  stroke={s.hex}
+                  strokeWidth={2}
+                  dot={false}
+                  activeDot={{ r: 4 }}
+                  connectNulls isAnimationActive={false} />
+              </LineChart>
+            </ResponsiveContainer>
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+
+/* ────────────────────────────────────────────────────────────────────────
+ * 2. 누적 막대 — 표면별 클릭 구성
+ *
+ * 누적은 부분들이 하나의 합을 이룰 때만 정직하다. 웹 검색과 Discover 는
+ * 같은 도구(GSC)의 같은 단위(클릭)이고 합이 GSC 총 클릭이 되므로 쌓아도 된다.
+ * 반면 GSC 클릭 + GA4 세션 + AI 인용률처럼 측정 도구가 다른 값을 쌓으면
+ * 하나의 전체인 척하게 되므로 쓰지 않는다.
+ * ──────────────────────────────────────────────────────────────────────── */
+export function SurfaceStack({ history, serviceKey = 'donga' }) {
+  const t = useChartTheme();
+  const name = SERVICES.find((s) => s.key === serviceKey)?.name ?? serviceKey;
+  const rows = history.map((h) => ({
+    week: h.weekEnd.slice(5).replace('-', '/'),
+    web: h.services?.[serviceKey]?.web?.clicks ?? 0,
+    discover: h.services?.[serviceKey]?.discover?.clicks ?? 0,
+  }));
+
+  return (
+    <div className="panel">
+      <h3>
+        {name} — 표면별 클릭 구성{' '}
+        <span style={{ fontWeight: 500, color: 'var(--muted)', fontSize: 11.5 }}>
+          — 웹 검색 + Discover
+        </span>
+      </h3>
+      <p className="p-note">
+        둘 다 GSC 클릭이라 합이 성립합니다. 단위가 다른 값(GA4 세션 등)은 쌓지 않습니다.
+      </p>
+      <ResponsiveContainer width="100%" height={230}>
+        <BarChart data={rows} margin={{ top: 4, right: 8, left: -12, bottom: 0 }}>
+          <CartesianGrid stroke={t.grid} vertical={false} />
+          <XAxis dataKey="week" {...axisProps(t)} interval="preserveStartEnd" minTickGap={24} />
+          <YAxis {...axisProps(t)} tickFormatter={compact} width={52} />
+          <Tooltip
+            contentStyle={tooltipStyle(t)}
+            formatter={(v, n) => [nf(v), n === 'web' ? '웹 검색' : 'Discover']}
+            labelFormatter={(l) => `주 종료 ${l}`}
+          />
+          <Legend
+            wrapperStyle={{ fontSize: 11.5, color: t.axis }}
+            formatter={(v) => (v === 'web' ? '웹 검색' : 'Discover')}
+          />
+          <Bar dataKey="web" stackId="s" fill="#2a78d6" radius={[0, 0, 0, 0]} isAnimationActive={false} />
+          <Bar dataKey="discover" stackId="s" fill="#6d3aff" radius={[3, 3, 0, 0]} isAnimationActive={false} />
+        </BarChart>
+      </ResponsiveContainer>
+    </div>
+  );
+}
+
+/* ────────────────────────────────────────────────────────────────────────
+ * 3. 레이더 — SEO·AEO·GEO 준비도
+ *
+ * 축이 3개뿐이면 삼각형이라 읽을 게 없다. 축 묶음별로 나눠, 채점 항목을
+ * 축으로 두고 서비스를 겹친다. 값은 배점 대비 충족률(%)로 정규화한다 —
+ * 배점이 다른 항목을 같은 반지름에 두면 큰 배점 항목만 도형을 지배한다.
+ * ──────────────────────────────────────────────────────────────────────── */
+export function ReadinessRadar({ axis }) {
+  const t = useChartTheme();
+  const rows = axis.items.map((item) => {
+    const row = { item: item.name, max: item.max };
+    for (const s of SERVICES) {
+      row[s.key] = Math.round(((item.scores[s.key] ?? 0) / item.max) * 100);
+    }
+    return row;
+  });
+
+  return (
+    <div className="panel">
+      <h3>
+        {axis.label}{' '}
+        <span style={{ fontWeight: 500, color: 'var(--muted)', fontSize: 11.5 }}>
+          — {axis.full}
+        </span>
+      </h3>
+      <p className="p-note">배점 대비 충족률 (%) · 배점은 툴팁에</p>
+      <ResponsiveContainer width="100%" height={260}>
+        <RadarChart data={rows} outerRadius="72%">
+          <PolarGrid stroke={t.grid} />
+          <PolarAngleAxis dataKey="item" tick={{ fill: t.axis, fontSize: 10.5 }} />
+          <PolarRadiusAxis
+            domain={[0, 100]}
+            tick={{ fill: t.axis, fontSize: 9 }}
+            tickCount={5}
+            axisLine={false}
+          />
+          <Tooltip
+            contentStyle={tooltipStyle(t)}
+            formatter={(v, key, entry) => [
+              `${v}% (배점 ${entry?.payload?.max})`,
+              SERVICES.find((s) => s.key === key)?.name ?? key,
+            ]}
+          />
+          {SERVICES.map((s) => (
+            <Radar
+              key={s.key}
+              name={s.key}
+              dataKey={s.key}
+              stroke={s.hex}
+              fill={s.hex}
+              fillOpacity={0.12}
+              strokeWidth={2} isAnimationActive={false} />
+          ))}
+        </RadarChart>
+      </ResponsiveContainer>
+      <div className="legend">
+        {SERVICES.map((s) => (
+          <span key={s.key}>
+            <i style={{ background: s.hex }} />
+            {s.name}
+          </span>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+/* ────────────────────────────────────────────────────────────────────────
+ * 4. 가로 막대 — 상위 콘텐츠 · 검색어 (이번 주 vs 전주)
+ * ──────────────────────────────────────────────────────────────────────── */
+export function TopBars({ rows, color, label, isUrl = false, limit = 10 }) {
+  const t = useChartTheme();
+  const data = rows.slice(0, limit).map((r) => ({
+    name: isUrl ? shortUrl(r.key) : r.key,
+    full: r.key,
+    이번주: r.clicks,
+    전주: r.prevClicks,
+  }));
+  if (!data.length) return <p className="p-note">데이터 없음</p>;
+
+  return (
+    <ResponsiveContainer width="100%" height={Math.max(200, data.length * 34 + 48)}>
+      <BarChart data={data} layout="vertical" margin={{ top: 4, right: 16, left: 4, bottom: 0 }}>
+        <CartesianGrid stroke={t.grid} horizontal={false} />
+        <XAxis type="number" {...axisProps(t)} tickFormatter={compact} />
+        <YAxis
+          type="category"
+          dataKey="name"
+          {...axisProps(t)}
+          width={190}
+          tick={{ fill: t.axis, fontSize: 10.5 }}
+        />
+        <Tooltip
+          contentStyle={tooltipStyle(t)}
+          formatter={(v) => nf(v)}
+          labelFormatter={(_, p) => p?.[0]?.payload?.full ?? ''}
+        />
+        <Legend wrapperStyle={{ fontSize: 11.5, color: t.axis }} />
+        <Bar dataKey="전주" fill={t.grid} radius={[0, 3, 3, 0]} isAnimationActive={false} />
+        <Bar dataKey="이번주" fill={color} radius={[0, 3, 3, 0]} isAnimationActive={false} />
+      </BarChart>
+    </ResponsiveContainer>
+  );
+}
+
+/* ────────────────────────────────────────────────────────────────────────
+ * 5. 증감률 막대 — 서비스 비교용
+ *
+ * 절대값은 규모 차이가 커서 같은 축에 못 놓지만 증감률은 놓을 수 있다.
+ * 0 기준선 양옆으로 뻗는 형태라 방향이 바로 보인다.
+ * ──────────────────────────────────────────────────────────────────────── */
+export function ChangeBars({ rows }) {
+  const t = useChartTheme();
+  if (!rows.length) return null;
+  return (
+    <ResponsiveContainer width="100%" height={Math.max(180, rows.length * 32 + 40)}>
+      <BarChart data={rows} layout="vertical" margin={{ top: 4, right: 24, left: 4, bottom: 0 }}>
+        <CartesianGrid stroke={t.grid} horizontal={false} />
+        <XAxis type="number" {...axisProps(t)} tickFormatter={(v) => `${v > 0 ? '+' : ''}${v}%`} />
+        <YAxis type="category" dataKey="label" {...axisProps(t)} width={150} />
+        <Tooltip
+          contentStyle={tooltipStyle(t)}
+          formatter={(v, _n, p) => [
+            `${v > 0 ? '+' : ''}${v.toFixed(1)}%  (${nf(p.payload.prev)} → ${nf(p.payload.cur)})`,
+            '전주 대비',
+          ]}
+        />
+        <ReferenceLine x={0} stroke={t.axis} />
+        <Bar dataKey="value" radius={[0, 3, 3, 0]} isAnimationActive={false}>
+          {rows.map((r) => (
+            <Cell key={r.label} fill={serviceHex(r.service)} fillOpacity={r.good ? 1 : 0.45} />
+          ))}
+        </Bar>
+      </BarChart>
+    </ResponsiveContainer>
+  );
+}

@@ -1,0 +1,181 @@
+# ds-seo-monitor
+
+동아사이언스 3개 서비스(동아사이언스 닷컴 · d라이브러리 · DS스토어)의 검색 유입을
+주 단위로 비교하는 모니터링 페이지.
+
+Search Console 데이터를 매주 수집해 JSON 으로 쌓고, 정적 페이지가 그 JSON 을 읽어
+그린다. 마케팅팀·팀장이 URL 만 열면 되도록 만든다.
+
+## 무엇을 보여주나
+
+| 탭 | 내용 |
+|---|---|
+| 전체 | 서비스별 이번 주 vs 전주, 규칙 기반 인사이트, 주간 추세, 개발계 색인 잔존 |
+| 서비스별 (3개) | 상위·급상승·급하락 콘텐츠와 검색어. 닷컴은 Discover 별도 |
+| 국가별 유입 | GA4 국가별 진입, 확인 필요 국가 표시, 채널 구성 |
+| SEO · AEO · GEO | 준비도 채점 레이더 + 근거표, **GEO 결과(AI 채널 유입)** |
+
+URL 해시로 탭이 남는다 — `#donga`, `#readiness` 처럼 특정 화면을 그대로 공유할 수 있다.
+
+AI 채널 유입을 국가 탭이 아니라 준비도 탭에 둔 이유가 있다. GEO 축은 **준비도(봇을
+열어뒀나)와 결과(그래서 몇 명 왔나)가 붙어 있어야** 의미가 생긴다. 닷컴은
+`ChatGPT-User` 를 막아둔 상태인데도 ChatGPT 가 AI 유입 1위라, 그 항목을 열었을 때
+효과를 볼 계기판이 이 수치뿐이다 (진단 문서 G1).
+
+## 설치와 실행
+
+```bash
+npm install
+
+# 1) 데이터 수집 (서비스 계정 키 필요)
+export GSC_SERVICE_ACCOUNT_KEY_FILE=~/.gcp/gsc-reader.json
+npm run collect          # 셋 다
+npm run collect:gsc      # 검색 유입만
+npm run collect:ga4      # 국가 · AI 채널만
+npm run collect:audit    # 준비도만
+
+# 2) 화면
+npm run dev        # 개발 서버
+npm run build      # dist/ 생성
+npm run preview    # 빌드 결과 확인
+```
+
+### 수집기 옵션
+
+```bash
+# 검색 유입 (주간 비교 + 추세)
+node scripts/collect-gsc.mjs                   # 이번 주 · 전주 · 전전주
+node scripts/collect-gsc.mjs --backfill=26     # 과거 26주 추세까지 채움
+node scripts/collect-gsc.mjs --through=2026-09-27   # 기준일 고정 (재현용)
+
+# GA4 — 국가별 진입 · AI 채널
+node scripts/collect-ga4.mjs                   # 기준일은 gsc-weekly.json 과 맞춘다
+node scripts/collect-ga4.mjs --through=2026-09-27
+
+# 준비도 감사 (robots · sitemap · 상세 페이지 마크업)
+node scripts/collect-audit.mjs                 # 서비스당 최대 300건 크롤
+node scripts/collect-audit.mjs --max=150       # 크롤 상한
+node scripts/collect-audit.mjs --no-gsc        # GSC 없이 사이트맵만으로
+```
+
+## 인증
+
+서비스 계정 키만 쓴다 — **GSC 와 GA4 가 같은 계정**(`ga4-reader@…`)이라 키도 하나고
+CI 시크릿도 하나면 된다. 스코프만 호출 시점에 갈린다(`webmasters.readonly` /
+`analytics.readonly`). **키는 레포에 넣지 않는다.**
+
+- 로컬: `GSC_SERVICE_ACCOUNT_KEY_FILE` 에 키 파일 경로
+- CI: `GSC_SERVICE_ACCOUNT_KEY` 에 키 JSON 전문 (GitHub Actions secret)
+
+키는 Actions 러너 안에서만 쓰이고, Pages 에 올라가는 것은 집계된 JSON 뿐이라
+클라이언트 번들에 인증정보가 들어갈 자리가 없다.
+
+서비스 계정에는 GSC 속성 "제한적(restricted)" 권한이면 충분하다. 검색 실적 조회만
+하고 URL 검사·사이트맵 제출은 하지 않는다.
+
+## 자동 갱신
+
+`.github/workflows/update.yml` 하나가 수집·빌드·배포를 모두 한다.
+
+- 매일 09:20 KST (`cron: '20 0 * * *'`) — GSC 수집
+- **월요일에만** 준비도 감사를 추가로 돌린다. 세 사이트를 450건쯤 크롤하는 작업이라
+  매일 할 이유가 없다 (사이트맵·robots·마크업은 매일 바뀌지 않는다)
+- `workflow_dispatch` 로 수동 실행 가능 (backfill 주수 입력, 감사는 요일 무관 실행)
+- `main` 푸시 시에는 **수집을 건너뛰고** 빌드·배포만 한다
+
+수집과 배포를 한 워크플로에 둔 이유가 있다 — `GITHUB_TOKEN` 으로 만든 커밋은 다른
+워크플로를 트리거하지 않아서, 나누면 수집 결과가 배포되지 않는다.
+
+## 설정해야 하는 것 (레포 생성 후 1회)
+
+1. **Settings → Secrets and variables → Actions** 에 `GSC_SERVICE_ACCOUNT_KEY` 추가
+   (키 JSON 전문 붙여넣기)
+2. **Settings → Pages → Source** 를 `GitHub Actions` 로 변경
+3. Actions 탭에서 `update` 를 `backfill=26` 으로 한 번 수동 실행
+
+> **공개 범위 주의.** GitHub Pages 는 레포가 비공개여도 **사이트는 공개**다
+> (Enterprise Cloud 제외). `public/data/*.json` 에는 기사별 클릭수와 검색어가 들어
+> 있으므로, 공개해도 되는 데이터인지 먼저 판단해야 한다.
+
+## 데이터 구조
+
+```
+public/data/
+├─ gsc-weekly.json    이번 주 스냅샷 (매주 덮어씀 · 약 800KB)
+├─ gsc-history.json   주간 합계 누적 (계속 쌓임 · 주당 약 1KB)
+├─ ga4-weekly.json    국가별 진입 · AI 채널 (매일 덮어씀)
+└─ readiness.json     SEO·AEO·GEO 채점 + 측정 원자료 (주 1회)
+```
+
+## 측정상의 결정들
+
+읽는 사람이 오해하지 않도록 정한 것들이다.
+
+- **기준일은 "어제"가 아니다.** GSC 는 2~3일 지연되고 폭이 날마다 다르다. 날짜 차원을
+  조회해 실제로 행이 돌아온 마지막 날을 기준일로 쓴다.
+- **전주는 같은 요일 수로 자른다.** 이번 주가 수요일까지면 전주도 월~수까지만 본다.
+  안 그러면 기간 길이 차이가 증감으로 둔갑한다.
+- **상위 5,000행까지 받는다.** 그보다 아래로 밀린 항목은 값이 0 이 아니라 "그 응답의
+  최저 클릭수 미만"이다. 그대로 0 으로 쓰면 순위권 밖으로 밀린 것을 소멸로 보고하게
+  된다. 실제로 초안에서 "클릭 50,077 → 0" 으로 찍혔던 기사가 바로잡으니 `→ 3` 이었다.
+- **급상승/급하락은 두 주를 나란히 보여준다.** 이번 주(W-1→W)와 전주(W-2→W-1)를
+  같이 놓아야 "지난주에 뜬 것이 이어지는지 한 주로 끝났는지"가 보인다. 양쪽에 다
+  있는 항목에는 `2주 연속` 배지가 붙는다.
+- **인사이트는 전주 대비만으로 판정하지 않는다.** 최근 12주 10~90분위를 기준선으로
+  두고, 평소 범위 안이면 증감이 커도 "참고"로 낮춘다. 닷컴 Discover 는 주간 클릭이
+  7만~29만을 오가서, 전주 대비만 보면 거의 매주 경보가 울린다.
+- **서비스는 page 차원 정규식으로 가른다.** DS스토어 전용 GSC 속성이 없어서 도메인
+  속성 하나를 호스트로 나눈다. 닷컴은 `www` · `m` · apex 세 호스트를 합산한다.
+- **GSC 와 GA4 를 같은 표에 섞지 않는다.** GSC 는 검색 클릭, GA4 는 전 채널 세션이라
+  단위가 다르다. 같은 주 싱가포르가 GSC 클릭 1건 / GA4 세션 약 2만이었다 — 검색을
+  거치지 않는 유입은 GSC 에 아예 없다. 기준일은 GA4 쪽을 GSC 에 맞춘다.
+- **"확인 필요" 국가는 두 조건을 모두 넘긴 경우만이다.** 재방문이 없고(사용자/세션
+  0.985 이상) 페이지도 거의 안 여는(조회/세션 1.1 이하) 유입. 한쪽만 쓰면 오탐이
+  난다 — 뉴스는 한 기사만 읽고 나가는 게 정상이고(영국 조회/세션 1.00), 첫 방문자만
+  오는 소규모 서비스도 있다(d라이브러리 미국 사용자/세션 0.989 · 조회/세션 1.30).
+  **봇 판정이 아니라 사람이 확인할 대상 표시다.**
+- **누적 막대는 합이 성립할 때만 쓴다.** 웹 검색 + Discover 는 같은 도구의 같은 단위라
+  쌓아도 되지만, GSC 클릭 + GA4 세션처럼 측정 도구가 다른 값은 쌓지 않는다.
+
+## 알려진 한계
+
+- **d라이브러리 속성 간 값이 어긋난다.** 도메인 속성을 호스트로 거른 값과 전용
+  URL-prefix 속성(`https://dl.dongascience.com/dl/`)의 값이 6배 차이 난다. 접두사
+  속성이 `/dl/` 경로 밖을 집계하지 않는 것으로 보이나 확인 전이다. 화면 수치는 도메인
+  속성 기준이고, 두 값을 함께 실어 차이를 드러낸다.
+- **AEO 결과값은 측정 수단이 없다.** GSC `searchAppearance` 에 AI 개요·AI 모드 표면이
+  없다. 준비도 점수가 대신 세는 값이다.
+- **준비도의 "핵심 상세 수록" 항목만 분모가 추정치다.** 전체 콘텐츠 수(닷컴 약 8만,
+  d라이브러리 약 3.5만)는 크롤로 셀 수 없어 이전 측정값을 쓴다. 화면에 `분모 추정`
+  배지로 표시한다. 나머지 항목은 전부 실측이다.
+- **준비도 표본은 서비스당 최대 150~300건이다.** 전수가 아니므로 이전 수동 측정과
+  소수점이 다를 수 있다. 예로 d라이브러리 meta description 이 상세만 보면 94%,
+  목록·검색 페이지까지 포함하면 52.6% 다 — 모집단이 다르면 값도 다르다.
+- **Discover 는 검색어·순위 차원이 없다.** 피드 추천 유입이라 API 가 제공하지 않는다.
+
+## 관련
+
+- 진단 문서: 「SEO·AEO·GEO 진단 및 적용 방향」
+- 가용성 모니터: [ds-monitor](https://dongascience-planning.github.io/ds-monitor/)
+
+## 파일 구조
+
+```
+scripts/
+├─ lib/google.mjs        공용 인증(서비스 계정 JWT) + GSC 쿼리
+├─ collect-gsc.mjs       검색 유입 — 이번 주 · 전주 · 전전주, 히스토리 누적
+├─ collect-ga4.mjs       국가별 진입 · AI 채널
+└─ collect-audit.mjs     robots · sitemap · 상세 페이지 크롤 → 준비도 채점
+src/
+├─ App.jsx               탭 · 데이터 로딩 · 레이아웃
+├─ theme.css             디자인 토큰 (SEO 현황판 아티팩트 계승)
+├─ lib/format.js         서비스 정의 · 숫자 · 날짜 포맷
+└─ components/
+   ├─ Charts.jsx         추세선 · 누적막대 · 레이더 · 가로막대 · 증감률
+   ├─ Sections.jsx       카드 · 인사이트 · 순위표 · 2주 비교
+   └─ Ga4.jsx            국가 섹션 · AI 섹션
+```
+
+차트 애니메이션은 전부 꺼 뒀다(`isAnimationActive={false}`). Recharts 는 마운트 시
+막대를 0 에서부터 그리는데, 그 렌더가 끝나기 전에 캡처하면 막대가 통째로 비어 보인다.
+대시보드에 애니메이션이 필요하지도 않다.

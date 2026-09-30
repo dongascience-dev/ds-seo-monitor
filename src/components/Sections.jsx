@@ -1,0 +1,447 @@
+import { ChangeBars, TopBars } from './Charts.jsx';
+import {
+  SERVICES,
+  change,
+  fmtDate,
+  isImprovement,
+  nf,
+  pctText,
+  shortUrl,
+  signed,
+} from '../lib/format.js';
+
+const Delta = ({ cur, prev, metric = 'clicks' }) => {
+  const d = change(cur, prev);
+  if (d === null) return <div className="d flat">전주 없음</div>;
+  const good = isImprovement(metric, d);
+  const flat = Math.abs(d) < 3;
+  return (
+    <div className={`d ${flat ? 'flat' : good ? 'up' : 'down'}`}>
+      {flat ? '—' : good ? '▲' : '▼'} {signed(d)}
+    </div>
+  );
+};
+
+const Stat = ({ k, v, cur, prev, metric, suffix }) => (
+  <div className="stat">
+    <span className="k">{k}</span>
+    <span className="v num">
+      {v}
+      {suffix && <small>{suffix}</small>}
+    </span>
+    <Delta cur={cur} prev={prev} metric={metric} />
+  </div>
+);
+
+export function ServiceCards({ services }) {
+  return (
+    <div className="cards">
+      {SERVICES.map((s) => {
+        const svc = services[s.key];
+        if (!svc) return null;
+        const w = svc.web;
+        return (
+          <article className="card" style={{ '--c': s.color }} key={s.key}>
+            <h3>{s.name}</h3>
+            <div className="host">{svc.host}</div>
+            <div className="card-stats">
+              <Stat k="클릭" v={nf(w.current.clicks)} cur={w.current.clicks} prev={w.previous.clicks} />
+              <Stat
+                k="노출"
+                v={nf(w.current.impressions)}
+                cur={w.current.impressions}
+                prev={w.previous.impressions}
+              />
+              <Stat
+                k="CTR"
+                v={(w.current.ctr * 100).toFixed(2)}
+                suffix="%"
+                cur={w.current.ctr}
+                prev={w.previous.ctr}
+              />
+              <Stat
+                k="평균 순위"
+                v={w.current.position?.toFixed(1) ?? '—'}
+                cur={w.current.position}
+                prev={w.previous.position}
+                metric="position"
+              />
+            </div>
+            {svc.discover && (
+              <div className="card-stats" style={{ gridTemplateColumns: '1fr 1fr' }}>
+                <Stat
+                  k="Discover 클릭"
+                  v={nf(svc.discover.current.clicks)}
+                  cur={svc.discover.current.clicks}
+                  prev={svc.discover.previous.clicks}
+                />
+                <Stat
+                  k="Discover 노출"
+                  v={nf(svc.discover.current.impressions)}
+                  cur={svc.discover.current.impressions}
+                  prev={svc.discover.previous.impressions}
+                />
+              </div>
+            )}
+          </article>
+        );
+      })}
+    </div>
+  );
+}
+
+export function OverviewChange({ services }) {
+  const rows = [];
+  for (const s of SERVICES) {
+    const svc = services[s.key];
+    if (!svc) continue;
+    for (const [surface, label] of [
+      ['web', '웹 검색'],
+      ['discover', 'Discover'],
+    ]) {
+      const data = surface === 'web' ? svc.web : svc.discover;
+      if (!data) continue;
+      const d = change(data.current.clicks, data.previous.clicks);
+      if (d === null) continue;
+      rows.push({
+        label: `${s.name} · ${label}`,
+        service: s.key,
+        value: Number(d.toFixed(1)),
+        cur: data.current.clicks,
+        prev: data.previous.clicks,
+        good: d > 0,
+      });
+    }
+  }
+  if (!rows.length) return null;
+  return (
+    <div className="panel" style={{ marginTop: 14 }}>
+      <h3>클릭 증감률 — 전주 대비</h3>
+      <p className="p-note">
+        규모가 서비스 간 1000배까지 차이 나 같은 축에 못 놓습니다. 증감률만 비교
+        가능합니다 — 절대값은 위 카드에서 봅니다.
+      </p>
+      <ChangeBars rows={rows} />
+    </div>
+  );
+}
+
+const SEV = { crit: 'crit', warn: 'warn', good: 'good', info: 'info', ok: 'info' };
+const SEV_COLOR = {
+  crit: 'var(--crit)',
+  warn: 'var(--warn)',
+  good: 'var(--good)',
+  info: 'var(--info)',
+  ok: 'var(--muted)',
+};
+const SEV_LABEL = {
+  crit: '확인 필요',
+  warn: '주의',
+  good: '개선',
+  info: '참고',
+  ok: '이상 없음',
+};
+
+/**
+ * 서비스별로 묶어서 보여준다.
+ *
+ * 한 줄로 늘어놓으면 변동이 큰 닷컴이 화면을 덮어 "나머지 둘은 안 봤나?" 로
+ * 읽힌다. 실제로는 봤고 조용했던 것이다. 서비스마다 블록을 두고 건수를 적어,
+ * 조용한 것과 빠뜨린 것을 구분한다.
+ */
+export function Insights({ insights }) {
+  if (!insights?.length) return <p className="sec-note">이번 주 임계값을 넘은 변화가 없다.</p>;
+
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', gap: 22 }}>
+      {SERVICES.map((s) => {
+        const rows = insights.filter((i) => i.service === s.key);
+        const alerts = rows.filter((i) => i.severity === 'crit' || i.severity === 'warn').length;
+        return (
+          <div key={s.key}>
+            <div
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: 8,
+                marginBottom: 8,
+                fontSize: 13,
+                fontWeight: 800,
+              }}
+            >
+              <span
+                className="swatch"
+                style={{ width: 10, height: 10, borderRadius: 3, background: s.hex }}
+              />
+              {s.name}
+              <span style={{ fontWeight: 600, fontSize: 11, color: 'var(--muted)' }}>
+                {rows.length}건{alerts > 0 && ` · 확인 필요 ${alerts}`}
+              </span>
+            </div>
+            <div className="ins">
+              {rows.length === 0 && (
+                <div className="ins-row" style={{ '--c': 'var(--muted)' }}>
+                  <span className="pill info">이상 없음</span>
+                  <span className="txt">임계값을 넘은 변화가 없다.</span>
+                </div>
+              )}
+              {rows.map((i, idx) => (
+                <div
+                  className="ins-row"
+                  style={{ '--c': SEV_COLOR[i.severity] ?? 'var(--muted)' }}
+                  key={`${i.kind}-${idx}`}
+                >
+                  <span className={`pill ${SEV[i.severity] ?? 'info'}`}>
+                    {SEV_LABEL[i.severity] ?? i.severity}
+                  </span>
+                  <span className="txt">{i.text}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+
+const Row = ({ r, isUrl }) => {
+  const d = change(r.clicks, r.prevClicks);
+  const from =
+    r.belowPrevFloor !== null && r.belowPrevFloor !== undefined
+      ? `${nf(r.belowPrevFloor)} 미만`
+      : nf(r.prevClicks);
+  return (
+    <tr>
+      <td>
+        {isUrl ? (
+          <a href={r.key} target="_blank" rel="noreferrer" className="mono">
+            {shortUrl(r.key)}
+          </a>
+        ) : (
+          r.key
+        )}
+      </td>
+      <td className="n">{nf(r.clicks)}</td>
+      <td className="n" style={{ color: 'var(--muted)', fontWeight: 500 }}>
+        {from}
+      </td>
+      <td className="n" style={{ color: d === null ? 'var(--muted)' : d > 0 ? 'var(--good)' : 'var(--crit)' }}>
+        {r.deltaClicks > 0 ? '+' : ''}
+        {nf(r.deltaClicks)}
+      </td>
+      <td className="n">{nf(r.impressions)}</td>
+      <td className="n">{pctText(r.ctr)}</td>
+      <td className="n">{r.position?.toFixed(1) ?? '—'}</td>
+    </tr>
+  );
+};
+
+export function RankTable({ title, note, rows, isUrl, limit = 15, color, chart = false }) {
+  return (
+    <div style={{ marginTop: 22 }}>
+      <h3>{title}</h3>
+      <p className="p-note">{note}</p>
+      {/* 증감은 숫자보다 두 막대의 길이 차이로 읽는 쪽이 빠르다. 회색이 전주다. */}
+      {chart && rows.length > 0 && (
+        <div className="panel" style={{ marginBottom: 12 }}>
+          <TopBars rows={rows} color={color} isUrl={isUrl} limit={10} />
+        </div>
+      )}
+      <div className="tw">
+        <table>
+          <thead>
+            <tr>
+              <th>{isUrl ? '페이지' : '검색어'}</th>
+              <th className="n">클릭</th>
+              <th className="n">전주</th>
+              <th className="n">증감</th>
+              <th className="n">노출</th>
+              <th className="n">CTR</th>
+              <th className="n">순위</th>
+            </tr>
+          </thead>
+          <tbody>
+            {rows.slice(0, limit).map((r) => (
+              <Row r={r} isUrl={isUrl} key={r.key} />
+            ))}
+            {!rows.length && (
+              <tr>
+                <td colSpan={7} style={{ color: 'var(--muted)' }}>
+                  해당 없음
+                </td>
+              </tr>
+            )}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  );
+}
+
+/**
+ * 이번 주 급상승 / 전주 급상승을 나란히 놓는다.
+ *
+ * 한쪽만 보면 "이번 주에 뭐가 떴나"까지만 알 수 있다. 두 주를 붙여 놓으면
+ * 지난주에 뜬 것이 이어지는지 한 주로 끝났는지가 보이고, 그게 대응을 가른다 —
+ * 이어지는 주제는 후속 기사를 붙이고, 단발은 그냥 지나간 이슈다.
+ */
+function RiserPair({ now, prevWeek, periods, isUrl }) {
+  const list = (d) => d?.risers ?? [];
+  const nowRows = list(now).slice(0, 10);
+  const prevRows = list(prevWeek).slice(0, 10);
+
+  const Item = ({ r, showSustained }) => (
+    <li
+      style={{
+        display: 'flex',
+        gap: 8,
+        alignItems: 'baseline',
+        padding: '7px 0',
+        borderBottom: '1px solid var(--grid)',
+      }}
+    >
+      <span style={{ flex: 1, minWidth: 0, wordBreak: 'break-word' }}>
+        {isUrl ? (
+          <a href={r.key} target="_blank" rel="noreferrer" className="mono">
+            {shortUrl(r.key)}
+          </a>
+        ) : (
+          r.key
+        )}
+        {showSustained && r.sustained && (
+          <span className="pill info" style={{ marginLeft: 6, fontSize: 10 }}>
+            2주 연속
+          </span>
+        )}
+      </span>
+      <span className="num" style={{ fontSize: 12, color: 'var(--good)' }}>
+        {r.deltaClicks > 0 ? '+' : ''}
+        {nf(r.deltaClicks)}
+      </span>
+      <span className="num" style={{ fontSize: 11, color: 'var(--muted)', minWidth: 78, textAlign: 'right' }}>
+        {r.belowPrevFloor != null ? `${nf(r.belowPrevFloor)}↓` : nf(r.prevClicks)} → {nf(r.clicks)}
+      </span>
+    </li>
+  );
+
+  const Col = ({ title, range, rows, showSustained }) => (
+    <div className="panel">
+      <h3>{title}</h3>
+      <p className="p-note">{range}</p>
+      {rows.length ? (
+        <ul style={{ listStyle: 'none', margin: 0, padding: 0, fontSize: 12.5 }}>
+          {rows.map((r) => (
+            <Item r={r} showSustained={showSustained} key={r.key} />
+          ))}
+        </ul>
+      ) : (
+        <p className="p-note">해당 없음</p>
+      )}
+    </div>
+  );
+
+  const fmt = (p) => `${fmtDate(p.start)}~${fmtDate(p.end)}`;
+
+  return (
+    <div className="grid-2" style={{ marginTop: 14 }}>
+      <Col
+        title="이번 주 급상승"
+        range={`${fmt(periods.previous)} → ${fmt(periods.current)}`}
+        rows={nowRows}
+        showSustained
+      />
+      <Col
+        title="전주 급상승"
+        range={`${fmt(periods.beforePrevious)} → ${fmt(periods.previous)}`}
+        rows={prevRows}
+      />
+    </div>
+  );
+}
+
+export function SurfaceBlock({ surface, label, color, periods }) {
+  const { pages, queries, pagesPrevWeek, queriesPrevWeek } = surface;
+  return (
+    <>
+      <div className="grid-2" style={{ marginTop: 18 }}>
+        <div className="panel">
+          <h3>상위 콘텐츠 — {label}</h3>
+          <p className="p-note">클릭 기준 상위 10건 · 회색이 전주</p>
+          <TopBars rows={pages.top} color={color} isUrl />
+        </div>
+        {queries ? (
+          <div className="panel">
+            <h3>상위 검색어</h3>
+            <p className="p-note">클릭 기준 상위 10건. 회색이 전주.</p>
+            <TopBars rows={queries.top} color={color} />
+          </div>
+        ) : (
+          <div className="panel">
+            <h3>검색어</h3>
+            <p className="p-note">
+              Discover 는 검색어와 순위가 없습니다. 검색해서 온 게 아니라 피드 추천으로
+              온 유입이라 GSC 가 제공하지 않습니다.
+            </p>
+          </div>
+        )}
+      </div>
+
+      <div className="sec-head" style={{ marginTop: 34 }}>
+        <span className="eyebrow">2주 비교</span>
+        <h2 style={{ fontSize: 15 }}>급상승 콘텐츠 — {label}</h2>
+      </div>
+      <RiserPair now={pages} prevWeek={pagesPrevWeek} periods={periods} color={color} isUrl />
+
+      <RankTable
+        title={`급상승 콘텐츠 상세 — ${label}`}
+        note="전주 대비 클릭 증가분 상위. 회색이 전주다."
+        rows={pages.risers}
+        color={color}
+        chart
+        isUrl
+      />
+      <RankTable
+        title={`급하락 콘텐츠 — ${label}`}
+        note={
+          pages.truncated?.current
+            ? `전주 대비 클릭 감소분 상위. 이번 주 응답이 ${nf(pages.rowsFetched.current)}행에서 잘려, 그 아래 값은 "${nf(pages.floorClicks.current)} 미만"으로 표기한다.`
+            : '전주 대비 클릭 감소분 상위. 회색이 전주다.'
+        }
+        rows={pages.fallers}
+        color={color}
+        chart
+        isUrl
+      />
+      {queries && (
+        <>
+          <div className="sec-head" style={{ marginTop: 34 }}>
+            <span className="eyebrow">2주 비교</span>
+            <h2 style={{ fontSize: 15 }}>급상승 검색어</h2>
+          </div>
+          <RiserPair
+            now={queries}
+            prevWeek={queriesPrevWeek}
+            periods={periods}
+            color={color}
+          />
+
+          <RankTable
+            title="급상승 검색어 상세"
+            note="전주 대비 클릭 증가분 상위. 회색이 전주다."
+            rows={queries.risers}
+            color={color}
+            chart
+          />
+          <RankTable
+            title="급하락 검색어"
+            note="전주 대비 클릭 감소분 상위. 회색이 전주다."
+            rows={queries.fallers}
+            color={color}
+            chart
+          />
+        </>
+      )}
+    </>
+  );
+}

@@ -1,0 +1,1270 @@
+[
+  {
+    "weekStart": "2026-03-23",
+    "weekEnd": "2026-03-29",
+    "days": 7,
+    "collectedAt": "2026-09-29T23:42:08.715Z",
+    "backfilled": true,
+    "services": {
+      "donga": {
+        "web": {
+          "clicks": 49491,
+          "impressions": 2211244,
+          "ctr": 0.022381519181058265,
+          "position": 5.854344432364768
+        },
+        "discover": {
+          "clicks": 419917,
+          "impressions": 6656228,
+          "ctr": 0.06308633057641655,
+          "position": null
+        }
+      },
+      "dl": {
+        "web": {
+          "clicks": 225,
+          "impressions": 10430,
+          "ctr": 0.021572387344199424,
+          "position": 8.005944391179291
+        },
+        "discover": null
+      },
+      "store": {
+        "web": {
+          "clicks": 308,
+          "impressions": 9817,
+          "ctr": 0.03137414688805134,
+          "position": 4.560150758887644
+        },
+        "discover": null
+      }
+    },
+    "devHosts": {
+      "clicks": 2,
+      "impressions": 3,
+      "ctr": 0.6666666666666666,
+      "position": 3
+    }
+  },
+  {
+    "weekStart": "2026-03-30",
+    "weekEnd": "2026-04-05",
+    "days": 7,
+    "collectedAt": "2026-09-29T23:42:06.020Z",
+    "backfilled": true,
+    "services": {
+      "donga": {
+        "web": {
+          "clicks": 77578,
+          "impressions": 2413988,
+          "ctr": 0.03213686232077376,
+          "position": 5.6564150277466165
+        },
+        "discover": {
+          "clicks": 322886,
+          "impressions": 4299843,
+          "ctr": 0.07509250919161467,
+          "position": null
+        }
+      },
+      "dl": {
+        "web": {
+          "clicks": 217,
+          "impressions": 8556,
+          "ctr": 0.025362318840579712,
+          "position": 7.550257129499767
+        },
+        "discover": null
+      },
+      "store": {
+        "web": {
+          "clicks": 284,
+          "impressions": 8255,
+          "ctr": 0.03440339188370684,
+          "position": 4.360993337371291
+        },
+        "discover": null
+      }
+    },
+    "devHosts": {
+      "clicks": 3,
+      "impressions": 4,
+      "ctr": 0.75,
+      "position": 7.25
+    }
+  },
+  {
+    "weekStart": "2026-04-06",
+    "weekEnd": "2026-04-12",
+    "days": 7,
+    "collectedAt": "2026-09-29T23:42:03.562Z",
+    "backfilled": true,
+    "services": {
+      "donga": {
+        "web": {
+          "clicks": 43104,
+          "impressions": 2208026,
+          "ctr": 0.019521509257590264,
+          "position": 5.938151090612157
+        },
+        "discover": {
+          "clicks": 109204,
+          "impressions": 1598030,
+          "ctr": 0.06833663948736882,
+          "position": null
+        }
+      },
+      "dl": {
+        "web": {
+          "clicks": 240,
+          "impressions": 15303,
+          "ctr": 0.015683199372672024,
+          "position": 8.13467947461282
+        },
+        "discover": null
+      },
+      "store": {
+        "web": {
+          "clicks": 326,
+          "impressions": 9972,
+          "ctr": 0.032691536301644605,
+          "position": 4.262334536702768
+        },
+        "discover": null
+      }
+    },
+    "devHosts": {
+      "clicks": 1,
+      "impressions": 1,
+      "ctr": 1,
+      "position": 2
+    }
+  },
+  {
+    "weekStart": "2026-04-13",
+    "weekEnd": "2026-04-19",
+    "days": 7,
+    "collectedAt": "2026-09-29T23:42:01.002Z",
+    "backfilled": true,
+    "services": {
+      "donga": {
+        "web": {
+          "clicks": 36825,
+          "impressions": 1956900,
+          "ctr": 0.0188180285144872,
+          "position": 6.041875415197506
+        },
+        "discover": {
+          "clicks": 79921,
+          "impressions": 1549896,
+          "ctr": 0.05156539535555934,
+          "position": null
+        }
+      },
+      "dl": {
+        "web": {
+          "clicks": 244,
+          "impressions": 31590,
+          "ctr": 0.007723963279518835,
+          "position": 7.607407407407408
+        },
+        "discover": null
+      },
+      "store": {
+        "web": {
+          "clicks": 305,
+          "impressions": 9971,
+          "ctr": 0.030588707251027983,
+          "position": 4.458529736235082
+        },
+        "discover": null
+      }
+    },
+    "devHosts": {
+      "clicks": 4,
+      "impressions": 4,
+      "ctr": 1,
+      "position": 6.25
+    }
+  },
+  {
+    "weekStart": "2026-04-20",
+    "weekEnd": "2026-04-26",
+    "days": 7,
+    "collectedAt": "2026-09-29T23:41:57.932Z",
+    "backfilled": true,
+    "services": {
+      "donga": {
+        "web": {
+          "clicks": 33859,
+          "impressions": 1774733,
+          "ctr": 0.01907836277344254,
+          "position": 6.7971001835205636
+        },
+        "discover": {
+          "clicks": 92406,
+          "impressions": 1588148,
+          "ctr": 0.0581847535620106,
+          "position": null
+        }
+      },
+      "dl": {
+        "web": {
+          "clicks": 236,
+          "impressions": 26171,
+          "ctr": 0.009017614917274847,
+          "position": 7.615872530663712
+        },
+        "discover": null
+      },
+      "store": {
+        "web": {
+          "clicks": 225,
+          "impressions": 6904,
+          "ctr": 0.032589803012746235,
+          "position": 5.690758980301275
+        },
+        "discover": null
+      }
+    },
+    "devHosts": {
+      "clicks": 7,
+      "impressions": 8,
+      "ctr": 0.875,
+      "position": 11
+    }
+  },
+  {
+    "weekStart": "2026-04-27",
+    "weekEnd": "2026-05-03",
+    "days": 7,
+    "collectedAt": "2026-09-29T23:41:54.451Z",
+    "backfilled": true,
+    "services": {
+      "donga": {
+        "web": {
+          "clicks": 31613,
+          "impressions": 1960227,
+          "ctr": 0.016127213837989172,
+          "position": 8.434723121352782
+        },
+        "discover": {
+          "clicks": 110412,
+          "impressions": 2075912,
+          "ctr": 0.05318722566274486,
+          "position": null
+        }
+      },
+      "dl": {
+        "web": {
+          "clicks": 218,
+          "impressions": 30791,
+          "ctr": 0.0070799909064336985,
+          "position": 8.442337046539574
+        },
+        "discover": null
+      },
+      "store": {
+        "web": {
+          "clicks": 228,
+          "impressions": 7541,
+          "ctr": 0.03023471688105026,
+          "position": 7.252884232860364
+        },
+        "discover": null
+      }
+    },
+    "devHosts": {
+      "clicks": 3,
+      "impressions": 3,
+      "ctr": 1,
+      "position": 4
+    }
+  },
+  {
+    "weekStart": "2026-05-04",
+    "weekEnd": "2026-05-10",
+    "days": 7,
+    "collectedAt": "2026-09-29T23:41:52.232Z",
+    "backfilled": true,
+    "services": {
+      "donga": {
+        "web": {
+          "clicks": 43182,
+          "impressions": 1906909,
+          "ctr": 0.022645023962863463,
+          "position": 6.86809753375751
+        },
+        "discover": {
+          "clicks": 84154,
+          "impressions": 1633305,
+          "ctr": 0.05152375092220988,
+          "position": null
+        }
+      },
+      "dl": {
+        "web": {
+          "clicks": 244,
+          "impressions": 30744,
+          "ctr": 0.007936507936507936,
+          "position": 8.272801196981526
+        },
+        "discover": null
+      },
+      "store": {
+        "web": {
+          "clicks": 265,
+          "impressions": 8786,
+          "ctr": 0.03016162076030048,
+          "position": 6.899954473025267
+        },
+        "discover": null
+      }
+    },
+    "devHosts": {
+      "clicks": 2,
+      "impressions": 2,
+      "ctr": 1,
+      "position": 2
+    }
+  },
+  {
+    "weekStart": "2026-05-11",
+    "weekEnd": "2026-05-17",
+    "days": 7,
+    "collectedAt": "2026-09-29T23:41:48.816Z",
+    "backfilled": true,
+    "services": {
+      "donga": {
+        "web": {
+          "clicks": 54868,
+          "impressions": 2335568,
+          "ctr": 0.023492358175827035,
+          "position": 6.473844049927041
+        },
+        "discover": {
+          "clicks": 214510,
+          "impressions": 4214240,
+          "ctr": 0.05090123011503853,
+          "position": null
+        }
+      },
+      "dl": {
+        "web": {
+          "clicks": 238,
+          "impressions": 29969,
+          "ctr": 0.007941539590910608,
+          "position": 7.989856184724215
+        },
+        "discover": null
+      },
+      "store": {
+        "web": {
+          "clicks": 315,
+          "impressions": 7553,
+          "ctr": 0.04170528266913809,
+          "position": 5.666092943201377
+        },
+        "discover": null
+      }
+    },
+    "devHosts": {
+      "clicks": 6,
+      "impressions": 8,
+      "ctr": 0.75,
+      "position": 2.5
+    }
+  },
+  {
+    "weekStart": "2026-05-18",
+    "weekEnd": "2026-05-24",
+    "days": 7,
+    "collectedAt": "2026-09-29T23:41:46.569Z",
+    "backfilled": true,
+    "services": {
+      "donga": {
+        "web": {
+          "clicks": 51737,
+          "impressions": 1894128,
+          "ctr": 0.027314415921204902,
+          "position": 5.9275043714046785
+        },
+        "discover": {
+          "clicks": 243996,
+          "impressions": 3800996,
+          "ctr": 0.0641926484531949,
+          "position": null
+        }
+      },
+      "dl": {
+        "web": {
+          "clicks": 212,
+          "impressions": 31259,
+          "ctr": 0.0067820467705300876,
+          "position": 7.812118109984325
+        },
+        "discover": null
+      },
+      "store": {
+        "web": {
+          "clicks": 276,
+          "impressions": 6278,
+          "ctr": 0.043963045555909526,
+          "position": 5.587288945524052
+        },
+        "discover": null
+      }
+    },
+    "devHosts": {
+      "clicks": 4,
+      "impressions": 5,
+      "ctr": 0.8,
+      "position": 4.8
+    }
+  },
+  {
+    "weekStart": "2026-05-25",
+    "weekEnd": "2026-05-31",
+    "days": 7,
+    "collectedAt": "2026-09-29T23:41:42.775Z",
+    "backfilled": true,
+    "services": {
+      "donga": {
+        "web": {
+          "clicks": 61575,
+          "impressions": 2205219,
+          "ctr": 0.027922396823172664,
+          "position": 6.017880310300247
+        },
+        "discover": {
+          "clicks": 134365,
+          "impressions": 2683809,
+          "ctr": 0.050065038160316176,
+          "position": null
+        }
+      },
+      "dl": {
+        "web": {
+          "clicks": 251,
+          "impressions": 38981,
+          "ctr": 0.006439034401375028,
+          "position": 7.49480516148893
+        },
+        "discover": null
+      },
+      "store": {
+        "web": {
+          "clicks": 357,
+          "impressions": 7755,
+          "ctr": 0.046034816247582204,
+          "position": 5.667569310122501
+        },
+        "discover": null
+      }
+    },
+    "devHosts": {
+      "clicks": 1,
+      "impressions": 1,
+      "ctr": 1,
+      "position": 2
+    }
+  },
+  {
+    "weekStart": "2026-06-01",
+    "weekEnd": "2026-06-07",
+    "days": 7,
+    "collectedAt": "2026-09-29T23:41:39.144Z",
+    "backfilled": true,
+    "services": {
+      "donga": {
+        "web": {
+          "clicks": 49868,
+          "impressions": 2316594,
+          "ctr": 0.021526430613219235,
+          "position": 5.866813951862087
+        },
+        "discover": {
+          "clicks": 126431,
+          "impressions": 3355057,
+          "ctr": 0.037683711483888355,
+          "position": null
+        }
+      },
+      "dl": {
+        "web": {
+          "clicks": 224,
+          "impressions": 38006,
+          "ctr": 0.0058938062411198235,
+          "position": 7.871546597905594
+        },
+        "discover": null
+      },
+      "store": {
+        "web": {
+          "clicks": 277,
+          "impressions": 8084,
+          "ctr": 0.03426521523998021,
+          "position": 6.6291439881246905
+        },
+        "discover": null
+      }
+    },
+    "devHosts": {
+      "clicks": 1,
+      "impressions": 1,
+      "ctr": 1,
+      "position": 10
+    }
+  },
+  {
+    "weekStart": "2026-06-08",
+    "weekEnd": "2026-06-14",
+    "days": 7,
+    "collectedAt": "2026-09-29T23:41:36.734Z",
+    "backfilled": true,
+    "services": {
+      "donga": {
+        "web": {
+          "clicks": 59755,
+          "impressions": 2021765,
+          "ctr": 0.029555858371274606,
+          "position": 5.598379139019619
+        },
+        "discover": {
+          "clicks": 147668,
+          "impressions": 2956814,
+          "ctr": 0.049941592538455246,
+          "position": null
+        }
+      },
+      "dl": {
+        "web": {
+          "clicks": 212,
+          "impressions": 40059,
+          "ctr": 0.005292194013829602,
+          "position": 7.626825432487082
+        },
+        "discover": null
+      },
+      "store": {
+        "web": {
+          "clicks": 273,
+          "impressions": 8599,
+          "ctr": 0.03174787766019305,
+          "position": 6.559134783114316
+        },
+        "discover": null
+      }
+    },
+    "devHosts": {
+      "clicks": 3,
+      "impressions": 5,
+      "ctr": 0.6,
+      "position": 3.6
+    }
+  },
+  {
+    "weekStart": "2026-06-15",
+    "weekEnd": "2026-06-21",
+    "days": 7,
+    "collectedAt": "2026-09-29T23:41:32.895Z",
+    "backfilled": true,
+    "services": {
+      "donga": {
+        "web": {
+          "clicks": 49557,
+          "impressions": 2268516,
+          "ctr": 0.02184555894690626,
+          "position": 5.821073776865581
+        },
+        "discover": {
+          "clicks": 55562,
+          "impressions": 1065828,
+          "ctr": 0.05213036249751367,
+          "position": null
+        }
+      },
+      "dl": {
+        "web": {
+          "clicks": 196,
+          "impressions": 40636,
+          "ctr": 0.004823309380844572,
+          "position": 7.932473668668176
+        },
+        "discover": null
+      },
+      "store": {
+        "web": {
+          "clicks": 307,
+          "impressions": 6510,
+          "ctr": 0.047158218125960064,
+          "position": 9.382334869431643
+        },
+        "discover": null
+      }
+    },
+    "devHosts": {
+      "clicks": 7,
+      "impressions": 10,
+      "ctr": 0.7,
+      "position": 2.3
+    }
+  },
+  {
+    "weekStart": "2026-06-22",
+    "weekEnd": "2026-06-28",
+    "days": 7,
+    "collectedAt": "2026-09-29T23:41:30.761Z",
+    "backfilled": true,
+    "services": {
+      "donga": {
+        "web": {
+          "clicks": 35434,
+          "impressions": 2023751,
+          "ctr": 0.017509071027018642,
+          "position": 5.9432978661900595
+        },
+        "discover": {
+          "clicks": 101474,
+          "impressions": 1778070,
+          "ctr": 0.05706974416080357,
+          "position": null
+        }
+      },
+      "dl": {
+        "web": {
+          "clicks": 178,
+          "impressions": 37055,
+          "ctr": 0.004803670219943328,
+          "position": 7.587316151666442
+        },
+        "discover": null
+      },
+      "store": {
+        "web": {
+          "clicks": 285,
+          "impressions": 8537,
+          "ctr": 0.03338409277263676,
+          "position": 9.1162000702823
+        },
+        "discover": null
+      }
+    },
+    "devHosts": {
+      "clicks": 4,
+      "impressions": 9,
+      "ctr": 0.4444444444444444,
+      "position": 6
+    }
+  },
+  {
+    "weekStart": "2026-06-29",
+    "weekEnd": "2026-07-05",
+    "days": 7,
+    "collectedAt": "2026-09-29T23:41:28.542Z",
+    "backfilled": true,
+    "services": {
+      "donga": {
+        "web": {
+          "clicks": 35824,
+          "impressions": 2099780,
+          "ctr": 0.017060834944613246,
+          "position": 5.833187762527503
+        },
+        "discover": {
+          "clicks": 69960,
+          "impressions": 1329706,
+          "ctr": 0.05261313403113169,
+          "position": null
+        }
+      },
+      "dl": {
+        "web": {
+          "clicks": 194,
+          "impressions": 38242,
+          "ctr": 0.00507295643533288,
+          "position": 7.319910046545683
+        },
+        "discover": null
+      },
+      "store": {
+        "web": {
+          "clicks": 345,
+          "impressions": 9905,
+          "ctr": 0.0348308934881373,
+          "position": 7.076728924785462
+        },
+        "discover": null
+      }
+    },
+    "devHosts": {
+      "clicks": 7,
+      "impressions": 19,
+      "ctr": 0.3684210526315789,
+      "position": 5.631578947368421
+    }
+  },
+  {
+    "weekStart": "2026-07-06",
+    "weekEnd": "2026-07-12",
+    "days": 7,
+    "collectedAt": "2026-09-29T23:41:26.393Z",
+    "backfilled": true,
+    "services": {
+      "donga": {
+        "web": {
+          "clicks": 56869,
+          "impressions": 1680788,
+          "ctr": 0.033834725140826805,
+          "position": 5.738173404379374
+        },
+        "discover": {
+          "clicks": 143396,
+          "impressions": 3020588,
+          "ctr": 0.0474728761419962,
+          "position": null
+        }
+      },
+      "dl": {
+        "web": {
+          "clicks": 234,
+          "impressions": 29954,
+          "ctr": 0.007811978366829138,
+          "position": 7.884422781598451
+        },
+        "discover": null
+      },
+      "store": {
+        "web": {
+          "clicks": 430,
+          "impressions": 8213,
+          "ctr": 0.05235602094240838,
+          "position": 6.073663703884086
+        },
+        "discover": null
+      }
+    },
+    "devHosts": {
+      "clicks": 7,
+      "impressions": 11,
+      "ctr": 0.6363636363636364,
+      "position": 3.3636363636363638
+    }
+  },
+  {
+    "weekStart": "2026-07-13",
+    "weekEnd": "2026-07-19",
+    "days": 7,
+    "collectedAt": "2026-09-29T23:41:24.454Z",
+    "backfilled": true,
+    "services": {
+      "donga": {
+        "web": {
+          "clicks": 39948,
+          "impressions": 1629266,
+          "ctr": 0.02451901653873585,
+          "position": 5.955306868246192
+        },
+        "discover": {
+          "clicks": 204246,
+          "impressions": 4738032,
+          "ctr": 0.043107771327842444,
+          "position": null
+        }
+      },
+      "dl": {
+        "web": {
+          "clicks": 226,
+          "impressions": 33867,
+          "ctr": 0.006673162665721794,
+          "position": 7.439040954321316
+        },
+        "discover": null
+      },
+      "store": {
+        "web": {
+          "clicks": 339,
+          "impressions": 7978,
+          "ctr": 0.04249185259463525,
+          "position": 7.495988969666583
+        },
+        "discover": null
+      }
+    },
+    "devHosts": {
+      "clicks": 5,
+      "impressions": 13,
+      "ctr": 0.38461538461538464,
+      "position": 5.769230769230769
+    }
+  },
+  {
+    "weekStart": "2026-07-20",
+    "weekEnd": "2026-07-26",
+    "days": 7,
+    "collectedAt": "2026-09-29T23:41:22.390Z",
+    "backfilled": true,
+    "services": {
+      "donga": {
+        "web": {
+          "clicks": 34602,
+          "impressions": 1978127,
+          "ctr": 0.01749230458913912,
+          "position": 5.922600015064756
+        },
+        "discover": {
+          "clicks": 110161,
+          "impressions": 2951262,
+          "ctr": 0.037326743610021744,
+          "position": null
+        }
+      },
+      "dl": {
+        "web": {
+          "clicks": 200,
+          "impressions": 38459,
+          "ctr": 0.005200343222652695,
+          "position": 7.331963909618035
+        },
+        "discover": null
+      },
+      "store": {
+        "web": {
+          "clicks": 277,
+          "impressions": 7153,
+          "ctr": 0.03872501048511114,
+          "position": 9.896267300433385
+        },
+        "discover": null
+      }
+    },
+    "devHosts": {
+      "clicks": 6,
+      "impressions": 6,
+      "ctr": 1,
+      "position": 6.333333333333333
+    }
+  },
+  {
+    "weekStart": "2026-07-27",
+    "weekEnd": "2026-08-02",
+    "days": 7,
+    "collectedAt": "2026-09-29T23:41:20.261Z",
+    "backfilled": true,
+    "services": {
+      "donga": {
+        "web": {
+          "clicks": 27006,
+          "impressions": 1817619,
+          "ctr": 0.014857899262716774,
+          "position": 6.530946254413053
+        },
+        "discover": {
+          "clicks": 172117,
+          "impressions": 4260853,
+          "ctr": 0.040394963168173134,
+          "position": null
+        }
+      },
+      "dl": {
+        "web": {
+          "clicks": 233,
+          "impressions": 35677,
+          "ctr": 0.0065308181741738375,
+          "position": 7.549317487456905
+        },
+        "discover": null
+      },
+      "store": {
+        "web": {
+          "clicks": 259,
+          "impressions": 6336,
+          "ctr": 0.040877525252525256,
+          "position": 7.501262626262626
+        },
+        "discover": null
+      }
+    },
+    "devHosts": {
+      "clicks": 7,
+      "impressions": 9,
+      "ctr": 0.7777777777777778,
+      "position": 9.444444444444445
+    }
+  },
+  {
+    "weekStart": "2026-08-03",
+    "weekEnd": "2026-08-09",
+    "days": 7,
+    "collectedAt": "2026-09-29T23:41:18.406Z",
+    "backfilled": true,
+    "services": {
+      "donga": {
+        "web": {
+          "clicks": 26078,
+          "impressions": 1625048,
+          "ctr": 0.01604752598077103,
+          "position": 6.261597811264652
+        },
+        "discover": {
+          "clicks": 160039,
+          "impressions": 3385518,
+          "ctr": 0.04727164351215973,
+          "position": null
+        }
+      },
+      "dl": {
+        "web": {
+          "clicks": 255,
+          "impressions": 36979,
+          "ctr": 0.00689580572757511,
+          "position": 7.712215040969198
+        },
+        "discover": null
+      },
+      "store": {
+        "web": {
+          "clicks": 278,
+          "impressions": 7836,
+          "ctr": 0.03547728432873915,
+          "position": 8.825421133231242
+        },
+        "discover": null
+      }
+    },
+    "devHosts": {
+      "clicks": 7,
+      "impressions": 16,
+      "ctr": 0.4375,
+      "position": 10.1875
+    }
+  },
+  {
+    "weekStart": "2026-08-10",
+    "weekEnd": "2026-08-16",
+    "days": 7,
+    "collectedAt": "2026-09-29T23:41:17.016Z",
+    "backfilled": true,
+    "services": {
+      "donga": {
+        "web": {
+          "clicks": 31169,
+          "impressions": 1914066,
+          "ctr": 0.016284182468107162,
+          "position": 6.491217126264194
+        },
+        "discover": {
+          "clicks": 113541,
+          "impressions": 2516490,
+          "ctr": 0.04511879641882145,
+          "position": null
+        }
+      },
+      "dl": {
+        "web": {
+          "clicks": 227,
+          "impressions": 35636,
+          "ctr": 0.006369962958805702,
+          "position": 7.2551071949713775
+        },
+        "discover": null
+      },
+      "store": {
+        "web": {
+          "clicks": 289,
+          "impressions": 10392,
+          "ctr": 0.02780985373364126,
+          "position": 8.145111624326404
+        },
+        "discover": null
+      }
+    },
+    "devHosts": {
+      "clicks": 14,
+      "impressions": 43,
+      "ctr": 0.32558139534883723,
+      "position": 11.906976744186046
+    }
+  },
+  {
+    "weekStart": "2026-08-17",
+    "weekEnd": "2026-08-23",
+    "days": 7,
+    "collectedAt": "2026-09-29T23:41:15.033Z",
+    "backfilled": true,
+    "services": {
+      "donga": {
+        "web": {
+          "clicks": 36961,
+          "impressions": 1716436,
+          "ctr": 0.02153357305486485,
+          "position": 6.1414419180208295
+        },
+        "discover": {
+          "clicks": 218874,
+          "impressions": 5577196,
+          "ctr": 0.03924445187151393,
+          "position": null
+        }
+      },
+      "dl": {
+        "web": {
+          "clicks": 201,
+          "impressions": 39472,
+          "ctr": 0.005092217267936765,
+          "position": 7.044740575597892
+        },
+        "discover": null
+      },
+      "store": {
+        "web": {
+          "clicks": 416,
+          "impressions": 9778,
+          "ctr": 0.04254448762528124,
+          "position": 7.3009817958682754
+        },
+        "discover": null
+      }
+    },
+    "devHosts": {
+      "clicks": 30,
+      "impressions": 97,
+      "ctr": 0.30927835051546393,
+      "position": 3.268041237113402
+    }
+  },
+  {
+    "weekStart": "2026-08-24",
+    "weekEnd": "2026-08-30",
+    "days": 7,
+    "collectedAt": "2026-09-29T23:41:13.493Z",
+    "backfilled": true,
+    "services": {
+      "donga": {
+        "web": {
+          "clicks": 37395,
+          "impressions": 1795402,
+          "ctr": 0.02082820449125043,
+          "position": 6.1339527303634505
+        },
+        "discover": {
+          "clicks": 170653,
+          "impressions": 4461415,
+          "ctr": 0.038250868838698035,
+          "position": null
+        }
+      },
+      "dl": {
+        "web": {
+          "clicks": 248,
+          "impressions": 39710,
+          "ctr": 0.006245278267438932,
+          "position": 7.005237975321077
+        },
+        "discover": null
+      },
+      "store": {
+        "web": {
+          "clicks": 412,
+          "impressions": 10439,
+          "ctr": 0.039467381933135356,
+          "position": 6.656863684260944
+        },
+        "discover": null
+      }
+    },
+    "devHosts": {
+      "clicks": 17,
+      "impressions": 23,
+      "ctr": 0.7391304347826086,
+      "position": 7.260869565217392
+    }
+  },
+  {
+    "weekStart": "2026-08-31",
+    "weekEnd": "2026-09-06",
+    "days": 7,
+    "collectedAt": "2026-09-29T23:41:11.784Z",
+    "backfilled": true,
+    "services": {
+      "donga": {
+        "web": {
+          "clicks": 36763,
+          "impressions": 2363921,
+          "ctr": 0.015551704139013106,
+          "position": 4.958377204652779
+        },
+        "discover": {
+          "clicks": 138516,
+          "impressions": 3602260,
+          "ctr": 0.03845252702470116,
+          "position": null
+        }
+      },
+      "dl": {
+        "web": {
+          "clicks": 226,
+          "impressions": 32564,
+          "ctr": 0.006940179339147525,
+          "position": 7.287863898783933
+        },
+        "discover": null
+      },
+      "store": {
+        "web": {
+          "clicks": 443,
+          "impressions": 9740,
+          "ctr": 0.04548254620123203,
+          "position": 7.364681724845996
+        },
+        "discover": null
+      }
+    },
+    "devHosts": {
+      "clicks": 8,
+      "impressions": 9,
+      "ctr": 0.8888888888888888,
+      "position": 11.444444444444445
+    }
+  },
+  {
+    "weekStart": "2026-09-07",
+    "weekEnd": "2026-09-13",
+    "days": 7,
+    "collectedAt": "2026-09-29T23:41:10.205Z",
+    "backfilled": true,
+    "services": {
+      "donga": {
+        "web": {
+          "clicks": 52582,
+          "impressions": 6303340,
+          "ctr": 0.008341926661103479,
+          "position": 4.879998223164227
+        },
+        "discover": {
+          "clicks": 159438,
+          "impressions": 3371442,
+          "ctr": 0.0472907438419525,
+          "position": null
+        }
+      },
+      "dl": {
+        "web": {
+          "clicks": 162,
+          "impressions": 38055,
+          "ctr": 0.004256996452502956,
+          "position": 7.233766916305347
+        },
+        "discover": null
+      },
+      "store": {
+        "web": {
+          "clicks": 453,
+          "impressions": 9902,
+          "ctr": 0.04574833366996566,
+          "position": 12.107554029488993
+        },
+        "discover": null
+      }
+    },
+    "devHosts": {
+      "clicks": 12,
+      "impressions": 17,
+      "ctr": 0.7058823529411765,
+      "position": 11.176470588235293
+    }
+  },
+  {
+    "weekStart": "2026-09-14",
+    "weekEnd": "2026-09-20",
+    "days": 7,
+    "collectedAt": "2026-09-29T23:41:07.915Z",
+    "backfilled": true,
+    "services": {
+      "donga": {
+        "web": {
+          "clicks": 46623,
+          "impressions": 2042116,
+          "ctr": 0.022830730477602642,
+          "position": 5.876689179263078
+        },
+        "discover": {
+          "clicks": 286605,
+          "impressions": 7136725,
+          "ctr": 0.040159176653156735,
+          "position": null
+        }
+      },
+      "dl": {
+        "web": {
+          "clicks": 199,
+          "impressions": 34287,
+          "ctr": 0.00580394901857847,
+          "position": 8.423017470178202
+        },
+        "discover": null
+      },
+      "store": {
+        "web": {
+          "clicks": 369,
+          "impressions": 8517,
+          "ctr": 0.043325114476928495,
+          "position": 10.012093460138546
+        },
+        "discover": null
+      }
+    },
+    "devHosts": {
+      "clicks": 10,
+      "impressions": 40,
+      "ctr": 0.25,
+      "position": 5.125
+    }
+  },
+  {
+    "weekStart": "2026-09-21",
+    "weekEnd": "2026-09-27",
+    "days": 7,
+    "collectedAt": "2026-09-30T01:02:42.970Z",
+    "services": {
+      "donga": {
+        "web": {
+          "clicks": 29301,
+          "impressions": 1526479,
+          "ctr": 0.019195154338841214,
+          "position": 5.933989920595042
+        },
+        "discover": {
+          "clicks": 78765,
+          "impressions": 2555119,
+          "ctr": 0.03082635290176309,
+          "position": null
+        }
+      },
+      "dl": {
+        "web": {
+          "clicks": 212,
+          "impressions": 28807,
+          "ctr": 0.007359322386919846,
+          "position": 8.699552192175513
+        },
+        "discover": null
+      },
+      "store": {
+        "web": {
+          "clicks": 313,
+          "impressions": 7510,
+          "ctr": 0.04167776298268975,
+          "position": 6.557123834886817
+        },
+        "discover": null
+      }
+    },
+    "devHosts": {
+      "clicks": 4,
+      "impressions": 19,
+      "ctr": 0.21052631578947367,
+      "position": 3
+    }
+  }
+]
