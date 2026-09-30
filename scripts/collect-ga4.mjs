@@ -220,28 +220,46 @@ async function channelsFor(hosts, period) {
   );
 }
 
+const aiChannelFilter = {
+  filter: {
+    fieldName: 'sessionDefaultChannelGroup',
+    stringFilter: { matchType: 'EXACT', value: AI_CHANNEL },
+  },
+};
+
+const aiOnly = (hosts) => ({
+  andGroup: { expressions: [hostFilter(hosts), aiChannelFilter] },
+});
+
 async function aiEnginesFor(hosts, period) {
   const res = await runReport({
     dateRanges: RANGE(period),
     dimensions: [{ name: 'sessionSource' }],
     metrics: [{ name: 'sessions' }],
-    dimensionFilter: {
-      andGroup: {
-        expressions: [
-          hostFilter(hosts),
-          {
-            filter: {
-              fieldName: 'sessionDefaultChannelGroup',
-              stringFilter: { matchType: 'EXACT', value: AI_CHANNEL },
-            },
-          },
-        ],
-      },
-    },
+    dimensionFilter: aiOnly(hosts),
     orderBys: [{ metric: { metricName: 'sessions' }, desc: true }],
     limit: 30,
   });
   return rowsToObjects(res, ['sessionSource'], ['sessions']);
+}
+
+/**
+ * AI 가 보낸 사람이 **어느 페이지에 도착했나**.
+ *
+ * 인용 자체는 못 세지만, 클릭돼서 도착한 페이지는 센다. 어떤 주제가 AI 답변에
+ * 잘 걸리는지 판단할 근거가 된다 — 인용된 전부가 아니라 "클릭까지 간 것"이라는
+ * 점은 화면에 적는다.
+ */
+async function aiLandingFor(hosts, period) {
+  const res = await runReport({
+    dateRanges: RANGE(period),
+    dimensions: [{ name: 'landingPage' }],
+    metrics: [{ name: 'sessions' }],
+    dimensionFilter: aiOnly(hosts),
+    orderBys: [{ metric: { metricName: 'sessions' }, desc: true }],
+    limit: 40,
+  });
+  return rowsToObjects(res, ['landingPage'], ['sessions']);
 }
 
 /** 두 기간의 국가 목록을 합치고 증감·이상 표시를 붙인다. */
@@ -294,6 +312,20 @@ function mergeEngines(cur, prev) {
     .sort((x, y) => y.sessions - x.sessions);
 }
 
+/** 랜딩 페이지를 전주와 붙인다. `(not set)` 은 경로를 못 잡은 행이라 뺀다. */
+function mergeLanding(cur, prev, host) {
+  const p = new Map(prev.map((r) => [r.landingPage, r.sessions]));
+  return cur
+    .filter((r) => r.landingPage && r.landingPage !== '(not set)')
+    .map((r) => ({
+      path: r.landingPage,
+      url: `https://${host}${r.landingPage}`,
+      sessions: r.sessions,
+      prevSessions: p.get(r.landingPage) ?? 0,
+    }))
+    .slice(0, 10);
+}
+
 const sum = (rows, key) => rows.reduce((a, r) => a + (r[key] ?? 0), 0);
 
 async function main() {
@@ -323,14 +355,17 @@ async function main() {
   const services = {};
   for (const svc of SERVICES) {
     console.error(`  수집 ${svc.name}…`);
-    const [curC, preC, curCh, preCh, curAi, preAi] = await Promise.all([
-      countriesFor(svc.hosts, periods.current),
-      countriesFor(svc.hosts, periods.previous),
-      channelsFor(svc.hosts, periods.current),
-      channelsFor(svc.hosts, periods.previous),
-      aiEnginesFor(svc.hosts, periods.current),
-      aiEnginesFor(svc.hosts, periods.previous),
-    ]);
+    const [curC, preC, curCh, preCh, curAi, preAi, curLand, preLand] =
+      await Promise.all([
+        countriesFor(svc.hosts, periods.current),
+        countriesFor(svc.hosts, periods.previous),
+        channelsFor(svc.hosts, periods.current),
+        channelsFor(svc.hosts, periods.previous),
+        aiEnginesFor(svc.hosts, periods.current),
+        aiEnginesFor(svc.hosts, periods.previous),
+        aiLandingFor(svc.hosts, periods.current),
+        aiLandingFor(svc.hosts, periods.previous),
+      ]);
 
     const countries = mergeCountries(curC, preC);
 
@@ -351,6 +386,7 @@ async function main() {
         organicCurrent: curCh['Organic Search'] ?? 0,
         organicPrevious: preCh['Organic Search'] ?? 0,
         engines: mergeEngines(curAi, preAi),
+        landingPages: mergeLanding(curLand, preLand, svc.hosts[0]),
       },
     };
 

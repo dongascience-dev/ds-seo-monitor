@@ -325,6 +325,65 @@ export function AiSection({ ga4 }) {
             );
           })}
         </div>
+
+        <div className="sec-head" style={{ marginTop: 26 }}>
+          <span className="eyebrow">Landing</span>
+          <h2 style={{ fontSize: 15 }}>AI 가 많이 보낸 페이지</h2>
+        </div>
+        <p className="sec-note">
+          인용된 전부가 아니라 <b>클릭까지 이어진 것</b>입니다. 어떤 주제가 AI 답변에
+          잘 걸리는지 보는 용도입니다.
+        </p>
+        <div className="grid-3">
+          {SERVICES.map((s) => {
+            const svc = ga4.services[s.key];
+            const pages = svc?.ai.landingPages ?? [];
+            if (!svc) return null;
+            return (
+              <div className="panel" key={s.key}>
+                <h3>{s.name}</h3>
+                <p className="p-note">AI 세션 {nf(svc.ai.current)} 중 상위 {pages.length}건</p>
+                {pages.length === 0 ? (
+                  <p className="p-note">해당 없음</p>
+                ) : (
+                  <ul style={{ listStyle: 'none', margin: 0, padding: 0, fontSize: 12.5 }}>
+                    {pages.map((p) => (
+                      <li
+                        key={p.path}
+                        style={{
+                          display: 'flex',
+                          gap: 8,
+                          alignItems: 'baseline',
+                          padding: '6px 0',
+                          borderBottom: '1px solid var(--grid)',
+                        }}
+                      >
+                        <a
+                          href={p.url}
+                          target="_blank"
+                          rel="noreferrer"
+                          className="mono"
+                          style={{ flex: 1, minWidth: 0, wordBreak: 'break-all' }}
+                        >
+                          {p.path}
+                        </a>
+                        <span className="num" style={{ fontSize: 12 }}>
+                          {nf(p.sessions)}
+                        </span>
+                        <span
+                          className="num"
+                          style={{ fontSize: 11, color: 'var(--muted)', minWidth: 44, textAlign: 'right' }}
+                        >
+                          전주 {nf(p.prevSessions)}
+                        </span>
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              </div>
+            );
+          })}
+        </div>
       </section>
     </>
   );

@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-09-30T01:02:46.300Z",
+  "generatedAt": "2026-09-30T01:12:09.538Z",
   "property": "properties/528374870",
   "dataThrough": "2026-09-27",
   "periods": {
@@ -370,6 +370,68 @@
             "sessions": 3,
             "prevSessions": 3
           }
+        ],
+        "landingPages": [
+          {
+            "path": "/",
+            "url": "https://www.dongascience.com/",
+            "sessions": 40,
+            "prevSessions": 294
+          },
+          {
+            "path": "/en/news/63008",
+            "url": "https://www.dongascience.com/en/news/63008",
+            "sessions": 19,
+            "prevSessions": 0
+          },
+          {
+            "path": "/en/news/32286",
+            "url": "https://www.dongascience.com/en/news/32286",
+            "sessions": 7,
+            "prevSessions": 0
+          },
+          {
+            "path": "/ko/news/78643",
+            "url": "https://www.dongascience.com/ko/news/78643",
+            "sessions": 7,
+            "prevSessions": 11
+          },
+          {
+            "path": "/ko/news/21349",
+            "url": "https://www.dongascience.com/ko/news/21349",
+            "sessions": 6,
+            "prevSessions": 11
+          },
+          {
+            "path": "/ko/news/56905",
+            "url": "https://www.dongascience.com/ko/news/56905",
+            "sessions": 6,
+            "prevSessions": 0
+          },
+          {
+            "path": "/ko/news/48518",
+            "url": "https://www.dongascience.com/ko/news/48518",
+            "sessions": 5,
+            "prevSessions": 0
+          },
+          {
+            "path": "/ko/news/76539",
+            "url": "https://www.dongascience.com/ko/news/76539",
+            "sessions": 5,
+            "prevSessions": 17
+          },
+          {
+            "path": "/ko/news/78884",
+            "url": "https://www.dongascience.com/ko/news/78884",
+            "sessions": 5,
+            "prevSessions": 0
+          },
+          {
+            "path": "/ko/news/79598",
+            "url": "https://www.dongascience.com/ko/news/79598",
+            "sessions": 5,
+            "prevSessions": 11
+          }
         ]
       }
     },
@@ -715,6 +777,68 @@
           {
             "engine": "Claude",
             "sessions": 2,
+            "prevSessions": 0
+          }
+        ],
+        "landingPages": [
+          {
+            "path": "/",
+            "url": "https://dl.dongascience.com/",
+            "sessions": 9,
+            "prevSessions": 20
+          },
+          {
+            "path": "/dl/search/tab/article",
+            "url": "https://dl.dongascience.com/dl/search/tab/article",
+            "sessions": 4,
+            "prevSessions": 7
+          },
+          {
+            "path": "/dl/search",
+            "url": "https://dl.dongascience.com/dl/search",
+            "sessions": 3,
+            "prevSessions": 11
+          },
+          {
+            "path": "/cart",
+            "url": "https://dl.dongascience.com/cart",
+            "sessions": 2,
+            "prevSessions": 0
+          },
+          {
+            "path": "/dl/magazine/detail/S202506N016",
+            "url": "https://dl.dongascience.com/dl/magazine/detail/S202506N016",
+            "sessions": 2,
+            "prevSessions": 0
+          },
+          {
+            "path": "/subscription",
+            "url": "https://dl.dongascience.com/subscription",
+            "sessions": 2,
+            "prevSessions": 0
+          },
+          {
+            "path": "/dl/cartoon/detail/91",
+            "url": "https://dl.dongascience.com/dl/cartoon/detail/91",
+            "sessions": 1,
+            "prevSessions": 0
+          },
+          {
+            "path": "/dl/ebook/detail/132",
+            "url": "https://dl.dongascience.com/dl/ebook/detail/132",
+            "sessions": 1,
+            "prevSessions": 0
+          },
+          {
+            "path": "/dl/ebook/detail/64",
+            "url": "https://dl.dongascience.com/dl/ebook/detail/64",
+            "sessions": 1,
+            "prevSessions": 0
+          },
+          {
+            "path": "/dl/ebook/detail/95",
+            "url": "https://dl.dongascience.com/dl/ebook/detail/95",
+            "sessions": 1,
             "prevSessions": 0
           }
         ]
@@ -1067,6 +1191,68 @@
             "engine": "Claude",
             "sessions": 0,
             "prevSessions": 2
+          }
+        ],
+        "landingPages": [
+          {
+            "path": "/",
+            "url": "https://dsstore.dongascience.com/",
+            "sessions": 4,
+            "prevSessions": 3
+          },
+          {
+            "path": "/sub/category/TuCmtEyj",
+            "url": "https://dsstore.dongascience.com/sub/category/TuCmtEyj",
+            "sessions": 4,
+            "prevSessions": 2
+          },
+          {
+            "path": "/subscription",
+            "url": "https://dsstore.dongascience.com/subscription",
+            "sessions": 4,
+            "prevSessions": 0
+          },
+          {
+            "path": "/product/23111484",
+            "url": "https://dsstore.dongascience.com/product/23111484",
+            "sessions": 3,
+            "prevSessions": 10
+          },
+          {
+            "path": "/product/ySLj6UYc",
+            "url": "https://dsstore.dongascience.com/product/ySLj6UYc",
+            "sessions": 3,
+            "prevSessions": 0
+          },
+          {
+            "path": "/sub/secret-note/view/5377",
+            "url": "https://dsstore.dongascience.com/sub/secret-note/view/5377",
+            "sessions": 3,
+            "prevSessions": 1
+          },
+          {
+            "path": "/cart",
+            "url": "https://dsstore.dongascience.com/cart",
+            "sessions": 2,
+            "prevSessions": 0
+          },
+          {
+            "path": "/product/K6Lc2jXU",
+            "url": "https://dsstore.dongascience.com/product/K6Lc2jXU",
+            "sessions": 2,
+            "prevSessions": 0
+          },
+          {
+            "path": "/ko",
+            "url": "https://dsstore.dongascience.com/ko",
+            "sessions": 1,
+            "prevSessions": 0
+          },
+          {
+            "path": "/ko/news/73788",
+            "url": "https://dsstore.dongascience.com/ko/news/73788",
+            "sessions": 1,
+            "prevSessions": 0
           }
         ]
       }
