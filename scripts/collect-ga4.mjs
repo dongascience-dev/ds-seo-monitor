@@ -23,6 +23,7 @@
 import { writeFileSync, mkdirSync, readFileSync } from 'node:fs';
 import { resolve, dirname } from 'node:path';
 import { getAccessToken, loadServiceAccountKey } from './lib/google.mjs';
+import { scrub } from './lib/privacy.mjs';
 
 const PROPERTY = process.env.GA4_PROPERTY || 'properties/528374870'; // 동아사이언스(통합)
 const SCOPE = 'https://www.googleapis.com/auth/analytics.readonly';
@@ -426,7 +427,7 @@ async function main() {
 
   const outPath = resolve(outDir, 'ga4-weekly.json');
   mkdirSync(dirname(outPath), { recursive: true });
-  writeFileSync(outPath, `${JSON.stringify(payload, null, 2)}\n`);
+  writeFileSync(outPath, `${JSON.stringify(scrub(payload), null, 2)}\n`);
 
   console.error(`\nAPI 호출 ${apiCalls}회`);
   console.error(`기록 ${outPath}`);

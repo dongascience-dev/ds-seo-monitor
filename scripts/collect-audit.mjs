@@ -27,6 +27,7 @@ import {
   loadServiceAccountKey,
   pageFilter,
 } from './lib/google.mjs';
+import { scrub } from './lib/privacy.mjs';
 
 const SITE = process.env.GSC_SITE || 'sc-domain:dongascience.com';
 const UA = 'Mozilla/5.0 (compatible; ds-seo-monitor/1.0; +internal-audit)';
@@ -610,7 +611,7 @@ async function main() {
 
   const outPath = resolve(outDir, 'readiness.json');
   mkdirSync(dirname(outPath), { recursive: true });
-  writeFileSync(outPath, `${JSON.stringify(payload, null, 2)}\n`);
+  writeFileSync(outPath, `${JSON.stringify(scrub(payload), null, 2)}\n`);
 
   console.error('\n── 총점');
   for (const axis of payload.axes) {

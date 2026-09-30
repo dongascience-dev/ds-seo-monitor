@@ -358,37 +358,12 @@ export default function App() {
                 </div>
               )}
 
-              {gsc.devHosts.topUrls?.length > 0 && (
-                <details style={{ marginTop: 12 }}>
-                  <summary
-                    style={{ cursor: 'pointer', fontSize: 12.5, color: 'var(--ink-2)' }}
-                  >
-                    노출된 개발계 URL 보기 ({gsc.devHosts.topUrls.length}건)
-                  </summary>
-                  <div className="tw" style={{ marginTop: 8 }}>
-                    <table>
-                      <thead>
-                        <tr>
-                          <th>URL</th>
-                          <th className="n">노출</th>
-                          <th className="n">클릭</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {gsc.devHosts.topUrls.map((u) => (
-                          <tr key={u.key}>
-                            <td className="mono" style={{ wordBreak: 'break-all' }}>
-                              {u.key}
-                            </td>
-                            <td className="n">{nf(u.impressions)}</td>
-                            <td className="n">{nf(u.clicks)}</td>
-                          </tr>
-                        ))}
-                      </tbody>
-                    </table>
-                  </div>
-                </details>
-              )}
+              <p className="p-note" style={{ marginTop: 10 }}>
+                노출된 URL 목록은 싣지 않습니다 — 이 데이터는 공개되고, 운영과 같은
+                내용을 서빙하는 개발 서버의 살아 있는 주소를 모아 주는 셈이 됩니다.
+                {gsc.devHosts.urlCount > 0 && <> 이번 주 {gsc.devHosts.urlCount}개 URL 이 잡혔으며,</>}{' '}
+                어느 URL 인지는 Search Console 에서 확인합니다.
+              </p>
             </section>
           </>
         )}

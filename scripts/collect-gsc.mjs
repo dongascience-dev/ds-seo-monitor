@@ -19,6 +19,7 @@
  */
 
 import { createSign } from 'node:crypto';
+import { scrub } from './lib/privacy.mjs';
 import { readFileSync, writeFileSync, mkdirSync } from 'node:fs';
 import { resolve, dirname } from 'node:path';
 
@@ -867,14 +868,10 @@ async function main() {
       current: devWeb.current,
       previous: devWeb.previous,
       hosts: devHostList,
-      topUrls: devRows
-        .map((r) => ({
-          key: r.keys[0],
-          impressions: r.impressions ?? 0,
-          clicks: r.clicks ?? 0,
-        }))
-        .sort((x, y) => y.impressions - x.impressions)
-        .slice(0, 10),
+      // 실제 URL 목록은 싣지 않는다. 이 JSON 은 공개되는데, 운영과 같은 내용을
+      // 서빙하는 개발 서버의 살아 있는 주소 목록을 모아 주는 셈이 된다. 호스트와
+      // 건수만 있으면 "제거가 끝났나"는 알 수 있고, 어느 URL 인지는 GSC 에서 본다.
+      urlCount: devRows.length,
     },
     crossCheck: dlPrefix
       ? {
@@ -896,7 +893,7 @@ async function main() {
 
   const outPath = resolve(outDir, 'gsc-weekly.json');
   mkdirSync(dirname(outPath), { recursive: true });
-  writeFileSync(outPath, `${JSON.stringify(payload, null, 2)}\n`);
+  writeFileSync(outPath, `${JSON.stringify(scrub(payload), null, 2)}\n`);
 
   const entry = {
     weekStart: periods.current.start,
@@ -931,7 +928,7 @@ async function main() {
   history = history.filter((h) => !freshEnds.has(h.weekEnd));
   history.push(...fresh);
   history.sort((a, b) => a.weekEnd.localeCompare(b.weekEnd));
-  writeFileSync(historyPath, `${JSON.stringify(history, null, 2)}\n`);
+  writeFileSync(historyPath, `${JSON.stringify(scrub(history), null, 2)}\n`);
 
   console.error(`\nAPI 호출 ${apiCalls}회 · 인사이트 ${payload.insights.length}건`);
   console.error(`기록 ${outPath}`);
