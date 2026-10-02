@@ -273,6 +273,34 @@ const deepHas = (obj, key, depth = 0) => {
   return Object.values(obj).some((v) => deepHas(v, key, depth + 1));
 };
 
+/**
+ * 제목·설명이 페이지마다 다른가.
+ *
+ * "있다" 만 세면 전 페이지가 같은 문구를 쓰는 사이트가 만점을 받는다. 실측
+ * (DS스토어 2026-10-02): meta description 충족률이 76% 인데 크롤한 페이지가
+ * 전부 같은 한 문장을 쓰고 있었다. 검색엔진 입장에서는 그 페이지들이 서로
+ * 구별되지 않는다 — 이벤트 랜딩은 "무슨 이벤트인지" 적힌 곳이 없어 검색
+ * 유입이 0 이었다.
+ *
+ * 채움값은 "자기만의 값을 가진 페이지 비율" 이다. 같은 문구를 N개가 나눠
+ * 쓰면 그 N개를 전부 못 센다 — 둘이 같으면 둘 다 변별력이 없기 때문이다.
+ */
+function uniqueness(values) {
+  const counts = new Map();
+  for (const v of values) {
+    const key = (v ?? '').trim();
+    if (!key) continue;
+    counts.set(key, (counts.get(key) ?? 0) + 1);
+  }
+  let unique = 0;
+  let topDup = 0;
+  for (const n of counts.values()) {
+    if (n === 1) unique += 1;
+    if (n > topDup) topDup = n;
+  }
+  return { unique, distinct: counts.size, topDup };
+}
+
 function inspect(html) {
   const title = (html.match(/<title[^>]*>([\s\S]*?)<\/title>/i)?.[1] ?? '').trim();
   const desc = html.match(
@@ -285,6 +313,9 @@ function inspect(html) {
 
   return {
     h1: (html.match(/<h1[\s>]/gi) ?? []).length,
+    // 고유성을 재려면 원문이 필요하다. 길면 앞부분만으로 충분히 갈린다.
+    title: title.slice(0, 300),
+    description: (desc ?? '').trim().slice(0, 300),
     // 빈 description 은 없는 것과 같다. 공백만 있는 경우도 거른다.
     hasDescription: Boolean(desc && desc.trim().length > 0),
     hasCanonical: Boolean(canonical),
@@ -391,11 +422,15 @@ async function auditService(svc, query) {
     dateModified: ok.filter((r) => r.hasDateModified).length,
     canonical: ok.filter((r) => r.hasCanonical).length,
     description: ok.filter((r) => r.hasDescription).length,
+    titleUnique: uniqueness(ok.map((r) => r.title)),
+    descUnique: uniqueness(ok.map((r) => r.description)),
     softNotFound: ok.filter((r) => r.softNotFound).length,
     jsonLdTypes: [...new Set(ok.flatMap((r) => r.jsonLdTypes))].slice(0, 8),
   };
   console.error(
-    `    h1 ${pctLabel(detail.h1, ok.length)} · JSON-LD ${pctLabel(detail.jsonLd, ok.length)} · canonical ${pctLabel(detail.canonical, ok.length)} · desc ${pctLabel(detail.description, ok.length)}${detail.softNotFound ? ` · soft-404 ${detail.softNotFound}건` : ''}`,
+    `    h1 ${pctLabel(detail.h1, ok.length)} · JSON-LD ${pctLabel(detail.jsonLd, ok.length)} · canonical ${pctLabel(detail.canonical, ok.length)} · desc ${pctLabel(detail.description, ok.length)}` +
+      ` · 고유 title ${pctLabel(detail.titleUnique.unique, ok.length)} · 고유 desc ${pctLabel(detail.descUnique.unique, ok.length)}` +
+      `${detail.softNotFound ? ` · soft-404 ${detail.softNotFound}건` : ''}`,
   );
 
   return {
@@ -439,19 +474,19 @@ function buildRubric(measured) {
       items: [
         item(
           '사이트맵 갱신',
-          25,
+          20,
           true,
           (m) =>
-            !m.sitemap.ok ? 0 : m.sitemap.dynamic ? 25 : m.sitemap.staleDays <= 365 ? 12 : 0,
+            !m.sitemap.ok ? 0 : m.sitemap.dynamic ? 20 : m.sitemap.staleDays <= 365 ? 10 : 0,
           (m) =>
             !m.sitemap.ok
               ? '사이트맵 없음'
               : `${m.sitemap.newestLastmod ?? 'lastmod 없음'}${m.sitemap.staleDays !== null ? ` · ${m.sitemap.staleDays}일 전` : ''}`,
-          '7일 내 갱신 25 / 1년 내 12 / 그 이상·없음 0',
+          '7일 내 갱신 20 / 1년 내 10 / 그 이상·없음 0',
         ),
         item(
           '핵심 상세 수록',
-          25,
+          20,
           false,
           (m) => {
             const n = m.sitemap.buckets.detail ?? 0;
@@ -460,14 +495,14 @@ function buildRubric(measured) {
             // 방식이라 그 자체는 실패가 아니다. 비율만 보면(닷컴 0.45%) 정상
             // 운영을 0점으로 찍게 되므로, "전량 / 롤링 수록 / 흔적만 / 없음"
             // 네 단계로 나눈다.
-            if (r >= 0.9) return 25;
-            if (r >= 0.001) return 12; // 0.1% 이상 — 최신분 롤링으로 볼 만한 규모
-            if (n > 0) return 4; // 몇 건 남아 있을 뿐 수록 체계가 없음
+            if (r >= 0.9) return 20;
+            if (r >= 0.001) return 10; // 0.1% 이상 — 최신분 롤링으로 볼 만한 규모
+            if (n > 0) return 3; // 몇 건 남아 있을 뿐 수록 체계가 없음
             return 0;
           },
           (m) =>
             `${m.sitemap.buckets.detail ?? 0}/${m.contentEstimate.value.toLocaleString('ko-KR')} · ${(share(m.sitemap.buckets.detail ?? 0, m.contentEstimate.value) * 100).toFixed(2)}%`,
-          '전량(90%+) 25 / 롤링 수록(0.1%+) 12 / 흔적만 4 / 0건 0 — 분모는 추정치이고 단계 경계는 판단이다',
+          '전량(90%+) 20 / 롤링 수록(0.1%+) 10 / 흔적만 3 / 0건 0 — 분모는 추정치이고 단계 경계는 판단이다',
         ),
         item(
           '색인 낭비 없음',
@@ -495,12 +530,23 @@ function buildRubric(measured) {
           '충족률 × 15 (연속값)',
         ),
         item(
-          'meta description',
-          10,
+          '제목 고유성',
+          15,
           true,
-          (m) => round(share(d(m).description, okCount(m)) * 10),
+          (m) => round(share(d(m).titleUnique.unique, okCount(m)) * 15),
+          (m) =>
+            `${pctLabel(d(m).titleUnique.unique, okCount(m))}${
+              d(m).titleUnique.topDup > 1 ? ` · 같은 제목 최다 ${d(m).titleUnique.topDup}건` : ''
+            }`,
+          '자기만의 <title> 을 가진 페이지 비율 × 15 — 같은 제목을 나눠 쓰면 그 페이지들은 세지 않는다',
+        ),
+        item(
+          'meta description',
+          5,
+          true,
+          (m) => round(share(d(m).description, okCount(m)) * 5),
           (m) => pctLabel(d(m).description, okCount(m)),
-          '충족률 × 10 (연속값)',
+          '있기만 하면 되는 항목이라 배점을 낮췄다. 내용이 갈리는지는 AEO 의 설명 고유성에서 본다',
         ),
         item(
           '검색봇 허용',
@@ -520,12 +566,12 @@ function buildRubric(measured) {
       items: [
         item(
           '구조화 데이터',
-          35,
+          30,
           true,
-          (m) => round(share(d(m).jsonLd, okCount(m)) * 35),
+          (m) => round(share(d(m).jsonLd, okCount(m)) * 30),
           (m) =>
             `${pctLabel(d(m).jsonLd, okCount(m))}${d(m).jsonLdTypes.length ? ` · ${d(m).jsonLdTypes.join(', ')}` : ''}`,
-          '충족률 × 35 (연속값)',
+          '충족률 × 30 (연속값)',
         ),
         item(
           'h1',
@@ -537,11 +583,22 @@ function buildRubric(measured) {
         ),
         item(
           '발췌 후보 요약문',
-          20,
+          15,
           true,
-          (m) => round(share(d(m).description, okCount(m)) * 20),
+          (m) => round(share(d(m).description, okCount(m)) * 15),
           (m) => pctLabel(d(m).description, okCount(m)),
-          'meta description 충족률 × 20',
+          'meta description 충족률 × 15',
+        ),
+        item(
+          '설명 고유성',
+          10,
+          true,
+          (m) => round(share(d(m).descUnique.unique, okCount(m)) * 10),
+          (m) =>
+            `${pctLabel(d(m).descUnique.unique, okCount(m))}${
+              d(m).descUnique.topDup > 1 ? ` · 같은 설명 최다 ${d(m).descUnique.topDup}건` : ''
+            }`,
+          '자기만의 설명을 가진 페이지 비율 × 10 — 답변 엔진이 페이지를 구별하려면 요약문이 갈려야 한다',
         ),
         item(
           'dateModified',
