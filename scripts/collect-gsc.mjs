@@ -304,11 +304,38 @@ function diff(currentRows, previousRows) {
   const byClicks = [...merged].sort((a, b) => b.clicks - a.clicks);
   const byDelta = [...merged].sort((a, b) => b.deltaClicks - a.deltaClicks);
 
+  /*
+   * 노출 기준 상위도 담는다.
+   *
+   * 클릭 기준 하나만 두면 "노출은 많은데 아무도 안 누르는" 항목이 목록에서
+   * 통째로 빠진다 — 손볼 대상이 정확히 그것인데도. 실측(DS스토어 2026-09-21~27):
+   * 브랜드 표기 일곱 가지(ds스토어 · ds 스토어 · dsstore · ds · ds store …) 중
+   * 클릭이 붙은 셋만 상위 100에 들었고, 노출 30회에 클릭 0인 표기는 사라졌다.
+   *
+   * 차트가 쓰는 값만 추려 새 객체로 만든다. top 의 행에는 나중에 검색어 배열이
+   * 붙는데(attachQueries), 같은 객체를 두 배열에 넣으면 JSON 에 두 번 적힌다.
+   */
+  const leanRow = (r) => ({
+    key: r.key,
+    clicks: r.clicks,
+    prevClicks: r.prevClicks,
+    impressions: r.impressions,
+    prevImpressions: r.prevImpressions,
+    ctr: r.ctr,
+    prevCtr: r.prevCtr,
+    position: r.position,
+    prevPosition: r.prevPosition,
+  });
+
   return {
     truncated: { current: curTruncated, previous: prevTruncated },
     floorClicks: { current: curFloor, previous: prevFloor },
     rowsFetched: { current: currentRows.length, previous: previousRows.length },
     top: byClicks.slice(0, TOP_N),
+    topByImpressions: [...merged]
+      .sort((a, b) => b.impressions - a.impressions)
+      .slice(0, TOP_N)
+      .map(leanRow),
     risers: byDelta.filter((r) => r.deltaClicks > 0).slice(0, 20),
     fallers: byDelta
       .filter((r) => r.deltaClicks < 0)

@@ -346,6 +346,33 @@ footer code {
 
 .state { padding: 64px 16px; text-align: center; color: var(--muted); }
 
+/* 패널 제목 줄 — 제목 왼쪽, 전환 버튼 오른쪽. */
+.panel-head {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: var(--s-2); flex-wrap: wrap; margin-bottom: var(--s-1);
+}
+
+/*
+ * 작은 전환 버튼 묶음.
+ *
+ * 헤더의 밝기 토글(.theme-switch)과 같은 꼴이지만 글자가 들어가므로 따로 둔다.
+ * 고른 쪽은 색만이 아니라 배경과 굵기로도 구분한다.
+ */
+.seg {
+  display: inline-flex; gap: 2px; padding: 2px;
+  background: var(--surface-2); border-radius: 8px;
+}
+.seg button {
+  border: 0; background: none; cursor: pointer;
+  padding: 3px 9px; border-radius: 6px;
+  font: inherit; font-size: var(--t-xs); font-weight: 700; color: var(--muted);
+}
+.seg button:hover { color: var(--ink-2); }
+.seg button[aria-pressed='true'] {
+  background: var(--surface); color: var(--ink); box-shadow: var(--shadow);
+}
+.seg button:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
+
 /*
  * 방법론 해설 — 접어 둔 한 줄.
  *

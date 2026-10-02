@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { ChangeBars, TopBars } from './Charts.jsx';
 import { Why } from './Why.jsx';
 import {
@@ -441,6 +442,71 @@ function RiserPair({ now, prevWeek, periods, isUrl }) {
   );
 }
 
+/**
+ * 상위 N 패널 — 클릭순 · 노출순 전환.
+ *
+ * 클릭 기준만 두면 "노출은 많은데 아무도 안 누르는" 항목이 목록에서 통째로
+ * 빠진다. 손볼 대상이 정확히 그것인데도 안 보인다.
+ *
+ * 실측 (DS스토어 2026-09-21~27): 브랜드 표기가 일곱 가지로 쪼개져 있는데
+ * (ds스토어 · ds 스토어 · dsstore · ds · ds store …) 클릭이 붙은 셋만 상위
+ * 100에 들었다. 노출 30회에 클릭 0인 표기는 목록에서 사라졌다.
+ *
+ * 수집이 노출 기준 상위를 담기 전 JSON 을 읽을 수도 있다. 그때는 전환을
+ * 띄우지 않는다 — 누를 수 있는데 아무 일도 안 일어나는 쪽이 더 나쁘다.
+ */
+function TopPanel({ title, note, data, color, isUrl, totalClicks }) {
+  const [metric, setMetric] = useState('clicks');
+  const canSort = Array.isArray(data.topByImpressions);
+  const rows = metric === 'impressions' && canSort ? data.topByImpressions : data.top;
+
+  // 노출순으로 볼 때 "이 중 몇 건이 한 번도 안 눌렸나" 가 핵심이다.
+  const shown = rows.slice(0, 10);
+  const zeroClick = shown.filter((r) => r.clicks === 0).length;
+
+  return (
+    <div className="panel">
+      <div className="panel-head">
+        <h3>{title}</h3>
+        {canSort && (
+          <div className="seg" role="group" aria-label={`${title} 정렬 기준`}>
+            {[
+              ['clicks', '클릭순'],
+              ['impressions', '노출순'],
+            ].map(([key, text]) => (
+              <button
+                key={key}
+                type="button"
+                aria-pressed={metric === key}
+                onClick={() => setMetric(key)}
+              >
+                {text}
+              </button>
+            ))}
+          </div>
+        )}
+      </div>
+      <p className="p-note">
+        {metric === 'impressions' ? (
+          <>
+            검색 결과에 많이 보인 상위 10건 · 회색이 전주.
+            {zeroClick > 0 && (
+              <>
+                {' '}
+                이 중 <b>{zeroClick}건은 이번 기간 클릭이 0</b> 입니다 — 보이기는 하는데
+                눌리지 않습니다.
+              </>
+            )}
+          </>
+        ) : (
+          note
+        )}
+      </p>
+      <TopBars rows={rows} color={color} isUrl={isUrl} metric={metric} />
+    </div>
+  );
+}
+
 export function SurfaceBlock({ surface, label, color, periods }) {
   const { pages, queries, pagesPrevWeek, queriesPrevWeek } = surface;
 
@@ -488,27 +554,32 @@ export function SurfaceBlock({ surface, label, color, periods }) {
    */
   const topPanels = (
     <div className={queries ? 'grid-2' : ''} style={{ marginTop: 'var(--s-5)' }}>
-      <div className="panel">
-        <h3>상위 콘텐츠 — {label}</h3>
-        <p className="p-note">클릭 기준 상위 10건 · 회색이 전주</p>
-        <TopBars rows={pages.top} color={color} isUrl />
-      </div>
+      <TopPanel
+        title={`상위 콘텐츠 — ${label}`}
+        note="클릭 기준 상위 10건 · 회색이 전주"
+        data={pages}
+        color={color}
+        isUrl
+      />
       {queries && (
-        <div className="panel">
-          <h3>상위 검색어</h3>
-          <p className="p-note">
-            클릭 기준 상위 10건. 회색이 전주.
-            {queryCoverage !== null && (
-              <>
-                {' '}
-                이번 주 클릭 {nf(surface.current.clicks)} 중 <b>{nf(queryClicks)}</b>(
-                {queryCoverage}%)만 검색어가 확인됩니다 — 나머지는 구글이 희소 검색어를
-                익명화해 응답에서 뺀 몫이라 <b>검색어를 다 더해도 총 클릭이 되지 않습니다</b>.
-              </>
-            )}
-          </p>
-          <TopBars rows={queries.top} color={color} />
-        </div>
+        <TopPanel
+          title="상위 검색어"
+          note={
+            <>
+              클릭 기준 상위 10건. 회색이 전주.
+              {queryCoverage !== null && (
+                <>
+                  {' '}
+                  이번 기간 클릭 {nf(surface.current.clicks)} 중 <b>{nf(queryClicks)}</b>(
+                  {queryCoverage}%)만 검색어가 확인됩니다 — 나머지는 구글이 희소 검색어를
+                  익명화해 응답에서 뺀 몫이라 <b>검색어를 다 더해도 총 클릭이 되지 않습니다</b>.
+                </>
+              )}
+            </>
+          }
+          data={queries}
+          color={color}
+        />
       )}
     </div>
   );

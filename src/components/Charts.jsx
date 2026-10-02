@@ -333,13 +333,17 @@ export function ReadinessRadar({ axis }) {
 /* ────────────────────────────────────────────────────────────────────────
  * 4. 가로 막대 — 상위 콘텐츠 · 검색어 (이번 주 vs 전주)
  * ──────────────────────────────────────────────────────────────────────── */
-export function TopBars({ rows, color, label, isUrl = false, limit = 10 }) {
+export function TopBars({ rows, color, label, isUrl = false, limit = 10, metric = 'clicks' }) {
   const t = useChartTheme();
+  // 노출 기준으로 볼 때는 막대도 노출이어야 한다. 정렬만 바꾸고 막대는 클릭을
+  // 그리면 "왜 큰 순서가 아니지?" 가 된다.
+  const [cur, prev] =
+    metric === 'impressions' ? ['impressions', 'prevImpressions'] : ['clicks', 'prevClicks'];
   const data = rows.slice(0, limit).map((r) => ({
     name: isUrl ? shortUrl(r.key) : r.key,
     full: r.key,
-    이번주: r.clicks,
-    전주: r.prevClicks,
+    이번주: r[cur],
+    전주: r[prev],
   }));
   if (!data.length) return <p className="p-note">데이터 없음</p>;
 
