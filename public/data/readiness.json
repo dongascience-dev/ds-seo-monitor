@@ -1,6 +1,6 @@
 {
   "measuredAt": "2026-10-02",
-  "generatedAt": "2026-10-02T01:14:33.346Z",
+  "generatedAt": "2026-10-02T04:53:22.893Z",
   "source": "자동 측정 — robots.txt · sitemap.xml · 상세 페이지 크롤 (서비스당 최대 150건)",
   "caveat": "배점(가중치)은 업계 표준이 아니라 이 문서의 선택이다. 충족률은 실측이므로 서비스 간 순서는 신뢰할 수 있으나, 절대 점수는 배점을 바꾸면 달라진다. \"핵심 상세 수록\" 항목의 분모(전체 콘텐츠 수)만 추정치이며 auto:false 로 표시했다.",
   "services": [
@@ -21,28 +21,28 @@
       "items": [
         {
           "name": "사이트맵 갱신",
-          "max": 25,
+          "max": 20,
           "auto": true,
-          "rule": "7일 내 갱신 25 / 1년 내 12 / 그 이상·없음 0",
+          "rule": "7일 내 갱신 20 / 1년 내 10 / 그 이상·없음 0",
           "scores": {
-            "donga": 25,
+            "donga": 20,
             "dl": 0,
             "store": 0
           },
           "notes": {
-            "donga": "2026-10-01T22:00:00.000Z · 0일 전",
+            "donga": "2026-10-02T01:36:00.000Z · 0일 전",
             "dl": "2024-04-22T01:12:33+00:00 · 893일 전",
             "store": "2024-03-05T05:20:22+00:00 · 940일 전"
           }
         },
         {
           "name": "핵심 상세 수록",
-          "max": 25,
+          "max": 20,
           "auto": false,
-          "rule": "전량(90%+) 25 / 롤링 수록(0.1%+) 12 / 흔적만 4 / 0건 0 — 분모는 추정치이고 단계 경계는 판단이다",
+          "rule": "전량(90%+) 20 / 롤링 수록(0.1%+) 10 / 흔적만 3 / 0건 0 — 분모는 추정치이고 단계 경계는 판단이다",
           "scores": {
-            "donga": 12,
-            "dl": 4,
+            "donga": 10,
+            "dl": 3,
             "store": 0
           },
           "notes": {
@@ -84,17 +84,33 @@
           }
         },
         {
-          "name": "meta description",
-          "max": 10,
+          "name": "제목 고유성",
+          "max": 15,
           "auto": true,
-          "rule": "충족률 × 10 (연속값)",
+          "rule": "자기만의 <title> 을 가진 페이지 비율 × 15 — 같은 제목을 나눠 쓰면 그 페이지들은 세지 않는다",
           "scores": {
-            "donga": 7.3,
-            "dl": 9.3,
-            "store": 7.6
+            "donga": 15,
+            "dl": 14.6,
+            "store": 15
           },
           "notes": {
-            "donga": "109/150 · 72.7%",
+            "donga": "150/150 · 100.0%",
+            "dl": "83/85 · 97.6% · 같은 제목 최다 2건",
+            "store": "150/150 · 100.0%"
+          }
+        },
+        {
+          "name": "meta description",
+          "max": 5,
+          "auto": true,
+          "rule": "있기만 하면 되는 항목이라 배점을 낮췄다. 내용이 갈리는지는 AEO 의 설명 고유성에서 본다",
+          "scores": {
+            "donga": 3.6,
+            "dl": 4.6,
+            "store": 3.8
+          },
+          "notes": {
+            "donga": "108/150 · 72.0%",
             "dl": "79/85 · 92.9%",
             "store": "114/150 · 76.0%"
           }
@@ -124,11 +140,11 @@
       "items": [
         {
           "name": "구조화 데이터",
-          "max": 35,
+          "max": 30,
           "auto": true,
-          "rule": "충족률 × 35 (연속값)",
+          "rule": "충족률 × 30 (연속값)",
           "scores": {
-            "donga": 35,
+            "donga": 30,
             "dl": 0,
             "store": 0
           },
@@ -156,18 +172,34 @@
         },
         {
           "name": "발췌 후보 요약문",
-          "max": 20,
+          "max": 15,
           "auto": true,
-          "rule": "meta description 충족률 × 20",
+          "rule": "meta description 충족률 × 15",
           "scores": {
-            "donga": 14.5,
-            "dl": 18.6,
-            "store": 15.2
+            "donga": 10.8,
+            "dl": 13.9,
+            "store": 11.4
           },
           "notes": {
-            "donga": "109/150 · 72.7%",
+            "donga": "108/150 · 72.0%",
             "dl": "79/85 · 92.9%",
             "store": "114/150 · 76.0%"
+          }
+        },
+        {
+          "name": "설명 고유성",
+          "max": 10,
+          "auto": true,
+          "rule": "자기만의 설명을 가진 페이지 비율 × 10 — 답변 엔진이 페이지를 구별하려면 요약문이 갈려야 한다",
+          "scores": {
+            "donga": 6.9,
+            "dl": 7.8,
+            "store": 7.1
+          },
+          "notes": {
+            "donga": "104/150 · 69.3% · 같은 설명 최다 4건",
+            "dl": "66/85 · 77.6% · 같은 설명 최다 6건",
+            "store": "106/150 · 70.7% · 같은 설명 최다 2건"
           }
         },
         {
@@ -302,7 +334,7 @@
           "list": 18,
           "other": 3
         },
-        "newestLastmod": "2026-10-01T22:00:00.000Z",
+        "newestLastmod": "2026-10-02T01:36:00.000Z",
         "staleDays": 0,
         "dynamic": true
       },
@@ -315,7 +347,17 @@
         "jsonLd": 150,
         "dateModified": 0,
         "canonical": 150,
-        "description": 109,
+        "description": 108,
+        "titleUnique": {
+          "unique": 150,
+          "distinct": 150,
+          "topDup": 1
+        },
+        "descUnique": {
+          "unique": 104,
+          "distinct": 105,
+          "topDup": 4
+        },
         "softNotFound": 0,
         "jsonLdTypes": [
           "WebSite",
@@ -366,6 +408,16 @@
         "dateModified": 0,
         "canonical": 0,
         "description": 79,
+        "titleUnique": {
+          "unique": 83,
+          "distinct": 84,
+          "topDup": 2
+        },
+        "descUnique": {
+          "unique": 66,
+          "distinct": 70,
+          "topDup": 6
+        },
         "softNotFound": 0,
         "jsonLdTypes": []
       },
@@ -413,6 +465,16 @@
         "dateModified": 0,
         "canonical": 150,
         "description": 114,
+        "titleUnique": {
+          "unique": 150,
+          "distinct": 150,
+          "topDup": 1
+        },
+        "descUnique": {
+          "unique": 106,
+          "distinct": 110,
+          "topDup": 2
+        },
         "softNotFound": 0,
         "jsonLdTypes": []
       },
