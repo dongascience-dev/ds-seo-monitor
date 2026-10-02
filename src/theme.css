@@ -100,6 +100,19 @@ body {
   font-size: 15px;
   line-height: 1.58;
   -webkit-font-smoothing: antialiased;
+
+  /*
+   * 한글은 띄어쓰기에서만 끊는다.
+   *
+   * 브라우저 기본값은 CJK 를 글자 단위로 끊어도 된다고 본다. 그래서 "최근 12주
+   * 범위를 함께 봅니다" 가 "범/위를", "증/감이" 처럼 단어 한가운데서 갈라진다.
+   * 읽는 사람에겐 누가 거기에 줄바꿈을 넣은 것처럼 보인다.
+   *
+   * keep-all 만 두면 이번엔 긴 URL 이 안 끊겨 표 밖으로 넘치므로, 넘칠 때만
+   * 끊도록 overflow-wrap 을 같이 둔다.
+   */
+  word-break: keep-all;
+  overflow-wrap: break-word;
 }
 
 .num {
@@ -256,7 +269,11 @@ td a:hover { text-decoration: underline; }
   border: 1px solid var(--hair); border-left: 3px solid var(--c); border-radius: 0 12px 12px 0;
   padding: 11px 14px; box-shadow: var(--shadow);
 }
-.ins-row .txt { font-size: 13.5px; color: var(--ink-2); word-break: break-word; }
+/* 인사이트 본문은 한글과 URL 이 한 줄에 섞인다. 한글은 지키고 URL 만 끊는다. */
+.ins-row .txt {
+  font-size: 13.5px; color: var(--ink-2);
+  word-break: keep-all; overflow-wrap: anywhere;
+}
 .ins-row .txt b { color: var(--ink); }
 
 .banner {

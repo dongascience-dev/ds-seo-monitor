@@ -380,7 +380,7 @@ function RiserPair({ now, prevWeek, periods, isUrl }) {
         borderBottom: '1px solid var(--grid)',
       }}
     >
-      <span style={{ flex: 1, minWidth: 0, wordBreak: 'break-word' }}>
+      <span style={{ flex: 1, minWidth: 0, wordBreak: 'keep-all', overflowWrap: 'anywhere' }}>
         {isUrl ? (
           <a href={r.key} target="_blank" rel="noreferrer" className="mono">
             {shortUrl(r.key)}
