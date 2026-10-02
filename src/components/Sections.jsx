@@ -1,4 +1,5 @@
 import { ChangeBars, TopBars } from './Charts.jsx';
+import { Why } from './Why.jsx';
 import {
   SERVICES,
   change,
@@ -115,12 +116,13 @@ export function OverviewChange({ services }) {
   }
   if (!rows.length) return null;
   return (
-    <div className="panel" style={{ marginTop: 14 }}>
+    <div className="panel" style={{ marginTop: 'var(--s-4)' }}>
       <h3>클릭 증감률 — 전주 대비</h3>
-      <p className="p-note">
-        규모가 서비스 간 1000배까지 차이 나 같은 축에 못 놓습니다. 증감률만 비교
-        가능합니다 — 절대값은 위 카드에서 봅니다.
-      </p>
+      <Why label="왜 증감률만 있나">
+        규모가 서비스 간 1000배까지 차이 나 같은 축에 못 놓습니다. 한 축에 억지로
+        겹치면 작은 서비스가 바닥에 붙은 직선이 됩니다. 증감률만 비교 가능하고,
+        절대값은 위 카드에서 봅니다.
+      </Why>
       <ChangeBars rows={rows} />
     </div>
   );
@@ -164,8 +166,8 @@ export function Insights({ insights }) {
                 display: 'flex',
                 alignItems: 'center',
                 gap: 8,
-                marginBottom: 8,
-                fontSize: 13,
+                marginBottom: 'var(--s-2)',
+                fontSize: 'var(--t-md)',
                 fontWeight: 800,
               }}
             >
@@ -174,7 +176,7 @@ export function Insights({ insights }) {
                 style={{ width: 10, height: 10, borderRadius: 3, background: s.hex }}
               />
               {s.name}
-              <span style={{ fontWeight: 600, fontSize: 11, color: 'var(--muted)' }}>
+              <span style={{ fontWeight: 600, fontSize: 'var(--t-sm)', color: 'var(--muted)' }}>
                 {rows.length}건{alerts > 0 && ` · 확인 필요 ${alerts}`}
               </span>
             </div>
@@ -218,20 +220,20 @@ const QueryTag = ({ q }) => {
   const moved =
     q.prevPosition !== null && q.position !== null ? q.position - q.prevPosition : null;
   if (moved !== null && moved > 2) {
-    return <span className="pill crit" style={{ fontSize: 10 }}>순위 하락</span>;
+    return <span className="pill crit" style={{ fontSize: 'var(--t-xs)' }}>순위 하락</span>;
   }
   const impDrop =
     q.prevImpressions > 0 ? 1 - q.impressions / q.prevImpressions : 0;
   if (impDrop > 0.5) {
-    return <span className="pill info" style={{ fontSize: 10 }}>노출만 감소</span>;
+    return <span className="pill info" style={{ fontSize: 'var(--t-xs)' }}>노출만 감소</span>;
   }
   return null;
 };
 
 /** 기사 하나를 펼쳤을 때 나오는 검색어 내역. */
 const QueryDetail = ({ r }) => (
-  <details style={{ marginTop: 4 }}>
-    <summary style={{ cursor: 'pointer', fontSize: 11.5, color: 'var(--muted)' }}>
+  <details style={{ marginTop: 'var(--s-1)' }}>
+    <summary style={{ cursor: 'pointer', fontSize: 'var(--t-sm)', color: 'var(--muted)' }}>
       검색어 {r.queries.length}개
       {/*
         page+query 조합은 희소 검색어가 익명화로 빠진다. 커버리지가 낮은데
@@ -244,7 +246,7 @@ const QueryDetail = ({ r }) => (
         <> · 이번 주 클릭의 {r.queryCoverage}%가 확인됨</>
       )}
     </summary>
-    <table style={{ minWidth: 0, marginTop: 6, fontSize: 12 }}>
+    <table style={{ minWidth: 0, marginTop: 'var(--s-2)', fontSize: 'var(--t-sm)' }}>
       <thead>
         <tr>
           <th>검색어</th>
@@ -318,12 +320,12 @@ const Row = ({ r, isUrl }) => {
 
 export function RankTable({ title, note, rows, isUrl, limit = 15, color, chart = false }) {
   return (
-    <div style={{ marginTop: 22 }}>
+    <div style={{ marginTop: 'var(--s-5)' }}>
       <h3>{title}</h3>
       <p className="p-note">{note}</p>
       {/* 증감은 숫자보다 두 막대의 길이 차이로 읽는 쪽이 빠르다. 회색이 전주다. */}
       {chart && rows.length > 0 && (
-        <div className="panel" style={{ marginBottom: 12 }}>
+        <div className="panel" style={{ marginBottom: 'var(--s-3)' }}>
           <TopBars rows={rows} color={color} isUrl={isUrl} limit={10} />
         </div>
       )}
@@ -389,16 +391,16 @@ function RiserPair({ now, prevWeek, periods, isUrl }) {
           r.key
         )}
         {showSustained && r.sustained && (
-          <span className="pill info" style={{ marginLeft: 6, fontSize: 10 }}>
+          <span className="pill info" style={{ marginLeft: 6, fontSize: 'var(--t-xs)' }}>
             2주 연속
           </span>
         )}
       </span>
-      <span className="num" style={{ fontSize: 12, color: 'var(--good)' }}>
+      <span className="num" style={{ fontSize: 'var(--t-sm)', color: 'var(--good)' }}>
         {r.deltaClicks > 0 ? '+' : ''}
         {nf(r.deltaClicks)}
       </span>
-      <span className="num" style={{ fontSize: 11, color: 'var(--muted)', minWidth: 78, textAlign: 'right' }}>
+      <span className="num" style={{ fontSize: 'var(--t-sm)', color: 'var(--muted)', minWidth: 78, textAlign: 'right' }}>
         {r.belowPrevFloor != null ? `${nf(r.belowPrevFloor)}↓` : nf(r.prevClicks)} → {nf(r.clicks)}
       </span>
     </li>
@@ -409,7 +411,7 @@ function RiserPair({ now, prevWeek, periods, isUrl }) {
       <h3>{title}</h3>
       <p className="p-note">{range}</p>
       {rows.length ? (
-        <ul style={{ listStyle: 'none', margin: 0, padding: 0, fontSize: 12.5 }}>
+        <ul style={{ listStyle: 'none', margin: 0, padding: 0, fontSize: 'var(--t-sm)' }}>
           {rows.map((r) => (
             <Item r={r} showSustained={showSustained} key={r.key} />
           ))}
@@ -423,7 +425,7 @@ function RiserPair({ now, prevWeek, periods, isUrl }) {
   const fmt = (p) => `${fmtDate(p.start)}~${fmtDate(p.end)}`;
 
   return (
-    <div className="grid-2" style={{ marginTop: 14 }}>
+    <div className="grid-2" style={{ marginTop: 'var(--s-4)' }}>
       <Col
         title="이번 주 급상승"
         range={`${fmt(periods.previous)} → ${fmt(periods.current)}`}
@@ -475,14 +477,23 @@ export function SurfaceBlock({ surface, label, color, periods }) {
     Math.abs(queries?.fallers?.[0]?.deltaClicks ?? 0),
   );
 
+  /*
+   * Discover 에는 검색어 패널을 두지 않는다.
+   *
+   * 「검색어가 없습니다」 만 적힌 빈 패널이 절반 폭을 차지하고 있었다. 이건
+   * 이번 주 데이터가 비었다는 뜻이 아니라 GSC 가 Discover 에 query · position
+   * 차원을 아예 주지 않는다는 구조적 사실이라 영원히 그 상태다. 같은 말이 바로
+   * 위 섹션 설명과 푸터에도 이미 있다 — 세 번 적을 일이 아니다. 패널을 빼고
+   * 상위 콘텐츠가 그 폭을 쓴다.
+   */
   const topPanels = (
-    <div className="grid-2" style={{ marginTop: 18 }}>
+    <div className={queries ? 'grid-2' : ''} style={{ marginTop: 'var(--s-5)' }}>
       <div className="panel">
         <h3>상위 콘텐츠 — {label}</h3>
         <p className="p-note">클릭 기준 상위 10건 · 회색이 전주</p>
         <TopBars rows={pages.top} color={color} isUrl />
       </div>
-      {queries ? (
+      {queries && (
         <div className="panel">
           <h3>상위 검색어</h3>
           <p className="p-note">
@@ -498,15 +509,7 @@ export function SurfaceBlock({ surface, label, color, periods }) {
           </p>
           <TopBars rows={queries.top} color={color} />
         </div>
-      ) : (
-        <div className="panel">
-          <h3>검색어</h3>
-          <p className="p-note">
-            Discover 는 검색어와 순위가 없습니다. 검색해서 온 게 아니라 피드 추천으로
-            온 유입이라 GSC 가 제공하지 않습니다.
-          </p>
-        </div>
-    )}
+      )}
     </div>
   );
 
@@ -514,7 +517,7 @@ export function SurfaceBlock({ surface, label, color, periods }) {
     <>
       <div className="sec-head" style={{ marginTop: partial ? 0 : 34 }}>
         <span className="eyebrow">2주 비교</span>
-        <h2 style={{ fontSize: 15 }}>급상승 콘텐츠 — {label}</h2>
+        <h2 style={{ fontSize: 'var(--t-lg)' }}>급상승 콘텐츠 — {label}</h2>
       </div>
       <RiserPair now={pages} prevWeek={pagesPrevWeek} periods={periods} color={color} isUrl />
 
@@ -540,9 +543,9 @@ export function SurfaceBlock({ surface, label, color, periods }) {
       />
       {queries && (
         <>
-          <div className="sec-head" style={{ marginTop: 34 }}>
+          <div className="sec-head" style={{ marginTop: 'var(--s-6)' }}>
             <span className="eyebrow">2주 비교</span>
-            <h2 style={{ fontSize: 15 }}>급상승 검색어</h2>
+            <h2 style={{ fontSize: 'var(--t-lg)' }}>급상승 검색어</h2>
           </div>
           <RiserPair
             now={queries}

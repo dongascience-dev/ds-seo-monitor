@@ -137,7 +137,7 @@ export function Summary({ gsc }) {
           </p>
         ))}
 
-        <div className="grid-2" style={{ marginTop: 16 }}>
+        <div className="grid-2" style={{ marginTop: 'var(--s-4)' }}>
           <div>
             <h3 className="summary-h">주요 변화</h3>
             {s.facts.length ? (

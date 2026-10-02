@@ -6,6 +6,7 @@ import {
   ServiceCards,
   SurfaceBlock,
 } from './components/Sections.jsx';
+import { Why } from './components/Why.jsx';
 import { AiSection, CountrySection } from './components/Ga4.jsx';
 import { Summary } from './components/Summary.jsx';
 import { SERVICES, fmtDate, fmtDateTime, nf } from './lib/format.js';
@@ -154,7 +155,7 @@ export default function App() {
       <div className="state">
         데이터를 불러오지 못했다 — {error}
         <br />
-        <span style={{ fontSize: 12 }}>
+        <span style={{ fontSize: 'var(--t-sm)' }}>
           <code>npm run collect</code> 를 먼저 실행해 <code>public/data/</code> 를 채운다.
         </span>
       </div>
@@ -228,7 +229,7 @@ export default function App() {
             >
               {t.color && <span className="swatch" style={{ background: t.color }} />}
               {t.label}
-              <small style={{ fontWeight: 600, fontSize: 10.5, color: 'var(--muted)' }}>
+              <small style={{ fontWeight: 600, fontSize: 'var(--t-xs)', color: 'var(--muted)' }}>
                 {t.hint}
               </small>
             </button>
@@ -291,10 +292,12 @@ export default function App() {
                 <span className="eyebrow">Insights</span>
                 <h2>주요 변화와 이상 징후</h2>
               </div>
-              <p className="sec-note">
-                전주 대비만 보면 오판하므로 <b>최근 12주 범위</b>를 함께 봅니다. 평소 범위
-                안이면 증감이 커도 "참고"로 낮춥니다.
-              </p>
+              <Why label="왜 전주 대비만 안 보나">
+                전주 대비만 보면 오판합니다. 닷컴 Discover 는 주간 클릭이 7만~29만을
+                오가서, 전주가 최고치였으면 이번 주는 정상 범위인데도 -72% 로 찍힙니다.
+                그래서 <b>최근 12주 범위</b>를 함께 봅니다 — 평소 범위 안이면 증감이 커도
+                "참고"로 낮추고, 전주 대비가 잠잠해도 범위 밖이면 "주의"로 올립니다.
+              </Why>
               <Insights insights={gsc.insights} />
             </section>
 
@@ -309,10 +312,10 @@ export default function App() {
                     {history.length}주 · {fmtDate(history[0].weekStart)} 이후.
                   </p>
                   <TrendLines history={history} surface="web" metric="clicks" />
-                  <div style={{ marginTop: 14 }}>
+                  <div style={{ marginTop: 'var(--s-4)' }}>
                     <TrendLines history={history} surface="discover" metric="clicks" />
                   </div>
-                  <div style={{ marginTop: 14 }}>
+                  <div style={{ marginTop: 'var(--s-4)' }}>
                     <SurfaceStack history={history} serviceKey="donga" />
                   </div>
                 </section>
@@ -324,12 +327,12 @@ export default function App() {
                 <span className="eyebrow">Hygiene</span>
                 <h2>개발계 색인 잔존</h2>
               </div>
-              <p className="sec-note">
-                개발 서버(<code>ncdev-*</code> · <code>dev-*</code> 등)가 검색에 노출되고
-                있는지 봅니다. 운영과 같은 내용이라 중복 콘텐츠가 됩니다.{' '}
-                <b>0 이 되면</b> robots.txt 로 크롤을 막을 수 있습니다 — 그 전에 막으면
-                크롤러가 noindex 를 못 읽습니다. (#12239)
-              </p>
+              <Why label="이 숫자가 0 이어야 하는 이유">
+                개발 서버(<code>ncdev-*</code> · <code>dev-*</code> 등)가 운영과 같은
+                내용을 서빙한 채 검색에 잡히면 중복 콘텐츠가 됩니다. <b>0 이 되면</b>{' '}
+                robots.txt 로 크롤을 막을 수 있습니다 — 그 전에 막으면 크롤러가 noindex
+                를 못 읽어 색인이 그대로 남습니다. (#12239)
+              </Why>
               <div className="panel">
                 <div className="card-stats" style={{ borderTop: 0, paddingTop: 0 }}>
                   <div className="stat">
@@ -352,7 +355,7 @@ export default function App() {
               </div>
 
               {gsc.devHosts.hosts?.some((h) => h.impressions > 0) && (
-                <div className="tw" style={{ marginTop: 14 }}>
+                <div className="tw" style={{ marginTop: 'var(--s-4)' }}>
                   <table>
                     <thead>
                       <tr>
@@ -378,7 +381,7 @@ export default function App() {
                 </div>
               )}
 
-              <p className="p-note" style={{ marginTop: 10 }}>
+              <p className="p-note" style={{ marginTop: 'var(--s-3)' }}>
                 노출된 URL 목록은 싣지 않습니다 — 이 데이터는 공개되고, 운영과 같은
                 내용을 서빙하는 개발 서버의 살아 있는 주소를 모아 주는 셈이 됩니다.
                 {gsc.devHosts.urlCount > 0 && <> 이번 주 {gsc.devHosts.urlCount}개 URL 이 잡혔으며,</>}{' '}
@@ -424,7 +427,7 @@ export default function App() {
                 />
                 {gsc.services[s.key].discover && (
                   <>
-                    <div className="sec-head" style={{ marginTop: 40 }}>
+                    <div className="sec-head" style={{ marginTop: 'var(--s-6)' }}>
                       <span className="eyebrow">Discover</span>
                       <h2>구글 앱 피드</h2>
                     </div>
@@ -467,7 +470,7 @@ export default function App() {
                 <p className="sec-note">
                   {readiness.measuredAt} 측정 · 서비스당 최대 300건 크롤
                 </p>
-                <div className="callout" style={{ marginTop: 0, marginBottom: 18 }}>
+                <div className="callout" style={{ marginTop: 0, marginBottom: 'var(--s-4)' }}>
                   <b>결과가 아니라 준비도입니다.</b> 충족률은 실측이지만 <b>배점은 선택</b>
                   이라, 서비스 간 순서는 믿을 수 있어도 절대 점수는 배점을 바꾸면
                   달라집니다.
@@ -477,7 +480,7 @@ export default function App() {
                     <ReadinessRadar axis={axis} key={axis.key} />
                   ))}
                 </div>
-                <div className="tw" style={{ marginTop: 16 }}>
+                <div className="tw" style={{ marginTop: 'var(--s-4)' }}>
                   <table>
                     <thead>
                       <tr>
@@ -510,12 +513,12 @@ export default function App() {
                                 <div style={{ fontWeight: 600 }}>
                                   {i.name}
                                   {i.auto === false && (
-                                    <span className="pill warn" style={{ marginLeft: 6, fontSize: 10 }}>
+                                    <span className="pill warn" style={{ marginLeft: 6, fontSize: 'var(--t-xs)' }}>
                                       분모 추정
                                     </span>
                                   )}
                                 </div>
-                                <div style={{ fontSize: 11, color: 'var(--muted)' }}>{i.rule}</div>
+                                <div style={{ fontSize: 'var(--t-sm)', color: 'var(--muted)' }}>{i.rule}</div>
                               </td>
                               <td className="n">{i.max}</td>
                               {SERVICES.map((s) => (
@@ -523,7 +526,7 @@ export default function App() {
                                   <div>{i.scores[s.key]}</div>
                                   <div
                                     style={{
-                                      fontSize: 10.5,
+                                      fontSize: 'var(--t-xs)',
                                       color: 'var(--muted)',
                                       fontWeight: 500,
                                     }}

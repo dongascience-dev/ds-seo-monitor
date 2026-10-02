@@ -19,6 +19,7 @@ import {
   YAxis,
 } from 'recharts';
 import { SERVICES, compact, nf, serviceHex, shortUrl } from '../lib/format.js';
+import { Why } from './Why.jsx';
 
 /**
  * 지금 화면이 어두운지 판정한다.
@@ -84,7 +85,7 @@ const tooltipStyle = (t) => ({
   background: t.tip,
   border: `1px solid ${t.tipLine}`,
   borderRadius: 10,
-  fontSize: 12,
+  fontSize: 'var(--t-sm)',
   color: t.ink,
   boxShadow: '0 8px 24px -12px rgba(0,0,0,.4)',
 });
@@ -108,11 +109,45 @@ export const tooltipProps = (t, cursor = 'band') => ({
   animationDuration: t.motion,
 });
 
+/*
+ * 차트 축 라벨 크기.
+ *
+ * 본문 타입 스케일(--t-*)을 여기엔 못 쓴다. Recharts 가 이 값을 SVG 속성으로
+ * 내보내는데 SVG 속성은 CSS 변수를 해석하지 못한다. 숫자로 두되 한 곳에 모아,
+ * 차트마다 10.5 · 11 이 섞이지 않게 한다.
+ */
+export const TICK_PX = 11;
+
 const axisProps = (t) => ({
   stroke: t.axis,
-  tick: { fill: t.axis, fontSize: 11 },
+  tick: { fill: t.axis, fontSize: TICK_PX },
   tickLine: false,
 });
+
+/**
+ * URL 축 라벨을 실제 링크로 만든다.
+ *
+ * 막대 옆에 경로가 적혀 있는데 누를 수 없으면, 그 페이지를 확인하려고 주소를
+ * 손으로 옮겨 적게 된다. 표에서는 이미 링크인데 차트에서만 아니었다.
+ * SVG 안에서도 <a> 는 동작한다. 색과 밑줄은 CSS 에 맡긴다 — CSS 는 SVG 표현
+ * 속성을 이기므로 fill 을 덮을 수 있고, 다크 모드도 그대로 따라온다.
+ */
+const UrlTick = ({ x, y, payload, fill, hrefOf }) => {
+  const label = (
+    <text x={x} y={y} dy={4} textAnchor="end" fontSize={TICK_PX} fill={fill}>
+      {payload.value}
+    </text>
+  );
+  const href = hrefOf?.(payload.value);
+  if (!href) return label;
+  return (
+    <a className="tick-link" href={href} target="_blank" rel="noreferrer">
+      {/* 경로만 보이므로, 어디로 가는지는 기본 툴팁으로 알려 준다. */}
+      <title>{href}</title>
+      {label}
+    </a>
+  );
+};
 
 /* ────────────────────────────────────────────────────────────────────────
  * 1. 다중 선 — 주간 추세
@@ -141,7 +176,7 @@ export function TrendLines({ history, metric = 'clicks', surface = 'web' }) {
           <div className="panel" key={s.key}>
             <h3>
               {s.name}{' '}
-              <span style={{ fontWeight: 500, color: 'var(--muted)', fontSize: 11.5 }}>
+              <span style={{ fontWeight: 500, color: 'var(--muted)', fontSize: 'var(--t-sm)' }}>
                 — {surface === 'discover' ? 'Discover' : '웹 검색'}
               </span>
             </h3>
@@ -196,13 +231,16 @@ export function SurfaceStack({ history, serviceKey = 'donga' }) {
     <div className="panel">
       <h3>
         {name} — 표면별 클릭 구성{' '}
-        <span style={{ fontWeight: 500, color: 'var(--muted)', fontSize: 11.5 }}>
+        <span style={{ fontWeight: 500, color: 'var(--muted)', fontSize: 'var(--t-sm)' }}>
           — 웹 검색 + Discover
         </span>
       </h3>
-      <p className="p-note">
-        둘 다 GSC 클릭이라 합이 성립합니다. 단위가 다른 값(GA4 세션 등)은 쌓지 않습니다.
-      </p>
+      <Why label="왜 이 둘만 쌓나">
+        누적 막대는 부분들이 하나의 합을 이룰 때만 정직합니다. 웹 검색과 Discover 는
+        같은 도구(GSC)의 같은 단위(클릭)이고 합이 GSC 총 클릭이 되므로 쌓아도 됩니다.
+        GA4 세션이나 AI 인용률처럼 측정 도구가 다른 값은 쌓지 않습니다 — 하나의 전체인
+        척하게 됩니다.
+      </Why>
       <ResponsiveContainer width="100%" height={230}>
         <BarChart data={rows} margin={{ top: 4, right: 8, left: -12, bottom: 0 }}>
           <CartesianGrid stroke={t.grid} vertical={false} />
@@ -214,7 +252,7 @@ export function SurfaceStack({ history, serviceKey = 'donga' }) {
             labelFormatter={(l) => `주 종료 ${l}`}
           />
           <Legend
-            wrapperStyle={{ fontSize: 11.5, color: t.axis }}
+            wrapperStyle={{ fontSize: 'var(--t-sm)', color: t.axis }}
             formatter={(v) => (v === 'web' ? '웹 검색' : 'Discover')}
           />
           <Bar dataKey="web" stackId="s" fill="#2a78d6" radius={[0, 0, 0, 0]} isAnimationActive={false} />
@@ -246,7 +284,7 @@ export function ReadinessRadar({ axis }) {
     <div className="panel">
       <h3>
         {axis.label}{' '}
-        <span style={{ fontWeight: 500, color: 'var(--muted)', fontSize: 11.5 }}>
+        <span style={{ fontWeight: 500, color: 'var(--muted)', fontSize: 'var(--t-sm)' }}>
           — {axis.full}
         </span>
       </h3>
@@ -254,10 +292,10 @@ export function ReadinessRadar({ axis }) {
       <ResponsiveContainer width="100%" height={260}>
         <RadarChart data={rows} outerRadius="72%">
           <PolarGrid stroke={t.grid} />
-          <PolarAngleAxis dataKey="item" tick={{ fill: t.axis, fontSize: 10.5 }} />
+          <PolarAngleAxis dataKey="item" tick={{ fill: t.axis, fontSize: TICK_PX }} />
           <PolarRadiusAxis
             domain={[0, 100]}
-            tick={{ fill: t.axis, fontSize: 9 }}
+            tick={{ fill: t.axis, fontSize: TICK_PX }}
             tickCount={5}
             axisLine={false}
           />
@@ -305,6 +343,8 @@ export function TopBars({ rows, color, label, isUrl = false, limit = 10 }) {
   }));
   if (!data.length) return <p className="p-note">데이터 없음</p>;
 
+  const hrefOf = (name) => data.find((d) => d.name === name)?.full;
+
   return (
     <ResponsiveContainer width="100%" height={Math.max(200, data.length * 34 + 48)}>
       <BarChart data={data} layout="vertical" margin={{ top: 4, right: 16, left: 4, bottom: 0 }}>
@@ -315,14 +355,14 @@ export function TopBars({ rows, color, label, isUrl = false, limit = 10 }) {
           dataKey="name"
           {...axisProps(t)}
           width={190}
-          tick={{ fill: t.axis, fontSize: 10.5 }}
+          tick={isUrl ? <UrlTick fill={t.axis} hrefOf={hrefOf} /> : { fill: t.axis, fontSize: TICK_PX }}
         />
         <Tooltip
           {...tooltipProps(t, 'band')}
           formatter={(v) => nf(v)}
           labelFormatter={(_, p) => p?.[0]?.payload?.full ?? ''}
         />
-        <Legend wrapperStyle={{ fontSize: 11.5, color: t.axis }} />
+        <Legend wrapperStyle={{ fontSize: 'var(--t-sm)', color: t.axis }} />
         <Bar dataKey="전주" fill={t.grid} radius={[0, 3, 3, 0]} isAnimationActive={false} />
         <Bar dataKey="이번주" fill={color} radius={[0, 3, 3, 0]} isAnimationActive={false} />
       </BarChart>

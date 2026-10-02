@@ -8,10 +8,10 @@ import {
   XAxis,
   YAxis,
 } from 'recharts';
-import { tooltipProps, useChartTheme } from './Charts.jsx';
+import { TICK_PX, tooltipProps, useChartTheme } from './Charts.jsx';
 import { SERVICES, change, compact, fmtDate, nf, signed } from '../lib/format.js';
 
-const ax = (t) => ({ stroke: t.axis, tick: { fill: t.axis, fontSize: 11 }, tickLine: false });
+const ax = (t) => ({ stroke: t.axis, tick: { fill: t.axis, fontSize: TICK_PX }, tickLine: false });
 
 /**
  * 확인 필요 국가를 **국가명**에 표시한다.
@@ -64,7 +64,7 @@ function CountryBars({ countries, color, limit = 12 }) {
           tick={<CountryTick flagged={flagged} t={t} />}
         />
         <Tooltip {...tooltipProps(t)} formatter={(v) => nf(v)} />
-        <Legend wrapperStyle={{ fontSize: 11.5, color: t.axis }} />
+        <Legend wrapperStyle={{ fontSize: 'var(--t-sm)', color: t.axis }} />
         <Bar dataKey="전주" fill={t.grid} radius={[0, 3, 3, 0]} isAnimationActive={false} />
         <Bar dataKey="이번주" fill={color} radius={[0, 3, 3, 0]} isAnimationActive={false} />
       </BarChart>
@@ -87,7 +87,7 @@ function EngineBars({ engines, limit = 6 }) {
         <XAxis type="number" {...ax(t)} tickFormatter={compact} />
         <YAxis type="category" dataKey="name" {...ax(t)} width={92} />
         <Tooltip {...tooltipProps(t)} formatter={(v) => nf(v)} />
-        <Legend wrapperStyle={{ fontSize: 11.5, color: t.axis }} />
+        <Legend wrapperStyle={{ fontSize: 'var(--t-sm)', color: t.axis }} />
         <Bar dataKey="전주" fill={t.grid} radius={[0, 3, 3, 0]} isAnimationActive={false} />
         <Bar dataKey="이번주" fill="#6d3aff" radius={[0, 3, 3, 0]} isAnimationActive={false} />
       </BarChart>
@@ -127,11 +127,11 @@ export function CountrySection({ ga4 }) {
         </p>
 
         {flagged.length > 0 && (
-          <div className="callout" style={{ marginTop: 0, marginBottom: 18 }}>
+          <div className="callout" style={{ marginTop: 0, marginBottom: 'var(--s-4)' }}>
             <b>확인이 필요한 국가 {flagged.length}곳.</b> 재방문이 없고(같은 기기가 두 번
             오지 않음) 페이지도 거의 열지 않는 유입입니다. 봇일 수도, utm 없는 캠페인일
             수도 있어 <b>확인 대상 표시</b>입니다. 기준은 오른쪽 두 열에 있습니다.
-            <div className="tw" style={{ marginTop: 12 }}>
+            <div className="tw" style={{ marginTop: 'var(--s-3)' }}>
               <table>
                 <thead>
                   <tr>
@@ -247,7 +247,7 @@ export function CountrySection({ ga4 }) {
                       return (
                         <td className="n" key={s.key}>
                           <div>{nf(cur)}</div>
-                          <div style={{ fontSize: 10.5, fontWeight: 500 }}>
+                          <div style={{ fontSize: 'var(--t-xs)', fontWeight: 500 }}>
                             <Delta cur={cur} prev={prev} />
                           </div>
                         </td>
@@ -284,7 +284,7 @@ export function AiSection({ ga4 }) {
           보고 넘어온 사람은 셀 수 있습니다. 2026년 6월부터 집계됩니다.
         </p>
 
-        <div className="tw" style={{ marginBottom: 18 }}>
+        <div className="tw" style={{ marginBottom: 'var(--s-4)' }}>
           <table>
             <thead>
               <tr>
@@ -351,9 +351,9 @@ export function AiSection({ ga4 }) {
           })}
         </div>
 
-        <div className="sec-head" style={{ marginTop: 26 }}>
+        <div className="sec-head" style={{ marginTop: 'var(--s-5)' }}>
           <span className="eyebrow">Landing</span>
-          <h2 style={{ fontSize: 15 }}>AI 가 많이 보낸 페이지</h2>
+          <h2 style={{ fontSize: 'var(--t-lg)' }}>AI 가 많이 보낸 페이지</h2>
         </div>
         <p className="sec-note">
           인용된 전부가 아니라 <b>클릭까지 이어진 것</b>입니다. 어떤 주제가 AI 답변에
@@ -371,7 +371,7 @@ export function AiSection({ ga4 }) {
                 {pages.length === 0 ? (
                   <p className="p-note">해당 없음</p>
                 ) : (
-                  <ul style={{ listStyle: 'none', margin: 0, padding: 0, fontSize: 12.5 }}>
+                  <ul style={{ listStyle: 'none', margin: 0, padding: 0, fontSize: 'var(--t-sm)' }}>
                     {pages.map((p) => (
                       <li
                         key={p.path}
@@ -392,12 +392,12 @@ export function AiSection({ ga4 }) {
                         >
                           {p.path}
                         </a>
-                        <span className="num" style={{ fontSize: 12 }}>
+                        <span className="num" style={{ fontSize: 'var(--t-sm)' }}>
                           {nf(p.sessions)}
                         </span>
                         <span
                           className="num"
-                          style={{ fontSize: 11, color: 'var(--muted)', minWidth: 44, textAlign: 'right' }}
+                          style={{ fontSize: 'var(--t-sm)', color: 'var(--muted)', minWidth: 44, textAlign: 'right' }}
                         >
                           전주 {nf(p.prevSessions)}
                         </span>
