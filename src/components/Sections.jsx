@@ -92,6 +92,133 @@ export function ServiceCards({ services }) {
   );
 }
 
+/**
+ * 세 서비스 어디에도 안 걸리는 호스트.
+ *
+ * 화면은 세 서비스만 그리는데 Search Console 속성은 도메인 전체다. 전체 탭에
+ * 한 줄로만 적고 "12곳" 으로 접어 두니, 결국 "그 12곳이 어디냐" 를 만든 사람에게
+ * 물어보게 된다. 물어봐야 알 수 있는 화면은 공유 URL 로서 실패한다.
+ *
+ * 호스트가 무슨 서비스인지는 적지 않는다. 우리가 모르기 때문이다 — 추측해서
+ * 붙이면 틀린 설명이 사실처럼 남는다. 이름과 수치만 두고 해석은 넘긴다.
+ */
+export function OtherHosts({ otherHosts, periods, serviceClicks }) {
+  const o = otherHosts;
+  if (!o?.hosts?.length) {
+    return (
+      <p className="sec-note">
+        이번 기간에는 세 서비스 밖 호스트에서 들어온 유입이 없습니다.
+      </p>
+    );
+  }
+
+  const whole = serviceClicks + o.current.clicks;
+  const hasPrev = Boolean(o.previous);
+
+  return (
+    <>
+      <div className="range">
+        <span>
+          이번 기간{' '}
+          <b>
+            {fmtDate(periods.current.start)}~{fmtDate(periods.current.end)}
+          </b>
+          <small>{periods.current.days}일</small>
+        </span>
+        {hasPrev && (
+          <>
+            <span className="vs">vs</span>
+            <span>
+              전주{' '}
+              <b>
+                {fmtDate(periods.previous.start)}~{fmtDate(periods.previous.end)}
+              </b>
+            </span>
+          </>
+        )}
+      </div>
+
+      <p className="sec-note">
+        <b>대시보드가 세는 세 서비스(닷컴 · d라이브러리 · DS스토어) 밖</b>에서 들어온
+        검색 유입입니다. Search Console 속성은 <code>dongascience.com</code> 도메인
+        전체라 이 호스트들도 같이 잡히는데, 서비스 탭에는 나타나지 않습니다. 전체
+        클릭의 {((o.current.clicks / whole) * 100).toFixed(1)}% 입니다.
+      </p>
+
+      <div className="panel">
+        <div className="card-stats" style={{ borderTop: 0, paddingTop: 0 }}>
+          <Stat
+            k="클릭"
+            v={nf(o.current.clicks)}
+            cur={o.current.clicks}
+            prev={o.previous?.clicks}
+          />
+          <Stat
+            k="노출"
+            v={nf(o.current.impressions)}
+            cur={o.current.impressions}
+            prev={o.previous?.impressions}
+          />
+          <div className="stat">
+            <span className="k">호스트</span>
+            <span className="v num">{nf(o.hosts.length)}</span>
+          </div>
+          <div className="stat">
+            <span className="k">노출된 URL</span>
+            <span className="v num">{nf(o.urlCount ?? 0)}</span>
+          </div>
+        </div>
+      </div>
+
+      <div className="tw" style={{ marginTop: 'var(--s-3)' }}>
+        <table>
+          <thead>
+            <tr>
+              <th>호스트</th>
+              <th className="n">노출 URL</th>
+              <th className="n">노출</th>
+              <th className="n">클릭</th>
+              <th className="n">CTR</th>
+            </tr>
+          </thead>
+          <tbody>
+            {o.hosts.map((h) => (
+              <tr key={h.host}>
+                <td className="mono">{h.host}</td>
+                <td className="n">{nf(h.urls)}</td>
+                <td className="n">{nf(h.impressions)}</td>
+                <td className="n">{nf(h.clicks)}</td>
+                <td className="n">{h.impressions > 0 ? pctText(h.clicks / h.impressions) : '—'}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+
+      <p className="p-note" style={{ marginTop: 'var(--s-2)' }}>
+        어느 호스트가 어떤 서비스인지는 적지 않았습니다 — 수집이 알 수 있는 것은
+        주소와 수치뿐이고, 추측해서 붙이면 틀린 설명이 사실처럼 남습니다.
+      </p>
+
+      <Why label="이 표를 어떻게 읽나">
+        <p style={{ margin: '0 0 8px' }}>
+          <b>별도 Search Console 속성이 있는 곳도 있습니다.</b>{' '}
+          <code>search.dongascience.com</code> 과{' '}
+          <code>jisatam.dongascience.com</code> 은 전용 속성이 따로 있지만, 둘 다
+          도메인 속성에 포함되므로 <b>위 수치에 이미 들어 있습니다</b>. 두 번 세지
+          않습니다.
+        </p>
+        <p style={{ margin: 0 }}>
+          <b>여기 수치를 세 서비스에 더해도 속성 총계가 되지 않습니다.</b> GSC 는
+          page 차원으로 쪼갤 때 희소 항목을 익명화로 빼기 때문입니다 — 실측
+          (2026-09-28~29) 속성 총계 노출 905,547 중 페이지를 전부 더하면 536,841 로
+          40.7% 가 사라집니다. 빠진 호스트 탓이 아닙니다.
+        </p>
+      </Why>
+    </>
+  );
+}
+
 export function OverviewChange({ services }) {
   const rows = [];
   for (const s of SERVICES) {

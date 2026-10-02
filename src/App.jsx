@@ -3,6 +3,7 @@ import { ReadinessRadar, SurfaceStack, TrendLines } from './components/Charts.js
 import {
   Insights,
   OverviewChange,
+  OtherHosts,
   ServiceCards,
   SurfaceBlock,
 } from './components/Sections.jsx';
@@ -21,6 +22,7 @@ const load = (name) =>
 const TABS = [
   { key: 'overview', label: '전체', hint: '요약 · 인사이트' },
   ...SERVICES.map((s) => ({ key: s.key, label: s.name, hint: '콘텐츠 · 검색어', color: s.hex })),
+  { key: 'others', label: '그 외 호스트', hint: '집계 범위 밖' },
   { key: 'traffic', label: '국가별 유입', hint: 'GA4 세션' },
   { key: 'readiness', label: 'SEO · AEO · GEO', hint: '사이트 점검' },
 ];
@@ -291,24 +293,24 @@ export default function App() {
                 카드 셋을 더해도 속성 총계가 되지 않는다. 모르면 "수치가 틀렸다"
                 로 읽히고, 알면 "저건 범위 밖" 이 된다.
               */}
-              {gsc.otherHosts?.current?.clicks > 0 &&
-                (() => {
-                  const o = gsc.otherHosts;
-                  const whole = totals.web + o.current.clicks;
-                  const named = o.hosts
-                    .slice(0, 3)
-                    .map((h) => h.host.replace(/\.dongascience\.com$/, ''));
-                  return (
-                    <p className="other-hosts">
-                      이 화면은 <b>세 서비스만</b> 집계합니다. 같은 도메인의 그 외 호스트{' '}
-                      <b>{o.hosts.length}곳</b>에서 클릭 <b>{nf(o.current.clicks)}</b> · 노출{' '}
-                      {nf(o.current.impressions)} 가 더 잡힙니다 — 웹 검색 전체의{' '}
-                      {((o.current.clicks / whole) * 100).toFixed(1)}%
-                      {named.length > 0 && <> (<span className="mono">{named.join(' · ')}</span> 등)</>}.
-                      네 번째 탭을 둘 규모는 아니지만, 범위 밖이라는 것은 밝혀 둡니다.
-                    </p>
-                  );
-                })()}
+              {gsc.otherHosts?.current?.clicks > 0 && (
+                <p className="other-hosts">
+                  이 화면은 <b>세 서비스만</b> 집계합니다. 같은 도메인의 그 외 호스트{' '}
+                  <b>{gsc.otherHosts.hosts.length}곳</b>에서 클릭{' '}
+                  <b>{nf(gsc.otherHosts.current.clicks)}</b> · 노출{' '}
+                  {nf(gsc.otherHosts.current.impressions)} 가 더 잡힙니다 — 전체의{' '}
+                  {(
+                    (gsc.otherHosts.current.clicks /
+                      (totals.web + gsc.otherHosts.current.clicks)) *
+                    100
+                  ).toFixed(1)}
+                  %. 어느 호스트인지는{' '}
+                  <button type="button" className="linkish" onClick={() => pick('others')}>
+                    그 외 호스트
+                  </button>{' '}
+                  탭에 있습니다.
+                </p>
+              )}
 
               <OverviewChange services={gsc.services} />
             </section>
@@ -471,6 +473,20 @@ export default function App() {
                 )}
               </section>
             ),
+        )}
+
+        {tab === 'others' && (
+          <section>
+            <div className="sec-head">
+              <span className="eyebrow">Out of scope</span>
+              <h2>그 외 호스트</h2>
+            </div>
+            <OtherHosts
+              otherHosts={gsc.otherHosts}
+              periods={periods}
+              serviceClicks={totals.web}
+            />
+          </section>
         )}
 
         {tab === 'traffic' &&

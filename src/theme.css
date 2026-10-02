@@ -356,10 +356,25 @@ footer code {
   margin: var(--s-3) 0 0; padding: var(--s-2) var(--s-3);
   border-left: 2px solid var(--grid); border-radius: 0 8px 8px 0;
   background: var(--surface-2);
-  font-size: var(--t-sm); color: var(--ink-2); line-height: 1.6; max-width: 90ch;
+}
+.other-hosts > p {
+  margin: 0; font-size: var(--t-sm); color: var(--ink-2); line-height: 1.6; max-width: 90ch;
 }
 .other-hosts b { color: var(--ink); font-weight: 700; }
-.other-hosts .mono { font-size: var(--t-xs); }
+
+/*
+ * 글 안에서 탭으로 보내는 버튼.
+ *
+ * 링크처럼 보이지만 주소가 아니라 탭 전환이라 button 이어야 한다 — a href="#"
+ * 로 두면 키보드·스크린리더에 "어딘가로 이동" 으로 잘못 알린다.
+ */
+.linkish {
+  border: 0; background: none; padding: 0; cursor: pointer;
+  font: inherit; font-weight: 700; color: var(--accent-ink);
+  text-decoration: underline; text-underline-offset: 2px;
+}
+.linkish:hover { color: var(--accent); }
+.linkish:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 3px; }
 
 /* 패널 제목 줄 — 제목 왼쪽, 전환 버튼 오른쪽. */
 .panel-head {
