@@ -346,6 +346,21 @@ footer code {
 
 .state { padding: 64px 16px; text-align: center; color: var(--muted); }
 
+/*
+ * 집계 범위 밖 호스트 한 줄.
+ *
+ * 경고가 아니라 범위 설명이라 노란 띠를 쓰지 않는다. 카드 바로 아래에
+ * 붙여 "이 합계는 여기까지" 를 같은 눈높이에서 읽게 한다.
+ */
+.other-hosts {
+  margin: var(--s-3) 0 0; padding: var(--s-2) var(--s-3);
+  border-left: 2px solid var(--grid); border-radius: 0 8px 8px 0;
+  background: var(--surface-2);
+  font-size: var(--t-sm); color: var(--ink-2); line-height: 1.6; max-width: 90ch;
+}
+.other-hosts b { color: var(--ink); font-weight: 700; }
+.other-hosts .mono { font-size: var(--t-xs); }
+
 /* 패널 제목 줄 — 제목 왼쪽, 전환 버튼 오른쪽. */
 .panel-head {
   display: flex; align-items: center; justify-content: space-between;

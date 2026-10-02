@@ -284,6 +284,32 @@ export default function App() {
                 )}
               </p>
               <ServiceCards services={gsc.services} />
+
+              {/*
+                합계가 왜 안 맞는지 그 자리에서 밝힌다.
+                화면은 세 서비스만 그리는데 Search Console 속성은 도메인 전체라,
+                카드 셋을 더해도 속성 총계가 되지 않는다. 모르면 "수치가 틀렸다"
+                로 읽히고, 알면 "저건 범위 밖" 이 된다.
+              */}
+              {gsc.otherHosts?.current?.clicks > 0 &&
+                (() => {
+                  const o = gsc.otherHosts;
+                  const whole = totals.web + o.current.clicks;
+                  const named = o.hosts
+                    .slice(0, 3)
+                    .map((h) => h.host.replace(/\.dongascience\.com$/, ''));
+                  return (
+                    <p className="other-hosts">
+                      이 화면은 <b>세 서비스만</b> 집계합니다. 같은 도메인의 그 외 호스트{' '}
+                      <b>{o.hosts.length}곳</b>에서 클릭 <b>{nf(o.current.clicks)}</b> · 노출{' '}
+                      {nf(o.current.impressions)} 가 더 잡힙니다 — 웹 검색 전체의{' '}
+                      {((o.current.clicks / whole) * 100).toFixed(1)}%
+                      {named.length > 0 && <> (<span className="mono">{named.join(' · ')}</span> 등)</>}.
+                      네 번째 탭을 둘 규모는 아니지만, 범위 밖이라는 것은 밝혀 둡니다.
+                    </p>
+                  );
+                })()}
+
               <OverviewChange services={gsc.services} />
             </section>
 
@@ -579,6 +605,14 @@ export default function App() {
               열면 이번 주 구간이 1~3일로 잡힙니다. 전주도 같은 요일 수로 잘라 비교하니
               증감 자체는 공정하지만 <b>주간 합계는 아닙니다</b>. 그런 주는 추세선과 12주
               기준선에도 넣지 않습니다 — 7일 합계 사이에 섞이면 둘 다 틀어집니다.
+            </li>
+            <li>
+              <b>페이지별 합계는 속성 총계보다 작습니다.</b> 같은 이유(희소 항목
+              익명화)로 page 차원에서도 노출이 빠집니다. 실측(2026-09-28~29): 속성
+              총계 노출 905,547 인데 페이지를 전부 더하면 536,841 로,{' '}
+              <b>40.7%가 page 차원에서 사라집니다</b>. 그래서 서비스 카드를 다 더해도
+              Search Console 속성 총계가 되지 않습니다 — 빠진 호스트 때문이 아니라
+              대부분 이 손실입니다.
             </li>
             <li>
               <b>검색어 합계는 페이지 합계보다 작습니다.</b> 구글이 개인 식별 우려가 있는

@@ -179,6 +179,16 @@ async function query(body, site = SITE) {
   throw new Error(`GSC 재시도 실패 (${site})`);
 }
 
+const excludingPageFilter = (regex) => ({
+  dimensionFilterGroups: [
+    {
+      filters: [
+        { dimension: 'page', operator: 'excludingRegex', expression: regex },
+      ],
+    },
+  ],
+});
+
 const pageFilter = (regex) => ({
   dimensionFilterGroups: [
     {
@@ -238,6 +248,33 @@ const totalsFrom = (rows, withPosition = true) => {
     position: withPosition ? (r.position ?? null) : null,
   };
 };
+
+/** 조회 구간을 API 인자로. collectSurface 바깥에서도 쓴다. */
+const rangeOf = (p) => ({ startDate: p.start, endDate: p.end });
+
+/**
+ * page 행을 호스트별로 묶는다.
+ *
+ * "개발계가 걸렸다" 보다 "ncdev-dsstore 가 33회" 가 조치 가능한 정보다.
+ * 그 외 호스트도 같은 이유로 같은 모양이 필요해 함수로 뺐다.
+ */
+function hostBuckets(rows) {
+  const byHost = new Map();
+  for (const r of rows) {
+    let host;
+    try {
+      host = new URL(r.keys[0]).host;
+    } catch {
+      continue; // 파싱 안 되는 URL 은 건너뛴다
+    }
+    const acc = byHost.get(host) ?? { host, urls: 0, impressions: 0, clicks: 0 };
+    acc.urls++;
+    acc.impressions += r.impressions ?? 0;
+    acc.clicks += r.clicks ?? 0;
+    byHost.set(host, acc);
+  }
+  return [...byHost.values()].sort((a, b) => b.impressions - a.impressions);
+}
 
 const rowsToMap = (rows) =>
   new Map(
@@ -426,7 +463,7 @@ function attachQueries(buckets, curMap, prevMap) {
 
 async function collectSurface({ type, regex, periods, withQueries, site }) {
   const base = regex ? pageFilter(regex) : {};
-  const range = (p) => ({ startDate: p.start, endDate: p.end });
+  const range = rangeOf;
   const rows = (p, dim) =>
     query(
       { ...range(p), ...base, type, dimensions: [dim], rowLimit: FETCH_N },
@@ -873,26 +910,43 @@ async function main() {
     rowLimit: 1000,
   });
 
-  const devByHost = new Map();
-  for (const row of devRows.map((r) => ({
-    key: r.keys[0],
-    impressions: r.impressions ?? 0,
-    clicks: r.clicks ?? 0,
-  }))) {
-    let host;
-    try {
-      host = new URL(row.key).host;
-    } catch {
-      continue; // 파싱 안 되는 URL 은 건너뛴다
-    }
-    const acc = devByHost.get(host) ?? { host, urls: 0, impressions: 0, clicks: 0 };
-    acc.urls++;
-    acc.impressions += row.impressions;
-    acc.clicks += row.clicks;
-    devByHost.set(host, acc);
-  }
-  const devHostList = [...devByHost.values()].sort(
-    (a, b) => b.impressions - a.impressions,
+  const devHostList = hostBuckets(devRows);
+
+  /*
+   * 세 서비스 어디에도 안 걸리는 호스트를 센다.
+   *
+   * 화면은 세 서비스만 그리는데 Search Console 속성은 도메인 전체다. 그래서
+   * "이번 주 전체 클릭" 이 속성 총계와 맞지 않는다. 실측(2026-09-21~27):
+   * 도메인 전체 30,621 클릭 중 791(2.6%)이 images · help · edu · about ·
+   * jisatam 같은 호스트에서 나왔고 화면 어디에도 없었다.
+   *
+   * 네 번째 탭을 만들 규모는 아니다. 다만 합계가 안 맞는 것은 설명이 있어야
+   * 한다 — 모르면 "수치가 틀렸다" 가 되고, 알면 "저건 범위 밖" 이 된다.
+   *
+   * 빼기로 구하지 않고 제외 필터로 직접 받는다. 빼기는 어느 호스트인지
+   * 알려주지 않아서, 새 서비스가 생겨도 눈치챌 수 없다.
+   */
+  console.error('  수집 그 외 호스트…');
+  const KNOWN_HOST_REGEX =
+    '^https?://((www\\.|m\\.)?dongascience\\.com' +
+    '|dl\\.dongascience\\.com' +
+    '|dsstore\\.dongascience\\.com' +
+    '|(dev|ncdev|stg|staging|test)[.-][a-z0-9-]*\\.dongascience\\.com)/';
+  const otherFilter = excludingPageFilter(KNOWN_HOST_REGEX);
+  const [otherCur, otherPrev, otherRows] = await Promise.all([
+    query({ ...rangeOf(periods.current), ...otherFilter, type: 'web' }),
+    query({ ...rangeOf(periods.previous), ...otherFilter, type: 'web' }),
+    query({
+      ...rangeOf(periods.current),
+      ...otherFilter,
+      type: 'web',
+      dimensions: ['page'],
+      rowLimit: 5000,
+    }),
+  ]);
+  const otherHostList = hostBuckets(otherRows);
+  console.error(
+    `    호스트 ${otherHostList.length}개 · 클릭 ${nf(totalsFrom(otherCur).clicks)} · 노출 ${nf(totalsFrom(otherCur).impressions)}`,
   );
 
   console.error('  수집 d라이브러리 전용 속성 (교차검증)…');
@@ -947,6 +1001,13 @@ async function main() {
       // 서빙하는 개발 서버의 살아 있는 주소 목록을 모아 주는 셈이 된다. 호스트와
       // 건수만 있으면 "제거가 끝났나"는 알 수 있고, 어느 URL 인지는 GSC 에서 본다.
       urlCount: devRows.length,
+    },
+    // 세 서비스 밖 호스트. 화면에서 "합계가 왜 안 맞나" 를 설명하는 데 쓴다.
+    otherHosts: {
+      current: totalsFrom(otherCur),
+      previous: totalsFrom(otherPrev),
+      hosts: otherHostList,
+      urlCount: otherRows.length,
     },
     crossCheck: dlPrefix
       ? {
