@@ -35,8 +35,26 @@ const isDarkNow = () => {
   return window.matchMedia?.('(prefers-color-scheme: dark)').matches ?? false;
 };
 
+/**
+ * 움직임을 줄여달라고 해뒀는지 본다.
+ *
+ * theme.css 맨 아래 규칙이 CSS transition 은 전부 끄지만, Recharts 툴팁은
+ * CSS 가 아니라 JS 타이머로 움직인다 — 그 선언이 닿지 않는다. 그래서 같은
+ * 설정을 여기서 한 번 더 읽어 `motion` 을 0 으로 만든다.
+ */
+const calmNow = () =>
+  typeof window !== 'undefined' &&
+  (window.matchMedia?.('(prefers-reduced-motion: reduce)').matches ?? false);
+
 export function useChartTheme() {
   const [dark, setDark] = useState(isDarkNow);
+  const [calm, setCalm] = useState(calmNow);
+  useEffect(() => {
+    const mq = window.matchMedia('(prefers-reduced-motion: reduce)');
+    const sync = () => setCalm(mq.matches);
+    mq.addEventListener('change', sync);
+    return () => mq.removeEventListener('change', sync);
+  }, []);
   useEffect(() => {
     const sync = () => setDark(isDarkNow());
     const mq = window.matchMedia('(prefers-color-scheme: dark)');
@@ -52,9 +70,14 @@ export function useChartTheme() {
       observer.disconnect();
     };
   }, []);
-  return dark
-    ? { grid: '#2a2839', axis: '#8a879f', tip: '#16151f', tipLine: '#2a2839', ink: '#fff', crit: '#ef6a6a' }
-    : { grid: '#e5e2ef', axis: '#8a879f', tip: '#fffffe', tipLine: '#e5e2ef', ink: '#100f1a', crit: '#d03b3b' };
+  const palette = dark
+    ? { grid: '#2a2839', axis: '#8a879f', tip: '#16151f', tipLine: '#2a2839', ink: '#fff', crit: '#ef6a6a',
+        band: 'rgba(255,255,255,.05)' }
+    : { grid: '#e5e2ef', axis: '#8a879f', tip: '#fffffe', tipLine: '#e5e2ef', ink: '#100f1a', crit: '#d03b3b',
+        band: 'rgba(16,15,26,.045)' };
+  // 120ms — "따라온다"는 느낌은 남기고 지연은 안 느껴지는 지점. 기본값 400ms 는
+  // 막대 사이를 옮겨다닐 때 툴팁이 뒤늦게 미끄러져 와 어느 막대인지 헷갈린다.
+  return { ...palette, motion: calm ? 0 : 120 };
 }
 
 const tooltipStyle = (t) => ({
@@ -64,6 +87,25 @@ const tooltipStyle = (t) => ({
   fontSize: 12,
   color: t.ink,
   boxShadow: '0 8px 24px -12px rgba(0,0,0,.4)',
+});
+
+/**
+ * 툴팁 한 벌 — 겉모습 · 따라오는 속도 · 가리킨 곳 표시.
+ *
+ * 가리킨 곳 표시는 차트마다 모양이 달라야 한다. 막대는 그 구간을 덮는 띠,
+ * 선은 그 지점의 세로 점선, 레이더는 덮을 구간 자체가 없으니 끈다.
+ */
+const CURSORS = {
+  band: (t) => ({ fill: t.band }),
+  line: (t) => ({ stroke: t.axis, strokeWidth: 1, strokeDasharray: '3 3' }),
+  none: () => false,
+};
+
+export const tooltipProps = (t, cursor = 'band') => ({
+  contentStyle: tooltipStyle(t),
+  cursor: CURSORS[cursor](t),
+  isAnimationActive: t.motion > 0,
+  animationDuration: t.motion,
 });
 
 const axisProps = (t) => ({
@@ -112,7 +154,7 @@ export function TrendLines({ history, metric = 'clicks', surface = 'web' }) {
                 <XAxis dataKey="week" {...axisProps(t)} interval="preserveStartEnd" minTickGap={24} />
                 <YAxis {...axisProps(t)} tickFormatter={compact} width={48} />
                 <Tooltip
-                  contentStyle={tooltipStyle(t)}
+                  {...tooltipProps(t, 'line')}
                   formatter={(v) => [nf(v), metric === 'clicks' ? '클릭' : '노출']}
                   labelFormatter={(l) => `주 종료 ${l}`}
                 />
@@ -122,7 +164,7 @@ export function TrendLines({ history, metric = 'clicks', surface = 'web' }) {
                   stroke={s.hex}
                   strokeWidth={2}
                   dot={false}
-                  activeDot={{ r: 4 }}
+                  activeDot={{ r: 4.5, strokeWidth: 2, stroke: t.tip }}
                   connectNulls isAnimationActive={false} />
               </LineChart>
             </ResponsiveContainer>
@@ -167,7 +209,7 @@ export function SurfaceStack({ history, serviceKey = 'donga' }) {
           <XAxis dataKey="week" {...axisProps(t)} interval="preserveStartEnd" minTickGap={24} />
           <YAxis {...axisProps(t)} tickFormatter={compact} width={52} />
           <Tooltip
-            contentStyle={tooltipStyle(t)}
+            {...tooltipProps(t, 'band')}
             formatter={(v, n) => [nf(v), n === 'web' ? '웹 검색' : 'Discover']}
             labelFormatter={(l) => `주 종료 ${l}`}
           />
@@ -220,7 +262,7 @@ export function ReadinessRadar({ axis }) {
             axisLine={false}
           />
           <Tooltip
-            contentStyle={tooltipStyle(t)}
+            {...tooltipProps(t, 'none')}
             formatter={(v, key, entry) => [
               `${v}% (배점 ${entry?.payload?.max})`,
               SERVICES.find((s) => s.key === key)?.name ?? key,
@@ -276,7 +318,7 @@ export function TopBars({ rows, color, label, isUrl = false, limit = 10 }) {
           tick={{ fill: t.axis, fontSize: 10.5 }}
         />
         <Tooltip
-          contentStyle={tooltipStyle(t)}
+          {...tooltipProps(t, 'band')}
           formatter={(v) => nf(v)}
           labelFormatter={(_, p) => p?.[0]?.payload?.full ?? ''}
         />
@@ -304,7 +346,7 @@ export function ChangeBars({ rows }) {
         <XAxis type="number" {...axisProps(t)} tickFormatter={(v) => `${v > 0 ? '+' : ''}${v}%`} />
         <YAxis type="category" dataKey="label" {...axisProps(t)} width={150} />
         <Tooltip
-          contentStyle={tooltipStyle(t)}
+          {...tooltipProps(t, 'band')}
           formatter={(v, _n, p) => [
             `${v > 0 ? '+' : ''}${v.toFixed(1)}%  (${nf(p.payload.prev)} → ${nf(p.payload.cur)})`,
             '전주 대비',

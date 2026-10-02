@@ -13,6 +13,9 @@
   --muted: #8a879f;
   --hair: rgba(16, 15, 26, 0.1);
   --grid: #e5e2ef;
+  /* 가리킨 막대의 밝기 배수. 밝은 화면은 어둡게, 어두운 화면은 밝게 눌러야 보인다. */
+  --bar-hover: 0.92;
+  --band: rgba(16, 15, 26, 0.045);
 
   --accent: #6d3aff;
   --accent-soft: #ece4ff;
@@ -45,6 +48,8 @@
     --muted: #8a879f;
     --hair: rgba(255, 255, 255, 0.12);
     --grid: #2a2839;
+    --bar-hover: 1.25;
+    --band: rgba(255, 255, 255, 0.05);
     --accent: #9d7bff;
     --accent-soft: #2a1f4d;
     --accent-ink: #c3adff;
@@ -69,6 +74,8 @@
   --ink-2: #c2bfd4;
   --hair: rgba(255, 255, 255, 0.12);
   --grid: #2a2839;
+  --bar-hover: 1.25;
+  --band: rgba(255, 255, 255, 0.05);
   --accent: #9d7bff;
   --accent-soft: #2a1f4d;
   --accent-ink: #c3adff;
@@ -293,5 +300,19 @@ footer code {
 }
 
 .state { padding: 64px 16px; text-align: center; color: var(--muted); }
+
+/*
+ * 차트 상호작용.
+ *
+ * 진입 애니메이션(막대가 0 에서 자라는 것)은 두지 않는다 — 매주 열어 숫자만
+ * 확인하는 화면이라 다 자랄 때까지 읽기를 막고, 탭을 오가거나 밝기를 바꿀
+ * 때마다 처음부터 다시 재생된다. 대신 가리킨 것에만 반응하게 한다.
+ * 전부 CSS transition 이라 바로 아래 prefers-reduced-motion 규칙이 그대로 끈다.
+ */
+.recharts-bar-rectangle { transition: filter 0.13s ease; }
+.recharts-bar-rectangle:hover { filter: brightness(var(--bar-hover)); }
+
+/* 툴팁 띠가 막대 위를 덮으면 위의 :hover 가 막대에 닿지 못한다. */
+.recharts-tooltip-cursor { pointer-events: none; }
 
 @media (prefers-reduced-motion: reduce) { * { transition: none !important; animation: none !important; } }

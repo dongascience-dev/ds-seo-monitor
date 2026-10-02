@@ -8,16 +8,9 @@ import {
   XAxis,
   YAxis,
 } from 'recharts';
-import { useChartTheme } from './Charts.jsx';
+import { tooltipProps, useChartTheme } from './Charts.jsx';
 import { SERVICES, change, compact, fmtDate, nf, signed } from '../lib/format.js';
 
-const tip = (t) => ({
-  background: t.tip,
-  border: `1px solid ${t.tipLine}`,
-  borderRadius: 10,
-  fontSize: 12,
-  color: t.ink,
-});
 const ax = (t) => ({ stroke: t.axis, tick: { fill: t.axis, fontSize: 11 }, tickLine: false });
 
 /**
@@ -70,7 +63,7 @@ function CountryBars({ countries, color, limit = 12 }) {
           width={124}
           tick={<CountryTick flagged={flagged} t={t} />}
         />
-        <Tooltip contentStyle={tip(t)} formatter={(v) => nf(v)} />
+        <Tooltip {...tooltipProps(t)} formatter={(v) => nf(v)} />
         <Legend wrapperStyle={{ fontSize: 11.5, color: t.axis }} />
         <Bar dataKey="전주" fill={t.grid} radius={[0, 3, 3, 0]} isAnimationActive={false} />
         <Bar dataKey="이번주" fill={color} radius={[0, 3, 3, 0]} isAnimationActive={false} />
@@ -93,7 +86,7 @@ function EngineBars({ engines, limit = 6 }) {
         <CartesianGrid stroke={t.grid} horizontal={false} />
         <XAxis type="number" {...ax(t)} tickFormatter={compact} />
         <YAxis type="category" dataKey="name" {...ax(t)} width={92} />
-        <Tooltip contentStyle={tip(t)} formatter={(v) => nf(v)} />
+        <Tooltip {...tooltipProps(t)} formatter={(v) => nf(v)} />
         <Legend wrapperStyle={{ fontSize: 11.5, color: t.axis }} />
         <Bar dataKey="전주" fill={t.grid} radius={[0, 3, 3, 0]} isAnimationActive={false} />
         <Bar dataKey="이번주" fill="#6d3aff" radius={[0, 3, 3, 0]} isAnimationActive={false} />
