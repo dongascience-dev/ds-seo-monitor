@@ -7,6 +7,7 @@ import {
   SurfaceBlock,
 } from './components/Sections.jsx';
 import { AiSection, CountrySection } from './components/Ga4.jsx';
+import { Summary } from './components/Summary.jsx';
 import { SERVICES, fmtDate, fmtDateTime, nf } from './lib/format.js';
 
 /** 캐시 우회 — 수집 워크플로가 JSON 만 갈아끼우므로 빌드 해시가 바뀌지 않는다. */
@@ -118,7 +119,9 @@ export default function App() {
     ])
       .then(([g, h, r, a]) => {
         setGsc(g);
-        setHistory(Array.isArray(h) ? h : []);
+        // 진행 중인 주(N일 합계)가 섞여 있으면 추세선이 절벽처럼 꺾인다.
+        // 수집기가 더는 넣지 않지만, 예전에 쌓인 JSON 을 읽을 수 있어 여기서도 거른다.
+        setHistory(Array.isArray(h) ? h.filter((w) => w.days === 7) : []);
         setReadiness(r);
         setGa4(a);
       })
@@ -161,6 +164,9 @@ export default function App() {
 
   const { periods } = gsc;
   const stale = staleness(gsc.generatedAt);
+  // 주가 아직 안 끝났으면 화면 어디서도 "주간 합계" 로 읽히면 안 된다.
+  // GSC 2~3일 지연 + 매일 1회 수집이라 주 초에는 늘 이 상태가 된다.
+  const partial = periods.current.partial ?? periods.current.days < 7;
 
   return (
     <>
@@ -176,7 +182,7 @@ export default function App() {
           <div className="chips">
             <span className="chip">
               조회 기간 <b>{fmtDate(periods.current.start)}~{fmtDate(periods.current.end)}</b> (
-              {periods.current.days}일)
+              {periods.current.days}일{partial && ' · 진행 중'})
             </span>
             <span className="chip">
               Data through <b>{gsc.dataThrough}</b>
@@ -231,10 +237,12 @@ export default function App() {
 
         {tab === 'overview' && (
           <>
+            <Summary gsc={gsc} />
+
             <section>
               <div className="sec-head">
                 <span className="eyebrow">Overview</span>
-                <h2>이번 주 vs 전주</h2>
+                <h2>{partial ? '이번 주(진행 중) vs 전주' : '이번 주 vs 전주'}</h2>
               </div>
               {/*
                 기간을 문장에 묻으면 "이번 주가 언제까지인지"를 매번 헤더에서
@@ -246,7 +254,9 @@ export default function App() {
                   <b>
                     {fmtDate(periods.current.start)}~{fmtDate(periods.current.end)}
                   </b>
-                  <small>{periods.current.days}일</small>
+                  <small>
+                    {periods.current.days}일{partial && ' · 진행 중'}
+                  </small>
                 </span>
                 <span className="vs">vs</span>
                 <span>
@@ -259,8 +269,18 @@ export default function App() {
               </div>
               <p className="sec-note">
                 전주는 <b>같은 요일 수</b>로 잘라 비교합니다. 기간이 다르면 증감이
-                왜곡됩니다. 이번 주 전체 클릭은 웹 검색 {nf(totals.web)} · Discover{' '}
-                {nf(totals.discover)} 입니다.
+                왜곡됩니다.{' '}
+                {partial ? (
+                  <>
+                    아래 수치는 <b>{periods.current.days}일치 합계</b>(주간 합계가 아닙니다) —
+                    웹 검색 {nf(totals.web)} · Discover {nf(totals.discover)} 클릭입니다.
+                  </>
+                ) : (
+                  <>
+                    이번 주 전체 클릭은 웹 검색 {nf(totals.web)} · Discover{' '}
+                    {nf(totals.discover)} 입니다.
+                  </>
+                )}
               </p>
               <ServiceCards services={gsc.services} />
               <OverviewChange services={gsc.services} />
@@ -382,7 +402,9 @@ export default function App() {
                     <b>
                       {fmtDate(periods.current.start)}~{fmtDate(periods.current.end)}
                     </b>
-                    <small>{periods.current.days}일</small>
+                    <small>
+                      {periods.current.days}일{partial && ' · 진행 중'}
+                    </small>
                   </span>
                   <span className="vs">vs</span>
                   <span>
@@ -548,6 +570,18 @@ export default function App() {
             <li>
               <b>데이터는 2~3일 지연된다.</b> "어제까지"를 가정하지 않고, 실제로 행이 돌아온
               마지막 날(<code>{gsc.dataThrough}</code>)을 기준일로 씁니다.
+            </li>
+            <li>
+              <b>주가 끝나기 전에는 N일치 합계다.</b> GSC 가 2~3일 지연되므로 주 초에
+              열면 이번 주 구간이 1~3일로 잡힙니다. 전주도 같은 요일 수로 잘라 비교하니
+              증감 자체는 공정하지만 <b>주간 합계는 아닙니다</b>. 그런 주는 추세선과 12주
+              기준선에도 넣지 않습니다 — 7일 합계 사이에 섞이면 둘 다 틀어집니다.
+            </li>
+            <li>
+              <b>검색어 합계는 페이지 합계보다 작습니다.</b> 구글이 개인 식별 우려가 있는
+              희소 검색어를 응답에서 빼기 때문입니다. 서비스마다 손실 폭이 달라 각
+              "상위 검색어" 패널에 이번 주 커버리지를 적어 뒀습니다. 페이지 쪽 수치가
+              총계와 맞는 쪽이고, 검색어는 보이는 만큼만입니다.
             </li>
             <li>
               페이지·검색어는 기간별 상위 5,000행까지 받는다. 잘린 경우 반대쪽 기간에 없는

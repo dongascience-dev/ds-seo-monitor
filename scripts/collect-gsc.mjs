@@ -533,7 +533,14 @@ function baselineFrom(history, currentWeekEnd, pick) {
   };
 }
 
-function buildInsights(services, devHosts, history = [], currentWeekEnd = '') {
+function buildInsights(
+  services,
+  devHosts,
+  history = [],
+  currentWeekEnd = '',
+  period = { days: 7, partial: false },
+) {
+  const { days: periodDays = 7, partial = false } = period;
   const out = [];
   const push = (severity, service, kind, text, extra = {}) =>
     out.push({ severity, service, kind, text, ...extra });
@@ -556,11 +563,18 @@ function buildInsights(services, devHosts, history = [], currentWeekEnd = '') {
           (h) => h.services?.[key]?.[surface]?.clicks,
         );
         // 평소 범위(최근 12주 10~90분위) 안이면 전주 대비가 커도 경보가 아니다.
+        //
+        // 다만 기준선은 7일 합계다. 진행 중인 주(N일)의 값과는 단위가 달라
+        // 그대로 대면 매주 월요일마다 전 서비스가 "평소 범위 밖"으로 찍힌다.
+        // 비교할 수 없을 때는 비교하지 않았다고 적는다.
+        const comparable = Boolean(base) && !partial;
         const inBand =
-          base && c.clicks >= base.low && c.clicks <= base.high;
-        const bandNote = base
+          comparable && c.clicks >= base.low && c.clicks <= base.high;
+        const bandNote = comparable
           ? ` · 최근 ${base.weeks}주 중앙값 ${nf(base.median)} (${nf(base.low)}~${nf(base.high)}) — ${inBand ? '평소 범위 안' : '평소 범위 밖'}`
-          : '';
+          : base
+            ? ` · 진행 중인 주(${periodDays}일) 합계라 최근 ${base.weeks}주 범위(7일 기준)와 직접 비교하지 않는다`
+            : '';
         push(
           inBand ? 'info' : dClicks > 0 ? 'good' : 'crit',
           key,
@@ -646,15 +660,36 @@ function buildInsights(services, devHosts, history = [], currentWeekEnd = '') {
       currentWeekEnd,
       (h) => h.services?.[key]?.web?.clicks,
     );
-    const range = base
+    //
+    // 전에는 `inBand: true` 를 박아 두고 문장에도 "범위 안"을 무조건 붙였다.
+    // 클릭 45 에 "최근 12주 범위 199~248 안" 같은 거짓말이 화면에 떴다.
+    // 실제로 재서, 범위 밖이면 그렇게 적고 등급도 올린다 — 전주 대비는
+    // 잠잠한데 수준만 조용히 내려앉은 경우가 정확히 놓치기 쉬운 쪽이다.
+    const comparable = Boolean(base) && !partial;
+    const inBand = comparable && c.clicks >= base.low && c.clicks <= base.high;
+
+    if (comparable && !inBand) {
+      push(
+        'warn',
+        key,
+        'off-baseline',
+        `전주 대비 임계값을 넘은 변화는 없지만 수준이 평소 범위 밖 — 웹 검색 클릭 ${nf(c.clicks)} · 최근 ${base.weeks}주 범위 ${nf(base.low)}~${nf(base.high)}`,
+        { baseline: base, inBand: false },
+      );
+      continue;
+    }
+
+    const range = comparable
       ? ` · 최근 ${base.weeks}주 범위 ${nf(base.low)}~${nf(base.high)} 안`
-      : '';
+      : base
+        ? ` · 진행 중인 주(${periodDays}일) 합계라 최근 ${base.weeks}주 범위(7일 기준)와 직접 비교하지 않는다`
+        : '';
     push(
       'ok',
       key,
       'quiet',
       `임계값을 넘은 변화 없음 — 웹 검색 클릭 ${nf(c.clicks)}${range}`,
-      { baseline: base, inBand: true },
+      { baseline: base, inBand: Boolean(inBand) },
     );
   }
 
@@ -748,8 +783,13 @@ async function main() {
         86400000,
     ) + 1;
 
+  // 주가 아직 안 끝났으면 그렇게 적어 둔다. 화면이 "이번 주"라고 쓰면서
+  // 실제로는 월요일 하루치를 보여주는 일이 없게 하려는 것이다. GSC 2~3일
+  // 지연 + 매일 1회 수집이라, 주 초에는 이 값이 늘 1~3일이 된다.
+  const partial = days < 7;
+
   const periods = {
-    current: { start: currentStart, end: dataThrough, days },
+    current: { start: currentStart, end: dataThrough, days, partial },
     previous: {
       start: addDays(currentStart, -7),
       end: addDays(currentStart, -7 + (days - 1)),
@@ -764,7 +804,7 @@ async function main() {
   };
 
   console.error(
-    `기준일 ${dataThrough} · 이번 주 ${periods.current.start}~${periods.current.end} (${days}일) vs 전주 ${periods.previous.start}~${periods.previous.end} · 전전주 ${periods.beforePrevious.start}~${periods.beforePrevious.end}`,
+    `기준일 ${dataThrough} · 이번 주 ${periods.current.start}~${periods.current.end} (${days}일${partial ? ' · 진행 중' : ''}) vs 전주 ${periods.previous.start}~${periods.previous.end} · 전전주 ${periods.beforePrevious.start}~${periods.beforePrevious.end}`,
   );
 
   const services = {};
@@ -854,6 +894,14 @@ async function main() {
   try {
     history = JSON.parse(readFileSync(historyPath, 'utf8'));
     if (!Array.isArray(history)) history = [];
+    // 예전 수집이 넣어 둔 진행 중인 주(N일)를 걷어낸다. 7일 합계 사이에
+    // 1일 합계가 섞여 있으면 추세선이 절벽처럼 꺾이고, 그 값을 기준선으로
+    // 쓰는 인사이트까지 같이 틀어진다.
+    const before = history.length;
+    history = history.filter((h) => h.days === 7);
+    if (history.length < before) {
+      console.error(`  히스토리에서 진행 중인 주 ${before - history.length}건 제거`);
+    }
   } catch {
     // 파일이 없는 첫 실행. 빈 배열로 시작한다.
   }
@@ -888,6 +936,7 @@ async function main() {
       { current: devWeb.current, hosts: devHostList },
       history,
       periods.current.end,
+      { days: periods.current.days, partial },
     ),
   };
 
@@ -912,7 +961,27 @@ async function main() {
     devHosts: devWeb.current,
   };
 
-  const fresh = [entry];
+  // 진행 중인 주는 추세에 넣지 않는다. 주가 끝나면 그때 7일 합계로 들어온다.
+  const fresh = partial ? [] : [entry];
+  if (partial) {
+    console.error(
+      `  진행 중인 주(${days}일)라 히스토리에 기록하지 않음 — 주 종료 후 7일 합계로 기록된다`,
+    );
+  }
+
+  // 진행 중인 주라면, 직전 완결 주가 히스토리에 들어와 있는지 확인한다.
+  //
+  // 완결 주는 dataThrough 가 일요일에 딱 걸린 날에만 기록된다. 그런데 GSC
+  // 지연 폭은 날마다 달라서 토요일 다음 날 바로 월요일로 뛰는 일이 있다.
+  // 그러면 그 주는 영영 기록되지 않고 추세선에 구멍이 남는다 — 12주 기준선도
+  // 그만큼 표본이 준다. 빠져 있으면 합계만 따로 받아 메운다 (주당 5회 호출).
+  if (partial) {
+    const lastCompleteEnd = addDays(periods.current.start, -1);
+    if (!history.some((h) => h.weekEnd === lastCompleteEnd)) {
+      console.error(`\n직전 완결 주 ${lastCompleteEnd} 가 히스토리에 없다. 메운다…`);
+      fresh.push(...(await backfill(1, lastCompleteEnd)));
+    }
+  }
 
   if (args.backfill) {
     const weeks = Number(args.backfill);

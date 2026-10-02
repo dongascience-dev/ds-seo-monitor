@@ -237,7 +237,9 @@ const QueryDetail = ({ r }) => (
         page+query 조합은 희소 검색어가 익명화로 빠진다. 커버리지가 낮은데
         그대로 두면 "숫자가 안 맞는다"로 읽히므로 얼마나 보이는지 밝힌다.
       */}
-      {r.queryCoverage === 0 && <> · 이번 주 검색어는 확인되지 않음 (전주 기준)</>}
+      {r.queryCoverage === 0 && (
+        <> · 이번 주 클릭은 어느 검색어에서 왔는지 확인되지 않음 (노출·전주 값은 아래 그대로)</>
+      )}
       {r.queryCoverage > 0 && r.queryCoverage < 100 && (
         <> · 이번 주 클릭의 {r.queryCoverage}%가 확인됨</>
       )}
@@ -439,32 +441,78 @@ function RiserPair({ now, prevWeek, periods, isUrl }) {
 
 export function SurfaceBlock({ surface, label, color, periods }) {
   const { pages, queries, pagesPrevWeek, queriesPrevWeek } = surface;
-  return (
-    <>
-      <div className="grid-2" style={{ marginTop: 18 }}>
-        <div className="panel">
-          <h3>상위 콘텐츠 — {label}</h3>
-          <p className="p-note">클릭 기준 상위 10건 · 회색이 전주</p>
-          <TopBars rows={pages.top} color={color} isUrl />
-        </div>
-        {queries ? (
-          <div className="panel">
-            <h3>상위 검색어</h3>
-            <p className="p-note">클릭 기준 상위 10건. 회색이 전주.</p>
-            <TopBars rows={queries.top} color={color} />
-          </div>
-        ) : (
-          <div className="panel">
-            <h3>검색어</h3>
-            <p className="p-note">
-              Discover 는 검색어와 순위가 없습니다. 검색해서 온 게 아니라 피드 추천으로
-              온 유입이라 GSC 가 제공하지 않습니다.
-            </p>
-          </div>
-        )}
-      </div>
 
-      <div className="sec-head" style={{ marginTop: 34 }}>
+  /*
+   * 두 패널의 합이 안 맞는다 — 페이지를 다 더하면 총 클릭이 되는데 검색어를 다
+   * 더하면 그보다 한참 작다. 구글이 개인 식별 우려가 있는 희소 검색어를 응답에서
+   * 빼기 때문이다. DS스토어는 보이는 검색어가 클릭의 28% 뿐이다.
+   *
+   * 적어 두지 않으면 "숫자가 틀렸다" 로 읽히고, 한 번 그렇게 읽히면 맞는 수치까지
+   * 같이 의심받는다. 얼마나 보이는지를 그 자리에서 밝힌다.
+   */
+  const queryClicks = queries ? queries.top.reduce((a, r) => a + r.clicks, 0) : 0;
+  const queryCoverage =
+    queries && surface.current.clicks > 0
+      ? Math.round((queryClicks / surface.current.clicks) * 100)
+      : null;
+
+  /*
+   * 주가 끝나기 전에는 급상승·급하락 표를 접는다.
+   *
+   * 상위 콘텐츠·검색어는 "지금 얼마나 들어오나" 라 하루치여도 읽을 게 있다.
+   * 반면 급상승·급하락은 전주 같은 요일과의 차이인데, 하루치에서는 그 차이가
+   * ±2~3클릭이다. 월요일에 기사 하나가 2클릭 더 받은 것이 "급상승" 으로
+   * 올라오고, 표 전체가 isNew · isGone 딱지로 덮인다 — 하루만 보면 당연한
+   * 일인데 신호처럼 읽힌다.
+   *
+   * 지우지는 않는다. 볼 사람은 펼쳐서 보면 된다. 기본값만 바꾼다.
+   */
+  const partial = periods.current.partial ?? periods.current.days < 7;
+  const biggestMove = Math.max(
+    pages.risers[0]?.deltaClicks ?? 0,
+    Math.abs(pages.fallers[0]?.deltaClicks ?? 0),
+    queries?.risers?.[0]?.deltaClicks ?? 0,
+    Math.abs(queries?.fallers?.[0]?.deltaClicks ?? 0),
+  );
+
+  const topPanels = (
+    <div className="grid-2" style={{ marginTop: 18 }}>
+      <div className="panel">
+        <h3>상위 콘텐츠 — {label}</h3>
+        <p className="p-note">클릭 기준 상위 10건 · 회색이 전주</p>
+        <TopBars rows={pages.top} color={color} isUrl />
+      </div>
+      {queries ? (
+        <div className="panel">
+          <h3>상위 검색어</h3>
+          <p className="p-note">
+            클릭 기준 상위 10건. 회색이 전주.
+            {queryCoverage !== null && (
+              <>
+                {' '}
+                이번 주 클릭 {nf(surface.current.clicks)} 중 <b>{nf(queryClicks)}</b>(
+                {queryCoverage}%)만 검색어가 확인됩니다 — 나머지는 구글이 희소 검색어를
+                익명화해 응답에서 뺀 몫이라 <b>검색어를 다 더해도 총 클릭이 되지 않습니다</b>.
+              </>
+            )}
+          </p>
+          <TopBars rows={queries.top} color={color} />
+        </div>
+      ) : (
+        <div className="panel">
+          <h3>검색어</h3>
+          <p className="p-note">
+            Discover 는 검색어와 순위가 없습니다. 검색해서 온 게 아니라 피드 추천으로
+            온 유입이라 GSC 가 제공하지 않습니다.
+          </p>
+        </div>
+    )}
+    </div>
+  );
+
+  const deltaBlocks = (
+    <>
+      <div className="sec-head" style={{ marginTop: partial ? 0 : 34 }}>
         <span className="eyebrow">2주 비교</span>
         <h2 style={{ fontSize: 15 }}>급상승 콘텐츠 — {label}</h2>
       </div>
@@ -518,6 +566,26 @@ export function SurfaceBlock({ surface, label, color, periods }) {
             chart
           />
         </>
+      )}
+    </>
+  );
+
+  return (
+    <>
+      {topPanels}
+      {partial ? (
+        <details className="fold">
+          <summary>
+            <b>급상승 · 급하락 표</b>
+            <span>
+              주가 끝나면 펼칩니다 — 지금은 {periods.current.days}일치라 가장 큰 변동도{' '}
+              {nf(biggestMove)}클릭입니다. 눌러서 볼 수 있습니다.
+            </span>
+          </summary>
+          <div className="fold-body">{deltaBlocks}</div>
+        </details>
+      ) : (
+        deltaBlocks
       )}
     </>
   );

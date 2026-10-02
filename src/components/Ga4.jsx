@@ -208,7 +208,9 @@ export function CountrySection({ ga4 }) {
           <h2>채널 구성</h2>
         </div>
         <p className="sec-note">
-          기간 {fmtDate(ga4.periods.current.start)}~{fmtDate(ga4.periods.current.end)} · 속성{' '}
+          기간 {fmtDate(ga4.periods.current.start)}~{fmtDate(ga4.periods.current.end)} (
+          {ga4.periods.current.days}일
+          {ga4.periods.current.days < 7 && ' · 주 진행 중이라 주간 합계가 아닙니다'}) · 속성{' '}
           <code>{ga4.property}</code>
         </p>
         <div className="tw">
