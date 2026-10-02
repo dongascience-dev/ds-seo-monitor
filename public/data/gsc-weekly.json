@@ -1,12 +1,13 @@
 {
-  "generatedAt": "2026-10-02T00:43:20.117Z",
+  "generatedAt": "2026-10-02T01:14:08.332Z",
   "site": "sc-domain:dongascience.com",
   "dataThrough": "2026-09-29",
   "periods": {
     "current": {
       "start": "2026-09-28",
       "end": "2026-09-29",
-      "days": 2
+      "days": 2,
+      "partial": true
     },
     "previous": {
       "start": "2026-09-21",
@@ -39874,11 +39875,11 @@
       "severity": "good",
       "service": "dl",
       "kind": "clicks",
-      "text": "웹 검색 클릭이 전주 대비 +53.3% (60 → 92) · 최근 12주 중앙값 226 (162~248) — 평소 범위 밖",
+      "text": "웹 검색 클릭이 전주 대비 +53.3% (60 → 92) · 진행 중인 주(2일) 합계라 최근 12주 범위(7일 기준)와 직접 비교하지 않는다",
       "baseline": {
         "weeks": 12,
         "median": 226,
-        "low": 162,
+        "low": 199,
         "high": 248
       },
       "inBand": false
@@ -39899,11 +39900,11 @@
       "severity": "good",
       "service": "store",
       "kind": "clicks",
-      "text": "웹 검색 클릭이 전주 대비 +23.1% (121 → 149) · 최근 12주 중앙값 339 (259~443) — 평소 범위 밖",
+      "text": "웹 검색 클릭이 전주 대비 +23.1% (121 → 149) · 진행 중인 주(2일) 합계라 최근 12주 범위(7일 기준)와 직접 비교하지 않는다",
       "baseline": {
         "weeks": 12,
-        "median": 339,
-        "low": 259,
+        "median": 369,
+        "low": 277,
         "high": 443
       },
       "inBand": false
