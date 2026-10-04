@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-10-03T00:42:14.357Z",
+  "generatedAt": "2026-10-04T03:54:14.398Z",
   "property": "properties/528374870",
   "dataThrough": "2026-09-29",
   "periods": {
@@ -313,8 +313,8 @@
         "current": {
           "Direct": 34590,
           "Organic Search": 25191,
+          "Unassigned": 2869,
           "Referral": 1541,
-          "Unassigned": 625,
           "AI Assistant": 470,
           "Organic Social": 223,
           "Paid Search": 85,
