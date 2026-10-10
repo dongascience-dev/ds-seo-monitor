@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-10-09T00:50:39.752Z",
+  "generatedAt": "2026-10-10T00:48:35.118Z",
   "property": "properties/528374870",
   "dataThrough": "2026-10-06",
   "periods": {
@@ -24,7 +24,7 @@
         "dongascience.com"
       ],
       "sessions": {
-        "current": 48566,
+        "current": 48567,
         "previous": 63279
       },
       "countries": [
@@ -314,7 +314,7 @@
           "Organic Search": 21504,
           "Direct": 21244,
           "Referral": 2237,
-          "Unassigned": 586,
+          "Unassigned": 648,
           "AI Assistant": 367,
           "Organic Social": 209,
           "Paid Search": 54,
