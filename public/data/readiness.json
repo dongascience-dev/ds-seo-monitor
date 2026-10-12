@@ -1,6 +1,6 @@
 {
-  "measuredAt": "2026-10-05",
-  "generatedAt": "2026-10-05T00:47:21.874Z",
+  "measuredAt": "2026-10-12",
+  "generatedAt": "2026-10-12T00:51:08.793Z",
   "source": "자동 측정 — robots.txt · sitemap.xml · 상세 페이지 크롤 (서비스당 최대 150건)",
   "caveat": "배점(가중치)은 업계 표준이 아니라 이 문서의 선택이다. 충족률은 실측이므로 서비스 간 순서는 신뢰할 수 있으나, 절대 점수는 배점을 바꾸면 달라진다. \"핵심 상세 수록\" 항목의 분모(전체 콘텐츠 수)만 추정치이며 auto:false 로 표시했다.",
   "services": [
@@ -30,9 +30,9 @@
             "store": 0
           },
           "notes": {
-            "donga": "2026-10-05 · 0일 전",
-            "dl": "2024-04-22T01:12:33+00:00 · 895일 전",
-            "store": "2024-03-05T05:20:22+00:00 · 943일 전"
+            "donga": "2026-10-11T22:15:00.000Z · 0일 전",
+            "dl": "2024-04-22T01:12:33+00:00 · 902일 전",
+            "store": "2024-03-05T05:20:22+00:00 · 950일 전"
           }
         },
         {
@@ -46,7 +46,7 @@
             "store": 0
           },
           "notes": {
-            "donga": "360/80,094 · 0.45%",
+            "donga": "362/80,094 · 0.45%",
             "dl": "2/34,700 · 0.01%",
             "store": "0/447 · 0.00%"
           }
@@ -62,7 +62,7 @@
             "store": 15
           },
           "notes": {
-            "donga": "중복·검색결과 180/561 · 32.1%",
+            "donga": "중복·검색결과 180/563 · 32.0%",
             "dl": "중복·검색결과 22/47 · 46.8%",
             "store": "중복·검색결과 7/145 · 4.8%"
           }
@@ -105,14 +105,14 @@
           "auto": true,
           "rule": "있기만 하면 되는 항목이라 배점을 낮췄다. 내용이 갈리는지는 AEO 의 설명 고유성에서 본다",
           "scores": {
-            "donga": 3.6,
+            "donga": 3.3,
             "dl": 4.5,
-            "store": 3.9
+            "store": 4
           },
           "notes": {
-            "donga": "108/150 · 72.0%",
+            "donga": "99/150 · 66.0%",
             "dl": "76/84 · 90.5%",
-            "store": "117/150 · 78.0%"
+            "store": "119/150 · 79.3%"
           }
         },
         {
@@ -176,14 +176,14 @@
           "auto": true,
           "rule": "meta description 충족률 × 15",
           "scores": {
-            "donga": 10.8,
+            "donga": 9.9,
             "dl": 13.6,
-            "store": 11.7
+            "store": 11.9
           },
           "notes": {
-            "donga": "108/150 · 72.0%",
+            "donga": "99/150 · 66.0%",
             "dl": "76/84 · 90.5%",
-            "store": "117/150 · 78.0%"
+            "store": "119/150 · 79.3%"
           }
         },
         {
@@ -192,14 +192,14 @@
           "auto": true,
           "rule": "자기만의 설명을 가진 페이지 비율 × 10 — 답변 엔진이 페이지를 구별하려면 요약문이 갈려야 한다",
           "scores": {
-            "donga": 7.1,
-            "dl": 7.7,
-            "store": 7
+            "donga": 6.5,
+            "dl": 7.4,
+            "store": 6.7
           },
           "notes": {
-            "donga": "106/150 · 70.7% · 같은 설명 최다 2건",
-            "dl": "65/84 · 77.4% · 같은 설명 최다 6건",
-            "store": "105/150 · 70.0% · 같은 설명 최다 2건"
+            "donga": "97/150 · 64.7% · 같은 설명 최다 2건",
+            "dl": "62/84 · 73.8% · 같은 설명 최다 6건",
+            "store": "100/150 · 66.7% · 같은 설명 최다 3건"
           }
         },
         {
@@ -326,15 +326,15 @@
       "sitemap": {
         "ok": true,
         "status": 200,
-        "total": 561,
+        "total": 563,
         "buckets": {
-          "detail": 360,
+          "detail": 362,
           "duplicate": 180,
           "search": 0,
           "list": 18,
           "other": 3
         },
-        "newestLastmod": "2026-10-05",
+        "newestLastmod": "2026-10-11T22:15:00.000Z",
         "staleDays": 0,
         "dynamic": true
       },
@@ -347,15 +347,15 @@
         "jsonLd": 150,
         "dateModified": 0,
         "canonical": 150,
-        "description": 108,
+        "description": 99,
         "titleUnique": {
           "unique": 150,
           "distinct": 150,
           "topDup": 1
         },
         "descUnique": {
-          "unique": 106,
-          "distinct": 107,
+          "unique": 97,
+          "distinct": 98,
           "topDup": 2
         },
         "softNotFound": 0,
@@ -395,7 +395,7 @@
           "other": 0
         },
         "newestLastmod": "2024-04-22T01:12:33+00:00",
-        "staleDays": 895,
+        "staleDays": 902,
         "dynamic": false
       },
       "detail": {
@@ -414,8 +414,8 @@
           "topDup": 2
         },
         "descUnique": {
-          "unique": 65,
-          "distinct": 68,
+          "unique": 62,
+          "distinct": 67,
           "topDup": 6
         },
         "softNotFound": 0,
@@ -452,7 +452,7 @@
           "other": 0
         },
         "newestLastmod": "2024-03-05T05:20:22+00:00",
-        "staleDays": 943,
+        "staleDays": 950,
         "dynamic": false
       },
       "detail": {
@@ -464,16 +464,16 @@
         "jsonLd": 0,
         "dateModified": 0,
         "canonical": 150,
-        "description": 117,
+        "description": 119,
         "titleUnique": {
           "unique": 150,
           "distinct": 150,
           "topDup": 1
         },
         "descUnique": {
-          "unique": 105,
-          "distinct": 111,
-          "topDup": 2
+          "unique": 100,
+          "distinct": 108,
+          "topDup": 3
         },
         "softNotFound": 0,
         "jsonLdTypes": []
