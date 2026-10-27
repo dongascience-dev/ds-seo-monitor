@@ -103,7 +103,7 @@ const SERVICES = [
  * 채점하면 숫자가 거짓말을 한다. 여기 한 줄 더하면 봇 탭에 열이 하나 는다.
  */
 const ROBOTS_ONLY = [
-  { key: 'jisatam', name: '지구사람탐사대', origin: 'https://jisatam.dongascience.com' },
+  { key: 'jisatam', name: '지구사랑탐사대', origin: 'https://jisatam.dongascience.com' },
 ];
 
 /**

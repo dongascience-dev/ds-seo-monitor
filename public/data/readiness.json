@@ -461,7 +461,7 @@
   "extraHosts": [
     {
       "key": "jisatam",
-      "name": "지구사람탐사대",
+      "name": "지구사랑탐사대",
       "origin": "https://jisatam.dongascience.com",
       "robots": {
         "status": 200,
