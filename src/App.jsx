@@ -7,6 +7,7 @@ import {
   ServiceCards,
   SurfaceBlock,
 } from './components/Sections.jsx';
+import { RobotsSection } from './components/Robots.jsx';
 import { Why } from './components/Why.jsx';
 import { AiSection, CountrySection } from './components/Ga4.jsx';
 import { Summary } from './components/Summary.jsx';
@@ -24,6 +25,7 @@ const TABS = [
   ...SERVICES.map((s) => ({ key: s.key, label: s.name, hint: '콘텐츠 · 검색어', color: s.hex })),
   { key: 'others', label: '그 외 호스트', hint: '집계 범위 밖' },
   { key: 'traffic', label: '국가별 유입', hint: 'GA4 세션' },
+  { key: 'robots', label: '봇 접근', hint: 'robots.txt 현황' },
   { key: 'readiness', label: 'SEO · AEO · GEO', hint: '사이트 점검' },
 ];
 
@@ -501,6 +503,27 @@ export default function App() {
             </section>
           ))}
 
+        {tab === 'robots' &&
+          (readiness ? (
+            <>
+              <RobotsSection readiness={readiness} />
+              <p className="p-note">
+                이 현황이 점수로 어떻게 환산되는지는{' '}
+                <button type="button" className="linkish" onClick={() => pick('readiness')}>
+                  SEO · AEO · GEO
+                </button>{' '}
+                탭에 있습니다.
+              </p>
+            </>
+          ) : (
+            <section>
+              <p className="sec-note">
+                <code>public/data/readiness.json</code> 이 없다.{' '}
+                <code>node scripts/collect-audit.mjs</code> 를 실행한다.
+              </p>
+            </section>
+          ))}
+
         {tab === 'readiness' && (
           <section>
             <div className="sec-head">
@@ -510,7 +533,12 @@ export default function App() {
             {readiness ? (
               <>
                 <p className="sec-note">
-                  {readiness.measuredAt} 측정 · 서비스당 최대 300건 크롤
+                  {readiness.measuredAt} 측정 · 서비스당 최대 300건 크롤. 어느 봇이
+                  열려 있고 막혀 있는지 명단은{' '}
+                  <button type="button" className="linkish" onClick={() => pick('robots')}>
+                    봇 접근
+                  </button>{' '}
+                  탭에 있습니다 — 점수에 들어가는 봇은 그중 일부입니다.
                 </p>
                 <div className="callout" style={{ marginTop: 0, marginBottom: 'var(--s-4)' }}>
                   <b>결과가 아니라 준비도입니다.</b> 충족률은 실측이지만 <b>배점은 선택</b>

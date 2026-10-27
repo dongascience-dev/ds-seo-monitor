@@ -92,15 +92,86 @@ const SERVICES = [
   },
 ];
 
-/** 점수를 매기는 봇. 역할이 달라 축도 다르다. */
+/**
+ * robots.txt 에서 확인하는 봇 목록. 점수용과 현황용이 한 곳에 있다.
+ *
+ * 점수에 못 넣는 봇도 이름은 알아야 한다. 닷컴처럼 **허용 목록**으로 운영하면
+ * 목록에 없는 봇이 전부 막히는데, 이름을 아는 봇만 세면 화면이 "거의 다 열려
+ * 있다"로 읽힌다. 실제로는 "허용한 것 빼고 전부 막혀 있다"이다.
+ *
+ * `seo` 는 SEO 축의 검색봇 항목(3종 묶어 10점), `geo` 는 GEO 축의 개별 배점이다.
+ * 나머지는 점수가 없고 `#robots` 탭에서만 쓴다 — 배점을 줄 근거가 없을 뿐
+ * 현황에서 빠지면 안 되는 봇들이다.
+ */
+const BOT_GROUPS = [
+  {
+    key: 'search',
+    label: '검색 노출',
+    why: '검색 결과에 실리려면 열려 있어야 한다. 막으면 그 검색엔진에서 사라진다.',
+    expect: 'allow',
+    bots: [
+      { ua: 'Googlebot', role: '구글 검색', seo: true },
+      { ua: 'Bingbot', role: '빙 검색 · 코파일럿', seo: true },
+      { ua: 'Yeti', role: '네이버 검색', seo: true },
+      { ua: 'Daumoa', role: '다음 검색' },
+      { ua: 'Applebot', role: '시리 · 스포트라이트' },
+    ],
+  },
+  {
+    key: 'ai',
+    label: 'AI 답변 인용',
+    why:
+      '생성형 엔진이 답변에 우리 기사를 인용하고 출처 링크를 달 수 있나. ' +
+      '색인 봇과 실시간 조회 봇이 따로 있어 한쪽만 열면 반쪽이 된다.',
+    expect: 'allow',
+    bots: [
+      { ua: 'OAI-SearchBot', role: 'ChatGPT 검색 색인', geo: 15 },
+      { ua: 'ChatGPT-User', role: 'ChatGPT 실시간 조회', geo: 30 },
+      { ua: 'Claude-SearchBot', role: 'Claude 검색 색인', geo: 15 },
+      { ua: 'Claude-User', role: 'Claude 실시간 조회' },
+      { ua: 'PerplexityBot', role: 'Perplexity 색인', geo: 15 },
+      { ua: 'Perplexity-User', role: 'Perplexity 실시간 조회' },
+    ],
+  },
+  {
+    key: 'training',
+    label: 'AI 학습 수집',
+    why:
+      '모델 학습에 콘텐츠를 가져가는 봇. 닷컴은 막는 것이 방침이라 ' +
+      '여기서는 차단이 정상이다. 열려 있는 쪽이 확인 대상이다.',
+    expect: 'block',
+    bots: [
+      { ua: 'GPTBot', role: 'OpenAI 학습' },
+      { ua: 'ClaudeBot', role: 'Anthropic 학습' },
+      { ua: 'Google-Extended', role: '구글 제미나이 학습' },
+      { ua: 'Applebot-Extended', role: '애플 인텔리전스 학습' },
+      { ua: 'Meta-ExternalAgent', role: '메타 AI 학습' },
+      { ua: 'CCBot', role: 'Common Crawl 공개 말뭉치' },
+      { ua: 'Bytespider', role: '바이트댄스 학습' },
+    ],
+  },
+  {
+    key: 'share',
+    label: '공유 미리보기',
+    why: 'SNS·메신저에 링크를 붙였을 때 제목·썸네일이 뜨는가. 막히면 맨 URL 만 간다.',
+    expect: 'allow',
+    bots: [
+      { ua: 'facebookexternalhit', role: '페이스북 · 인스타그램' },
+      { ua: 'Twitterbot', role: 'X(트위터)' },
+      { ua: 'kakaotalk-scrap', role: '카카오톡' },
+      { ua: 'Slackbot-LinkExpanding', role: '슬랙' },
+    ],
+  },
+];
+
+const ALL_BOTS = BOT_GROUPS.flatMap((g) => g.bots.map((b) => ({ ...b, group: g.key })));
+
+/** 어느 그룹에도 이름이 없는 봇. `User-agent: *` 의 처분을 읽으려고 쓴다. */
+const UNLISTED_UA = 'ds-seo-monitor-unlisted-probe';
+
 const BOTS = {
-  search: ['Googlebot', 'Bingbot', 'Yeti'],
-  geo: [
-    { ua: 'OAI-SearchBot', max: 20, role: 'ChatGPT 검색 색인' },
-    { ua: 'Claude-SearchBot', max: 20, role: 'Claude 검색 색인' },
-    { ua: 'PerplexityBot', max: 20, role: 'Perplexity 색인' },
-    { ua: 'ChatGPT-User', max: 40, role: 'ChatGPT 실시간 인용' },
-  ],
+  search: ALL_BOTS.filter((b) => b.seo).map((b) => b.ua),
+  geo: ALL_BOTS.filter((b) => b.geo),
 };
 
 // ── HTTP ────────────────────────────────────────────────────────────────────
@@ -301,7 +372,37 @@ function uniqueness(values) {
   return { unique, distinct: counts.size, topDup };
 }
 
-function inspect(html) {
+/**
+ * 페이지가 그려지는 데 필요한 같은 호스트 자원(CSS · JS)의 경로.
+ *
+ * 본문 HTML 이 열려 있어도 이 자원이 robots.txt 로 막히면 구글은 스타일도
+ * 스크립트도 없는 페이지를 평가한다. 구글이 "CSS·JS 를 막지 말라"고 못 박은
+ * 항목이라, 봇 허용 여부와 따로 센다.
+ */
+function renderAssetPaths(html, baseUrl) {
+  const refs = [];
+  for (const m of html.matchAll(/<script[^>]+src=["']([^"']+)["']/gi)) refs.push(m[1]);
+  for (const m of html.matchAll(/<link[^>]*>/gi)) {
+    if (!/rel=["']stylesheet["']/i.test(m[0])) continue;
+    const href = m[0].match(/href=["']([^"']+)["']/i)?.[1];
+    if (href) refs.push(href);
+  }
+
+  const origin = new URL(baseUrl).origin;
+  const paths = [];
+  for (const ref of refs) {
+    try {
+      const u = new URL(ref, baseUrl);
+      // 외부 CDN 은 우리 robots.txt 가 관여하지 못한다. 같은 호스트만 센다.
+      if (u.origin === origin) paths.push(u.pathname);
+    } catch {
+      /* data: URI 등 경로가 아닌 참조는 버린다. */
+    }
+  }
+  return [...new Set(paths)];
+}
+
+function inspect(html, url) {
   const title = (html.match(/<title[^>]*>([\s\S]*?)<\/title>/i)?.[1] ?? '').trim();
   const desc = html.match(
     /<meta[^>]+name=["']description["'][^>]+content=["']([\s\S]*?)["']/i,
@@ -322,6 +423,7 @@ function inspect(html) {
     jsonLdTypes: jsonLd.map((o) => o['@type']).filter(Boolean).flat(),
     hasJsonLd: jsonLd.length > 0,
     hasDateModified: jsonLd.some((o) => deepHas(o, 'dateModified')),
+    assets: renderAssetPaths(html, url),
     // 없는 상품·호를 요청해도 200 을 주면서 title 에 undefined 가 박히는 패턴.
     softNotFound: /undefined/i.test(title),
   };
@@ -350,10 +452,19 @@ async function auditService(svc, query) {
   const robotsRes = await get(`${svc.origin}/robots.txt`);
   const groups = robotsRes.ok ? parseRobots(robotsRes.body) : [];
   const bots = {};
-  for (const ua of BOTS.search) bots[ua] = robotsRes.ok ? isAllowed(groups, ua) : null;
-  for (const b of BOTS.geo) bots[b.ua] = robotsRes.ok ? isAllowed(groups, b.ua) : null;
+  for (const b of ALL_BOTS) bots[b.ua] = robotsRes.ok ? isAllowed(groups, b.ua) : null;
+  // 이름이 어디에도 없는 봇을 흉내 내 `*` 그룹의 처분을 읽는다. 앞으로 나올
+  // 봇이 받게 될 대우가 이것이고, 봇을 하나씩 세서는 보이지 않는 값이다.
+  const defaultAllow = robotsRes.ok ? isAllowed(groups, UNLISTED_UA) : null;
+  const namedAgents = [...new Set(groups.flatMap((g) => g.agents))].filter((a) => a !== '*');
+  // `Sitemap:` 은 그룹에 속하지 않는 독립 지시어라 파서가 버린다. 원문에서 센다.
+  // 필드 이름은 대소문자를 가리지 않으므로 소문자 표기도 유효하다.
+  const sitemaps = robotsRes.ok
+    ? [...robotsRes.body.matchAll(/^[ \t]*sitemap[ \t]*:[ \t]*(\S+)/gim)].map((m) => m[1])
+    : [];
   console.error(
-    `  robots.txt ${robotsRes.status} · 검색봇 ${BOTS.search.filter((u) => bots[u]).length}/${BOTS.search.length} 허용 · AI ${BOTS.geo.filter((b) => bots[b.ua]).length}/${BOTS.geo.length} 허용`,
+    `  robots.txt ${robotsRes.status} · 기본 정책 ${defaultAllow === null ? '?' : defaultAllow ? '허용' : '차단'}` +
+      ` · 이름 있는 봇 ${namedAgents.length}종 · 확인한 ${ALL_BOTS.length}종 중 ${ALL_BOTS.filter((b) => bots[b.ua]).length} 허용`,
   );
 
   // 2. sitemap
@@ -408,10 +519,28 @@ async function auditService(svc, query) {
   const results = await mapLimit(detailUrls, CONCURRENCY, async (url) => {
     const res = await get(url);
     if (!res.ok) return { url, ok: false, status: res.status };
-    return { url, ok: true, status: res.status, ...inspect(res.body) };
+    return { url, ok: true, status: res.status, ...inspect(res.body, url) };
   });
 
   const ok = results.filter((r) => r.ok);
+
+  // 4. 렌더링 자원이 Googlebot 에게 열려 있나.
+  // 크롤한 페이지들이 부르는 자원을 모아 robots.txt 에 그대로 물어본다.
+  const assetPaths = [...new Set(ok.flatMap((r) => r.assets ?? []))];
+  const blockedAssets = assetPaths.filter((path) => !isAllowed(groups, 'Googlebot', path));
+  const renderAssets = {
+    total: assetPaths.length,
+    blocked: blockedAssets.length,
+    // 어느 경로가 막혔는지 한눈에 보이면 고칠 규칙이 특정된다.
+    prefixes: [...new Set(blockedAssets.map((p) => p.split('/').slice(0, 3).join('/') + '/'))].slice(0, 5),
+    samples: blockedAssets.slice(0, 5),
+  };
+  if (renderAssets.blocked > 0) {
+    console.error(
+      `  ! 렌더링 자원 ${renderAssets.blocked}/${renderAssets.total} 건이 Googlebot 에게 차단됨 — ${renderAssets.prefixes.join(' · ')}`,
+    );
+  }
+
   const detail = {
     requested: detailUrls.length,
     ok: ok.length,
@@ -434,7 +563,16 @@ async function auditService(svc, query) {
   );
 
   return {
-    robots: { status: robotsRes.status, bots, raw: robotsRes.body.slice(0, 2000) },
+    robots: {
+      status: robotsRes.status,
+      bots,
+      defaultAllow,
+      hasCatchAll: groups.some((g) => g.agents.includes('*')),
+      namedAgents,
+      sitemaps,
+      raw: robotsRes.body.slice(0, 2000),
+    },
+    renderAssets,
     sitemap: {
       ok: sm.ok,
       status: sm.status,
@@ -622,16 +760,37 @@ function buildRubric(measured) {
       key: 'geo',
       label: 'GEO',
       full: '생성 엔진이 가져갈 수 있는가',
-      items: BOTS.geo.map((b) =>
-        item(
-          b.ua,
-          b.max,
-          true,
-          (m) => (m.robots.bots[b.ua] ? b.max : 0),
-          (m) => `${b.role} · ${m.robots.bots[b.ua] ? '허용' : '차단'}`,
-          `허용 ${b.max} / 차단 0`,
+      items: [
+        ...BOTS.geo.map((b) =>
+          item(
+            b.ua,
+            b.geo,
+            true,
+            (m) => (m.robots.bots[b.ua] ? b.geo : 0),
+            (m) => `${b.role} · ${m.robots.bots[b.ua] ? '허용' : '차단'}`,
+            `허용 ${b.geo} / 차단 0`,
+          ),
         ),
-      ),
+        /*
+          이름을 아는 봇만 세면 "앞으로 나올 봇"이 점수에서 빠진다.
+          닷컴은 허용 목록 운영이라 ChatGPT-User 하나만 열어도 나머지 항목이
+          만점이 되는데, 구조는 그대로다 — Claude-User · Perplexity-User ·
+          다음 · 카카오톡, 그리고 내년에 나올 봇이 전부 막혀 있다.
+          그 구조를 점수에 넣어야 G1 과제("robots.txt 를 허용 목록에서
+          차단 목록으로 뒤집기")와 숫자가 어긋나지 않는다.
+        */
+        item(
+          '기본 정책',
+          25,
+          true,
+          (m) => (m.robots.defaultAllow ? 25 : 0),
+          (m) =>
+            m.robots.defaultAllow
+              ? `목록에 없는 봇도 통과${m.robots.hasCatchAll ? '' : ' · User-agent: * 그룹 없음'}`
+              : `허용 목록 밖 전부 차단 · 이름 적힌 ${m.robots.namedAgents.length}종만 통과`,
+          'User-agent: * 가 Allow 면 25 / Disallow 면 0 — 허용 목록으로 운영하면 새 봇은 기본 차단된다',
+        ),
+      ],
     },
   ];
 }
@@ -658,7 +817,9 @@ async function main() {
       '배점(가중치)은 업계 표준이 아니라 이 문서의 선택이다. 충족률은 실측이므로 서비스 간 순서는 신뢰할 수 있으나, 절대 점수는 배점을 바꾸면 달라진다. "핵심 상세 수록" 항목의 분모(전체 콘텐츠 수)만 추정치이며 auto:false 로 표시했다.',
     services: SERVICES.map((s) => s.key),
     serviceNames: Object.fromEntries(SERVICES.map((s) => [s.key, s.name])),
+    serviceOrigins: Object.fromEntries(SERVICES.map((s) => [s.key, s.origin])),
     axes: buildRubric(measured),
+    botCatalog: BOT_GROUPS,
     measurements: measured,
     unmeasurable: [
       'AI 개요·AI 모드 내 인용 점유율 — GSC searchAppearance 에 해당 표면이 없어 측정 수단이 없다.',

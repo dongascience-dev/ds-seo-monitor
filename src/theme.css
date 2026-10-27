@@ -553,3 +553,32 @@ footer code {
 .recharts-tooltip-cursor { pointer-events: none; }
 
 @media (prefers-reduced-motion: reduce) { * { transition: none !important; animation: none !important; } }
+
+/*
+ * robots.txt 현황 — 기본 정책 한 줄.
+ *
+ * 카드에서 제일 먼저 읽혀야 하는 값이다. 봇을 하나씩 세는 수치보다 위에 두고,
+ * 뱃지와 설명을 붙여 "이 사이트는 어떤 방식으로 운영되나" 를 한 호흡에 준다.
+ */
+.policy {
+  margin: var(--s-2) 0 0; padding: var(--s-2) var(--s-3);
+  background: var(--surface-2); border-radius: 8px;
+}
+.policy > p {
+  margin: var(--s-1) 0 0; font-size: var(--t-sm); color: var(--ink-2); line-height: 1.6;
+}
+.policy b { color: var(--ink); font-weight: 700; }
+
+/*
+ * robots.txt 원문.
+ *
+ * 해석을 믿지 못하는 사람이 직접 읽을 수 있어야 한다 — 이 화면의 모든 판정이
+ * 이 열 몇 줄에서 나온다. 줄바꿈을 보존하되 가로 스크롤은 만들지 않는다.
+ */
+pre.raw {
+  margin: var(--s-2) 0 0; padding: var(--s-3);
+  background: var(--plane); border: 1px solid var(--grid); border-radius: 8px;
+  font-family: 'IBM Plex Mono', monospace; font-size: var(--t-sm); line-height: 1.7;
+  color: var(--ink-2); white-space: pre-wrap; word-break: break-all;
+  max-height: 320px; overflow: auto;
+}
