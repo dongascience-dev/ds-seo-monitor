@@ -303,6 +303,26 @@ function isAllowed(groups, userAgent, path = '/') {
 const looksLikeRobots = (body) =>
   !/^\s*[<{]/.test(body) && /^[ \t]*(user-agent|sitemap|allow|disallow)[ \t]*:/im.test(body);
 
+/**
+ * 봇 정책을 손대지 않은 기본 템플릿인가.
+ *
+ * 프레임워크가 프로젝트를 만들 때 깔아 주는 파일이 있다 — robotstxt.org 주석
+ * 한 줄에 `User-agent: *` 와 **값이 빈** `Disallow:`. 빈 Disallow 는 "아무것도
+ * 막지 않는다" 라서 결과는 전체 허용이지만, `Allow: /` 를 직접 적어 둔 곳과는
+ * 뜻이 다르다. 전자는 **손대지 않아서 열려 있는** 것이고 후자는 열기로 정한
+ * 것이다. 둘을 같은 "전체 허용" 으로 보여 주면 없는 정책이 있는 것처럼 읽힌다.
+ *
+ * 실측(2026-10-27): 지사탐 · edu · air 가 토씨까지 같은 파일을 쓴다.
+ * `Sitemap:` 줄은 봇 정책이 아니므로 있어도 템플릿으로 센다.
+ */
+function isBoilerplate(body, groups) {
+  if (!/^[ \t]*#[ \t]*https?:\/\/(www\.)?robotstxt\.org\//im.test(body)) return false;
+  // 이름을 적은 봇이 하나라도 있으면 손을 댄 것이다.
+  if (groups.some((g) => g.agents.length !== 1 || !g.agents.includes('*'))) return false;
+  // 값이 있는 규칙이 하나라도 있으면 막든 열든 정한 것이다.
+  return groups.every((g) => g.rules.every((r) => r.path === ''));
+}
+
 /** robots.txt 응답 하나를 화면이 쓸 모양으로 푼다. */
 function readRobots(res) {
   const valid = res.ok && looksLikeRobots(res.body);
@@ -315,6 +335,7 @@ function readRobots(res) {
       status: res.status,
       // 규칙이 없으면 봇은 전부 통과한다. 이유만 다르고 결과는 같다.
       valid,
+      boilerplate: valid && isBoilerplate(res.body, groups),
       bots,
       defaultAllow: res.ok ? isAllowed(groups, UNLISTED_UA) : null,
       hasCatchAll: groups.some((g) => g.agents.includes('*')),
@@ -336,7 +357,13 @@ async function auditRobotsOnly(host) {
   const allowed = ALL_BOTS.filter((b) => robots.bots[b.ua]).length;
   console.error(
     `\n── ${host.name} (robots.txt 만)\n  ${res.status} · ${
-      robots.valid ? (robots.defaultAllow ? '전체 허용' : '허용 목록 외 차단') : 'robots.txt 없음(규칙 없음과 같다)'
+      robots.valid
+        ? robots.boilerplate
+          ? '전체 허용(기본 템플릿 그대로)'
+          : robots.defaultAllow
+            ? '전체 허용'
+            : '허용 목록 외 차단'
+        : 'robots.txt 없음(규칙 없음과 같다)'
     } · ${ALL_BOTS.length}종 중 ${allowed} 허용`,
   );
   return { ...host, robots };

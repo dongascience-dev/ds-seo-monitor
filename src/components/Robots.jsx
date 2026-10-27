@@ -54,6 +54,18 @@ function findings(e, catalog) {
         </>
       ),
     });
+  } else if (e.robots.boilerplate) {
+    out.push({
+      level: 'warn',
+      text: (
+        <>
+          <b>봇 정책을 정한 적이 없습니다</b> — robots.txt 가 프레임워크 <b>기본 템플릿
+          그대로</b>입니다(<code>User-agent: *</code> + 값이 빈 <code>Disallow:</code>).
+          모든 봇이 통과하는 것은 맞지만, 열기로 정해서 열린 것이 아니라 손대지 않아
+          열려 있는 상태입니다. 학습봇도 전부 들어옵니다.
+        </>
+      ),
+    });
   } else if (e.robots.defaultAllow === false) {
     out.push({
       level: 'crit',
@@ -229,11 +241,27 @@ export function RobotsSection({ readiness }) {
                 <span className={`pill ${none ? 'warn' : open ? 'info' : 'crit'}`}>
                   {none ? 'robots.txt 없음' : open ? '전체 허용' : '허용 목록 외 차단'}
                 </span>
+                {/*
+                  "열기로 정했다" 와 "손대지 않았다" 를 같은 뱃지로 보여 주면 없는
+                  정책이 있는 것처럼 읽힌다. 템플릿인 곳에만 한 칸 더 붙인다.
+                */}
+                {e.robots.boilerplate && (
+                  <span className="pill warn" style={{ marginLeft: 4 }}>
+                    기본 템플릿
+                  </span>
+                )}
                 <p>
                   {none ? (
                     <>
                       규칙 파일 대신 HTML 이 돌아옵니다. 봇에게는 <b>규칙 없음</b>, 즉 전체
                       허용과 같게 보입니다.
+                    </>
+                  ) : e.robots.boilerplate ? (
+                    <>
+                      <code>User-agent: *</code> 아래 <code>Disallow:</code> 가 <b>값 없이</b>{' '}
+                      놓인 기본 템플릿입니다. 빈 <code>Disallow:</code> 는 "아무것도 막지
+                      않는다" 라서 <b>모든 봇</b>이 통과합니다 — 열기로 정한 것이 아니라{' '}
+                      <b>손대지 않은</b> 상태입니다.
                     </>
                   ) : open ? (
                     <>
