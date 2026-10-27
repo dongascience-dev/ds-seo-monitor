@@ -7,13 +7,18 @@ import { SERVICES } from '../lib/format.js';
  * 준비도 탭과 데이터는 같은데 화면을 따로 둔다. 묻는 사람이 다르기 때문이다.
  * 준비도 탭은 "우리가 몇 점인가" 에 답하는 채점표라 배점·충족률이 앞에 선다.
  * 하지만 "봇 현황 알려 달라" 는 요청에 필요한 것은 점수가 아니라 **명단**이다 —
- * 누가 열려 있고 누가 막혀 있나, 그게 의도된 것인가, 세 서비스가 왜 다른가.
+ * 누가 열려 있고 누가 막혀 있나, 그게 의도된 것인가, 호스트마다 왜 다른가.
  *
  * 그 명단을 점수표 안에 섞으면 두 가지가 동시에 망가진다. 점수를 매길 수 없는
  * 봇(카카오톡·다음·Claude-User)은 채점표에 자리가 없어 빠지고, 그렇게 빠진
  * 채로 보면 "AI 봇 중 하나만 막혀 있다" 로 읽힌다. 실제로는 "허용한 것 빼고
  * 전부 막혀 있다" 인데도. 그래서 이 탭은 **이름을 아는 봇 전부**를 싣고,
  * 점수에 들어가는 것에만 배점을 표시한다.
+ *
+ * 같은 이유로 집계 범위 밖 호스트(지사탐 등)도 **열로 올린다**. robots.txt 는
+ * 호스트마다 따로라 닷컴의 허용 목록이 거기에는 적용되지 않는데, 빼 두면
+ * "도메인 전체가 닷컴처럼 잠겨 있다" 로 읽힌다. 다만 점수는 매기지 않는다 —
+ * 상세 페이지 구조가 제각각이라 같은 잣대로 채점하면 숫자가 거짓말을 한다.
  */
 
 /** 그룹의 기대(열려야 / 막혀야)와 실제를 맞춰 본다. */
@@ -32,12 +37,24 @@ function verdict(allowed, expect) {
  * 문장을 박아 두지 않고 매번 데이터에서 만든다. robots.txt 가 바뀌면 설명도
  * 같이 바뀌어야 하는데, 손으로 적어 두면 파일만 고쳐지고 설명은 옛말이 된다.
  */
-function findings(m, catalog) {
+function findings(e, catalog) {
   const out = [];
-  const bots = m.robots.bots ?? {};
-  const named = m.robots.namedAgents?.length ?? 0;
+  const bots = e.robots.bots ?? {};
+  const named = e.robots.namedAgents?.length ?? 0;
 
-  if (m.robots.defaultAllow === false) {
+  if (e.robots.valid === false) {
+    out.push({
+      level: 'warn',
+      text: (
+        <>
+          <b>robots.txt 가 없습니다</b> — <code>/robots.txt</code> 를 요청하면 규칙이 아니라
+          HTML 이나 오류 페이지가 돌아옵니다(HTTP {e.robots.status}). 봇에게는 "규칙 없음",
+          즉 전체 허용과 같게 보입니다. 열어 두기로 정한 것과 결과는 같지만{' '}
+          <b>정한 적이 없다는 뜻</b>입니다.
+        </>
+      ),
+    });
+  } else if (e.robots.defaultAllow === false) {
     out.push({
       level: 'crit',
       text: (
@@ -83,28 +100,27 @@ function findings(m, catalog) {
     );
   }
 
-  if (m.renderAssets?.blocked > 0) {
+  if (e.renderAssets?.blocked > 0) {
     out.push({
       level: 'crit',
       text: (
         <>
           <b>Googlebot 에게 CSS·JS 가 막혀 있습니다</b> — 크롤한 페이지가 부르는 자원{' '}
-          {m.renderAssets.total}건 중 {m.renderAssets.blocked}건 (
-          {m.renderAssets.prefixes.map((p, i) => (
+          {e.renderAssets.total}건 중 {e.renderAssets.blocked}건 (
+          {e.renderAssets.prefixes.map((p, i) => (
             <Fragment key={p}>
               {i > 0 && ' · '}
               <code>{p}</code>
             </Fragment>
           ))}
-          ). 본문 HTML 은
-          열려 있어 색인 자체는 되지만, 구글은 스타일도 스크립트도 없는 상태로 그 페이지를
-          평가합니다. 구글이 "CSS·JS 를 막지 말라" 고 명시한 항목입니다.
+          ). 본문 HTML 은 열려 있어 색인 자체는 되지만, 구글은 스타일도 스크립트도 없는
+          상태로 그 페이지를 평가합니다. 구글이 "CSS·JS 를 막지 말라" 고 명시한 항목입니다.
         </>
       ),
     });
   }
 
-  if ((m.robots.sitemaps?.length ?? 0) === 0) {
+  if (e.robots.valid !== false && (e.robots.sitemaps?.length ?? 0) === 0) {
     out.push({
       level: 'info',
       text: (
@@ -135,7 +151,32 @@ export function RobotsSection({ readiness }) {
   const catalog = readiness.botCatalog ?? [];
   const origins = readiness.serviceOrigins ?? {};
   const checked = catalog.reduce((a, g) => a + g.bots.length, 0);
-  const svcList = SERVICES.filter((s) => readiness.measurements?.[s.key]);
+
+  // 집계 대상 세 서비스 + robots.txt 만 보는 호스트. 뒤쪽은 색을 주지 않는다 —
+  // 다른 탭의 서비스 색과 나란히 두면 "집계에도 들어간다" 로 읽히기 때문이다.
+  const entries = [
+    ...SERVICES.filter((s) => readiness.measurements?.[s.key]).map((s) => ({
+      key: s.key,
+      name: s.name,
+      hex: s.hex,
+      color: s.color,
+      origin: origins[s.key] ?? '',
+      robots: readiness.measurements[s.key].robots,
+      renderAssets: readiness.measurements[s.key].renderAssets,
+      scored: true,
+    })),
+    ...(readiness.extraHosts ?? []).map((h) => ({
+      key: h.key,
+      name: h.name,
+      hex: 'var(--muted)',
+      color: 'var(--muted)',
+      origin: h.origin,
+      robots: h.robots,
+      renderAssets: null,
+      scored: false,
+    })),
+  ];
+  const extraCount = entries.filter((e) => !e.scored).length;
 
   // 점수와 이어 붙는다 — 이 탭에서 "막혔다" 가 저 탭에서 몇 점인지 보이게.
   const geoAxis = readiness.axes?.find((a) => a.key === 'geo');
@@ -148,34 +189,53 @@ export function RobotsSection({ readiness }) {
         <h2>robots.txt 현황</h2>
       </div>
       <p className="sec-note">
-        {readiness.measuredAt} 측정 · 세 서비스의 <code>/robots.txt</code> 를 직접 받아
-        봇 {checked}종을 하나씩 대조한 결과입니다. 규칙은 표준대로 읽습니다 — 이름이
-        정확히 적힌 그룹이 있으면 그 그룹만 보고, 없을 때만 <code>User-agent: *</code> 를
-        봅니다.
+        {readiness.measuredAt} 측정 · 호스트 {entries.length}곳의 <code>/robots.txt</code> 를
+        직접 받아 봇 {checked}종을 하나씩 대조한 결과입니다. 규칙은 표준대로 읽습니다 —
+        이름이 정확히 적힌 그룹이 있으면 그 그룹만 보고, 없을 때만{' '}
+        <code>User-agent: *</code> 를 봅니다.
       </p>
+      {extraCount > 0 && (
+        <p className="sec-note">
+          <b>robots.txt 는 호스트마다 따로입니다.</b> 닷컴의 허용 목록은 같은 도메인의 다른
+          호스트에 적용되지 않습니다. 그래서 집계 범위 밖이라도 이 탭에는 올립니다 — 다만
+          상세 페이지 구조가 제각각이라 <b>점수는 매기지 않습니다</b>.
+        </p>
+      )}
 
       <div className="grid-3">
-        {svcList.map((s) => {
-          const m = readiness.measurements[s.key];
+        {entries.map((e) => {
           const allowed = catalog.reduce(
-            (a, g) => a + g.bots.filter((b) => m.robots.bots[b.ua]).length,
+            (a, g) => a + g.bots.filter((b) => e.robots.bots[b.ua]).length,
             0,
           );
-          const open = m.robots.defaultAllow;
+          const none = e.robots.valid === false;
+          const open = e.robots.defaultAllow;
           return (
-            <article className="card" style={{ '--c': s.color }} key={s.key}>
-              <h3>{s.name}</h3>
+            <article className="card" style={{ '--c': e.color }} key={e.key}>
+              <h3>
+                {e.name}
+                {!e.scored && (
+                  <span className="pill info" style={{ marginLeft: 6 }}>
+                    집계 범위 밖
+                  </span>
+                )}
+              </h3>
               <div className="host">
-                <a href={`${origins[s.key] ?? ''}/robots.txt`} target="_blank" rel="noreferrer">
-                  {(origins[s.key] ?? '').replace(/^https?:\/\//, '')}/robots.txt
+                <a href={`${e.origin}/robots.txt`} target="_blank" rel="noreferrer">
+                  {e.origin.replace(/^https?:\/\//, '')}/robots.txt
                 </a>
               </div>
               <div className="policy">
-                <span className={`pill ${open ? 'info' : 'crit'}`}>
-                  {open ? '전체 허용' : '허용 목록 외 차단'}
+                <span className={`pill ${none ? 'warn' : open ? 'info' : 'crit'}`}>
+                  {none ? 'robots.txt 없음' : open ? '전체 허용' : '허용 목록 외 차단'}
                 </span>
                 <p>
-                  {open ? (
+                  {none ? (
+                    <>
+                      규칙 파일 대신 HTML 이 돌아옵니다. 봇에게는 <b>규칙 없음</b>, 즉 전체
+                      허용과 같게 보입니다.
+                    </>
+                  ) : open ? (
                     <>
                       <code>User-agent: *</code> 가 <code>Allow: /</code> 입니다. 학습봇을
                       포함해 <b>모든 봇</b>이 통과합니다.
@@ -183,7 +243,7 @@ export function RobotsSection({ readiness }) {
                   ) : (
                     <>
                       <code>User-agent: *</code> 가 <code>Disallow: /</code> 입니다. 이름이
-                      적힌 <b>{m.robots.namedAgents.length}종</b>만 통과하고 나머지는 전부
+                      적힌 <b>{e.robots.namedAgents.length}종</b>만 통과하고 나머지는 전부
                       막힙니다.
                     </>
                   )}
@@ -200,15 +260,17 @@ export function RobotsSection({ readiness }) {
                 <div className="stat">
                   <span className="k">Sitemap 선언</span>
                   <span className="v num" style={{ fontSize: 'var(--t-lg)' }}>
-                    {m.robots.sitemaps?.length ? '있음' : '없음'}
+                    {e.robots.sitemaps?.length ? '있음' : '없음'}
                   </span>
                 </div>
                 <div className="stat">
                   <span className="k">렌더링 자원</span>
                   <span className="v num" style={{ fontSize: 'var(--t-lg)' }}>
-                    {m.renderAssets?.blocked > 0
-                      ? `${m.renderAssets.blocked}건 차단`
-                      : '전부 열림'}
+                    {!e.renderAssets
+                      ? '측정 안 함'
+                      : e.renderAssets.blocked > 0
+                        ? `${e.renderAssets.blocked}건 차단`
+                        : '전부 열림'}
                   </span>
                 </div>
               </div>
@@ -226,13 +288,13 @@ export function RobotsSection({ readiness }) {
         수집봇은 <b>차단이 정상</b>이라 막혀 있는 것을 문제로 세지 않습니다.
       </p>
       <div className="grid-3">
-        {svcList.map((s) => (
-          <div className="panel" key={s.key}>
+        {entries.map((e) => (
+          <div className="panel" key={e.key}>
             <div className="panel-head">
-              <h3 style={{ color: s.hex }}>{s.name}</h3>
+              <h3 style={{ color: e.hex }}>{e.name}</h3>
             </div>
             <div className="ins">
-              {findings(readiness.measurements[s.key], catalog).map((f, i) => (
+              {findings(e, catalog).map((f, i) => (
                 <div className="ins-row" style={{ '--c': LEVEL_COLOR[f.level] }} key={i}>
                   <span className={`pill ${f.level === 'good' ? 'good' : f.level}`}>
                     {LEVEL_LABEL[f.level]}
@@ -254,9 +316,9 @@ export function RobotsSection({ readiness }) {
           <thead>
             <tr>
               <th>봇 · 역할</th>
-              {svcList.map((s) => (
-                <th className="n" key={s.key} style={{ color: s.hex }}>
-                  {s.name}
+              {entries.map((e) => (
+                <th className="n" key={e.key} style={{ color: e.hex }}>
+                  {e.name}
                 </th>
               ))}
             </tr>
@@ -265,7 +327,7 @@ export function RobotsSection({ readiness }) {
             {catalog.map((g) => (
               <Fragment key={g.key}>
                 <tr style={{ background: 'var(--surface-2)' }}>
-                  <td colSpan={svcList.length + 1}>
+                  <td colSpan={entries.length + 1}>
                     <div style={{ fontWeight: 800 }}>
                       {g.label}
                       <span
@@ -302,13 +364,10 @@ export function RobotsSection({ readiness }) {
                           {b.role}
                         </div>
                       </td>
-                      {svcList.map((s) => {
-                        const v = verdict(
-                          readiness.measurements[s.key].robots.bots[b.ua],
-                          g.expect,
-                        );
+                      {entries.map((e) => {
+                        const v = verdict(e.robots.bots[b.ua], g.expect);
                         return (
-                          <td className="n" key={s.key}>
+                          <td className="n" key={e.key}>
                             <span className={`pill ${v.cls}`}>{v.label}</span>
                           </td>
                         );
@@ -332,15 +391,19 @@ export function RobotsSection({ readiness }) {
         <h2>원문</h2>
       </div>
       <div className="grid-3">
-        {svcList.map((s) => (
-          <div className="panel" key={s.key}>
+        {entries.map((e) => (
+          <div className="panel" key={e.key}>
             <div className="panel-head">
-              <h3 style={{ color: s.hex }}>{s.name}</h3>
+              <h3 style={{ color: e.hex }}>{e.name}</h3>
               <span style={{ fontSize: 'var(--t-xs)', color: 'var(--muted)', fontWeight: 700 }}>
-                HTTP {readiness.measurements[s.key].robots.status}
+                HTTP {e.robots.status}
               </span>
             </div>
-            <pre className="raw">{readiness.measurements[s.key].robots.raw}</pre>
+            <pre className="raw">
+              {e.robots.valid === false
+                ? `${e.robots.raw.slice(0, 300)}\n\n— robots.txt 가 아닙니다 —`
+                : e.robots.raw}
+            </pre>
           </div>
         ))}
       </div>

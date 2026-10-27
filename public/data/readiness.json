@@ -1,6 +1,6 @@
 {
   "measuredAt": "2026-10-27",
-  "generatedAt": "2026-10-27T07:44:47.848Z",
+  "generatedAt": "2026-10-27T08:06:05.202Z",
   "source": "자동 측정 — robots.txt · sitemap.xml · 상세 페이지 크롤 (서비스당 최대 150건)",
   "caveat": "배점(가중치)은 업계 표준이 아니라 이 문서의 선택이다. 충족률은 실측이므로 서비스 간 순서는 신뢰할 수 있으나, 절대 점수는 배점을 바꾸면 달라진다. \"핵심 상세 수록\" 항목의 분모(전체 콘텐츠 수)만 추정치이며 auto:false 로 표시했다.",
   "services": [
@@ -78,12 +78,12 @@
           "auto": true,
           "rule": "충족률 × 15 (연속값)",
           "scores": {
-            "donga": 14.8,
+            "donga": 14.4,
             "dl": 0,
             "store": 15
           },
           "notes": {
-            "donga": "148/150 · 98.7%",
+            "donga": "144/150 · 96.0%",
             "dl": "0/78 · 0.0%",
             "store": "150/150 · 100.0%"
           }
@@ -229,12 +229,12 @@
           "auto": true,
           "rule": "충족률 × 10 (연속값)",
           "scores": {
-            "donga": 9.9,
+            "donga": 9.6,
             "dl": 0,
             "store": 10
           },
           "notes": {
-            "donga": "148/150 · 98.7%",
+            "donga": "144/150 · 96.0%",
             "dl": "0/78 · 0.0%",
             "store": "150/150 · 100.0%"
           }
@@ -458,10 +458,51 @@
       ]
     }
   ],
+  "extraHosts": [
+    {
+      "key": "jisatam",
+      "name": "지구사람탐사대",
+      "origin": "https://jisatam.dongascience.com",
+      "robots": {
+        "status": 200,
+        "valid": true,
+        "bots": {
+          "Googlebot": true,
+          "Bingbot": true,
+          "Yeti": true,
+          "Daumoa": true,
+          "Applebot": true,
+          "OAI-SearchBot": true,
+          "ChatGPT-User": true,
+          "Claude-SearchBot": true,
+          "Claude-User": true,
+          "PerplexityBot": true,
+          "Perplexity-User": true,
+          "GPTBot": true,
+          "ClaudeBot": true,
+          "Google-Extended": true,
+          "Applebot-Extended": true,
+          "Meta-ExternalAgent": true,
+          "CCBot": true,
+          "Bytespider": true,
+          "facebookexternalhit": true,
+          "Twitterbot": true,
+          "kakaotalk-scrap": true,
+          "Slackbot-LinkExpanding": true
+        },
+        "defaultAllow": true,
+        "hasCatchAll": true,
+        "namedAgents": [],
+        "sitemaps": [],
+        "raw": "# https://www.robotstxt.org/robotstxt.html\nUser-agent: *\nDisallow:\n"
+      }
+    }
+  ],
   "measurements": {
     "donga": {
       "robots": {
         "status": 200,
+        "valid": true,
         "bots": {
           "Googlebot": true,
           "Bingbot": true,
@@ -543,7 +584,7 @@
         "h1": 150,
         "jsonLd": 150,
         "dateModified": 0,
-        "canonical": 148,
+        "canonical": 144,
         "description": 104,
         "titleUnique": {
           "unique": 150,
@@ -569,6 +610,7 @@
     "dl": {
       "robots": {
         "status": 200,
+        "valid": true,
         "bots": {
           "Googlebot": true,
           "Bingbot": true,
@@ -651,6 +693,7 @@
     "store": {
       "robots": {
         "status": 200,
+        "valid": true,
         "bots": {
           "Googlebot": true,
           "Bingbot": true,

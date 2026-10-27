@@ -93,6 +93,20 @@ const SERVICES = [
 ];
 
 /**
+ * robots.txt 만 보는 호스트.
+ *
+ * 집계 대상 세 서비스는 아니지만 같은 도메인이라 "봇 현황" 을 물으면 당연히
+ * 들어가야 한다 — **robots.txt 는 호스트마다 따로**라서, 닷컴의 허용 목록은
+ * 여기에 적용되지 않는다. 실제로 지사탐은 전체 허용이라 닷컴과 정반대다.
+ *
+ * 점수는 매기지 않는다. 상세 페이지 구조가 서비스마다 제각각이라 같은 잣대로
+ * 채점하면 숫자가 거짓말을 한다. 여기 한 줄 더하면 봇 탭에 열이 하나 는다.
+ */
+const ROBOTS_ONLY = [
+  { key: 'jisatam', name: '지구사람탐사대', origin: 'https://jisatam.dongascience.com' },
+];
+
+/**
  * robots.txt 에서 확인하는 봇 목록. 점수용과 현황용이 한 곳에 있다.
  *
  * 점수에 못 넣는 봇도 이름은 알아야 한다. 닷컴처럼 **허용 목록**으로 운영하면
@@ -278,6 +292,56 @@ function isAllowed(groups, userAgent, path = '/') {
   return best.allow;
 }
 
+/**
+ * 받아 온 것이 정말 robots.txt 인가.
+ *
+ * 형제 호스트 몇 곳은 `/robots.txt` 에 200 으로 **HTML** 을 돌려준다(about ·
+ * school · alive 실측). 그대로 파싱하면 규칙이 하나도 안 잡혀 "전부 허용" 으로
+ * 읽히는데, 봇에게 실제로 그렇게 보이는 것은 맞다. 다만 "열어 두기로 정했다" 와
+ * "robots.txt 가 없다" 는 다른 사실이라 구분해서 적는다.
+ */
+const looksLikeRobots = (body) =>
+  !/^\s*[<{]/.test(body) && /^[ \t]*(user-agent|sitemap|allow|disallow)[ \t]*:/im.test(body);
+
+/** robots.txt 응답 하나를 화면이 쓸 모양으로 푼다. */
+function readRobots(res) {
+  const valid = res.ok && looksLikeRobots(res.body);
+  const groups = valid ? parseRobots(res.body) : [];
+  const bots = {};
+  for (const b of ALL_BOTS) bots[b.ua] = res.ok ? isAllowed(groups, b.ua) : null;
+  return {
+    groups,
+    robots: {
+      status: res.status,
+      // 규칙이 없으면 봇은 전부 통과한다. 이유만 다르고 결과는 같다.
+      valid,
+      bots,
+      defaultAllow: res.ok ? isAllowed(groups, UNLISTED_UA) : null,
+      hasCatchAll: groups.some((g) => g.agents.includes('*')),
+      namedAgents: [...new Set(groups.flatMap((g) => g.agents))].filter((a) => a !== '*'),
+      // `Sitemap:` 은 그룹에 속하지 않는 독립 지시어라 파서가 버린다. 원문에서 센다.
+      // 필드 이름은 대소문자를 가리지 않으므로 소문자 표기도 유효하다.
+      sitemaps: valid
+        ? [...res.body.matchAll(/^[ \t]*sitemap[ \t]*:[ \t]*(\S+)/gim)].map((m) => m[1])
+        : [],
+      raw: res.body.slice(0, 2000),
+    },
+  };
+}
+
+/** 세 서비스 밖 호스트 — robots.txt 만 받아 본다. 크롤도 채점도 하지 않는다. */
+async function auditRobotsOnly(host) {
+  const res = await get(`${host.origin}/robots.txt`);
+  const { robots } = readRobots(res);
+  const allowed = ALL_BOTS.filter((b) => robots.bots[b.ua]).length;
+  console.error(
+    `\n── ${host.name} (robots.txt 만)\n  ${res.status} · ${
+      robots.valid ? (robots.defaultAllow ? '전체 허용' : '허용 목록 외 차단') : 'robots.txt 없음(규칙 없음과 같다)'
+    } · ${ALL_BOTS.length}종 중 ${allowed} 허용`,
+  );
+  return { ...host, robots };
+}
+
 // ── sitemap ─────────────────────────────────────────────────────────────────
 
 const tagAll = (xml, tag) =>
@@ -449,22 +513,13 @@ async function auditService(svc, query) {
   console.error(`\n── ${svc.name}`);
 
   // 1. robots.txt
+  // 이름이 어디에도 없는 봇을 흉내 내 `*` 그룹의 처분까지 읽는다. 앞으로 나올
+  // 봇이 받게 될 대우가 그것이고, 봇을 하나씩 세서는 보이지 않는 값이다.
   const robotsRes = await get(`${svc.origin}/robots.txt`);
-  const groups = robotsRes.ok ? parseRobots(robotsRes.body) : [];
-  const bots = {};
-  for (const b of ALL_BOTS) bots[b.ua] = robotsRes.ok ? isAllowed(groups, b.ua) : null;
-  // 이름이 어디에도 없는 봇을 흉내 내 `*` 그룹의 처분을 읽는다. 앞으로 나올
-  // 봇이 받게 될 대우가 이것이고, 봇을 하나씩 세서는 보이지 않는 값이다.
-  const defaultAllow = robotsRes.ok ? isAllowed(groups, UNLISTED_UA) : null;
-  const namedAgents = [...new Set(groups.flatMap((g) => g.agents))].filter((a) => a !== '*');
-  // `Sitemap:` 은 그룹에 속하지 않는 독립 지시어라 파서가 버린다. 원문에서 센다.
-  // 필드 이름은 대소문자를 가리지 않으므로 소문자 표기도 유효하다.
-  const sitemaps = robotsRes.ok
-    ? [...robotsRes.body.matchAll(/^[ \t]*sitemap[ \t]*:[ \t]*(\S+)/gim)].map((m) => m[1])
-    : [];
+  const { groups, robots } = readRobots(robotsRes);
   console.error(
-    `  robots.txt ${robotsRes.status} · 기본 정책 ${defaultAllow === null ? '?' : defaultAllow ? '허용' : '차단'}` +
-      ` · 이름 있는 봇 ${namedAgents.length}종 · 확인한 ${ALL_BOTS.length}종 중 ${ALL_BOTS.filter((b) => bots[b.ua]).length} 허용`,
+    `  robots.txt ${robots.status} · 기본 정책 ${robots.defaultAllow === null ? '?' : robots.defaultAllow ? '허용' : '차단'}` +
+      ` · 이름 있는 봇 ${robots.namedAgents.length}종 · 확인한 ${ALL_BOTS.length}종 중 ${ALL_BOTS.filter((b) => robots.bots[b.ua]).length} 허용`,
   );
 
   // 2. sitemap
@@ -563,15 +618,7 @@ async function auditService(svc, query) {
   );
 
   return {
-    robots: {
-      status: robotsRes.status,
-      bots,
-      defaultAllow,
-      hasCatchAll: groups.some((g) => g.agents.includes('*')),
-      namedAgents,
-      sitemaps,
-      raw: robotsRes.body.slice(0, 2000),
-    },
+    robots,
     renderAssets,
     sitemap: {
       ok: sm.ok,
@@ -809,6 +856,9 @@ async function main() {
     measured[svc.key] = await auditService(svc, query);
   }
 
+  const extraHosts = [];
+  for (const host of ROBOTS_ONLY) extraHosts.push(await auditRobotsOnly(host));
+
   const payload = {
     measuredAt: new Date().toISOString().slice(0, 10),
     generatedAt: new Date().toISOString(),
@@ -820,6 +870,7 @@ async function main() {
     serviceOrigins: Object.fromEntries(SERVICES.map((s) => [s.key, s.origin])),
     axes: buildRubric(measured),
     botCatalog: BOT_GROUPS,
+    extraHosts,
     measurements: measured,
     unmeasurable: [
       'AI 개요·AI 모드 내 인용 점유율 — GSC searchAppearance 에 해당 표면이 없어 측정 수단이 없다.',
