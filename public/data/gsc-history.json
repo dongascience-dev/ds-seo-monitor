@@ -1450,5 +1450,51 @@
       "ctr": 1,
       "position": 1
     }
+  },
+  {
+    "weekStart": "2026-10-26",
+    "weekEnd": "2026-11-01",
+    "days": 7,
+    "collectedAt": "2026-11-04T06:42:25.180Z",
+    "services": {
+      "donga": {
+        "web": {
+          "clicks": 48499,
+          "impressions": 1780435,
+          "ctr": 0.02723997225397164,
+          "position": 5.398833992816362
+        },
+        "discover": {
+          "clicks": 196865,
+          "impressions": 6200572,
+          "ctr": 0.03174949020832272,
+          "position": null
+        }
+      },
+      "dl": {
+        "web": {
+          "clicks": 297,
+          "impressions": 39460,
+          "ctr": 0.007526609224531171,
+          "position": 7.463304612265586
+        },
+        "discover": null
+      },
+      "store": {
+        "web": {
+          "clicks": 402,
+          "impressions": 8791,
+          "ctr": 0.04572858605391878,
+          "position": 6.1548174269138896
+        },
+        "discover": null
+      }
+    },
+    "devHosts": {
+      "clicks": 2,
+      "impressions": 6,
+      "ctr": 0.3333333333333333,
+      "position": 8.166666666666668
+    }
   }
 ]
