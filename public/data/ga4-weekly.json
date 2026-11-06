@@ -1,17 +1,17 @@
 {
-  "generatedAt": "2026-11-05T07:01:43.187Z",
+  "generatedAt": "2026-11-06T07:00:32.390Z",
   "property": "properties/528374870",
-  "dataThrough": "2026-11-02",
+  "dataThrough": "2026-11-03",
   "periods": {
     "current": {
       "start": "2026-11-02",
-      "end": "2026-11-02",
-      "days": 1
+      "end": "2026-11-03",
+      "days": 2
     },
     "previous": {
       "start": "2026-10-26",
-      "end": "2026-10-26",
-      "days": 1
+      "end": "2026-10-27",
+      "days": 2
     }
   },
   "services": {
@@ -24,410 +24,410 @@
         "dongascience.com"
       ],
       "sessions": {
-        "current": 58440,
-        "previous": 34553
+        "current": 107304,
+        "previous": 80651
       },
       "countries": [
         {
           "country": "South Korea",
-          "sessions": 48839,
-          "users": 43490,
-          "views": 56506,
-          "viewsPerSession": 1.16,
-          "prevSessions": 21533,
-          "deltaSessions": 27306,
-          "usersPerSession": 0.89,
+          "sessions": 86689,
+          "users": 76883,
+          "views": 104317,
+          "viewsPerSession": 1.2,
+          "prevSessions": 46620,
+          "deltaSessions": 40069,
+          "usersPerSession": 0.887,
           "suspicious": false
         },
         {
           "country": "United States",
-          "sessions": 2349,
-          "users": 2262,
-          "views": 2467,
-          "viewsPerSession": 1.05,
-          "prevSessions": 1761,
-          "deltaSessions": 588,
-          "usersPerSession": 0.963,
-          "suspicious": false
-        },
-        {
-          "country": "China",
-          "sessions": 796,
-          "users": 791,
-          "views": 748,
-          "viewsPerSession": 0.94,
-          "prevSessions": 2800,
-          "deltaSessions": -2004,
-          "usersPerSession": 0.994,
-          "suspicious": true
-        },
-        {
-          "country": "Singapore",
-          "sessions": 604,
-          "users": 597,
-          "views": 674,
-          "viewsPerSession": 1.12,
-          "prevSessions": 2202,
-          "deltaSessions": -1598,
-          "usersPerSession": 0.988,
-          "suspicious": false
-        },
-        {
-          "country": "Brazil",
-          "sessions": 497,
-          "users": 496,
-          "views": 218,
-          "viewsPerSession": 0.44,
-          "prevSessions": 881,
-          "deltaSessions": -384,
-          "usersPerSession": 0.998,
-          "suspicious": false
-        },
-        {
-          "country": "Japan",
-          "sessions": 391,
-          "users": 370,
-          "views": 437,
-          "viewsPerSession": 1.12,
-          "prevSessions": 296,
-          "deltaSessions": 95,
+          "sessions": 7437,
+          "users": 7033,
+          "views": 8247,
+          "viewsPerSession": 1.11,
+          "prevSessions": 3791,
+          "deltaSessions": 3646,
           "usersPerSession": 0.946,
           "suspicious": false
         },
         {
-          "country": "Germany",
-          "sessions": 299,
-          "users": 291,
-          "views": 356,
-          "viewsPerSession": 1.19,
-          "prevSessions": 246,
-          "deltaSessions": 53,
-          "usersPerSession": 0.973,
-          "suspicious": false
-        },
-        {
-          "country": "Vietnam",
-          "sessions": 270,
-          "users": 268,
-          "views": 161,
-          "viewsPerSession": 0.6,
-          "prevSessions": 260,
-          "deltaSessions": 10,
-          "usersPerSession": 0.993,
-          "suspicious": false
-        },
-        {
-          "country": "Hong Kong",
-          "sessions": 263,
-          "users": 261,
-          "views": 241,
+          "country": "China",
+          "sessions": 1812,
+          "users": 1803,
+          "views": 1664,
           "viewsPerSession": 0.92,
-          "prevSessions": 159,
-          "deltaSessions": 104,
-          "usersPerSession": 0.992,
+          "prevSessions": 5794,
+          "deltaSessions": -3982,
+          "usersPerSession": 0.995,
+          "suspicious": true
+        },
+        {
+          "country": "Singapore",
+          "sessions": 998,
+          "users": 972,
+          "views": 1063,
+          "viewsPerSession": 1.07,
+          "prevSessions": 3922,
+          "deltaSessions": -2924,
+          "usersPerSession": 0.974,
+          "suspicious": false
+        },
+        {
+          "country": "Brazil",
+          "sessions": 783,
+          "users": 778,
+          "views": 366,
+          "viewsPerSession": 0.47,
+          "prevSessions": 3151,
+          "deltaSessions": -2368,
+          "usersPerSession": 0.994,
+          "suspicious": true
+        },
+        {
+          "country": "Japan",
+          "sessions": 689,
+          "users": 639,
+          "views": 775,
+          "viewsPerSession": 1.12,
+          "prevSessions": 756,
+          "deltaSessions": -67,
+          "usersPerSession": 0.927,
           "suspicious": false
         },
         {
           "country": "Canada",
-          "sessions": 248,
-          "users": 236,
-          "views": 220,
-          "viewsPerSession": 0.89,
-          "prevSessions": 132,
-          "deltaSessions": 116,
+          "sessions": 653,
+          "users": 623,
+          "views": 633,
+          "viewsPerSession": 0.97,
+          "prevSessions": 321,
+          "deltaSessions": 332,
+          "usersPerSession": 0.954,
+          "suspicious": false
+        },
+        {
+          "country": "Germany",
+          "sessions": 516,
+          "users": 491,
+          "views": 642,
+          "viewsPerSession": 1.24,
+          "prevSessions": 692,
+          "deltaSessions": -176,
           "usersPerSession": 0.952,
           "suspicious": false
         },
         {
-          "country": "Indonesia",
-          "sessions": 248,
-          "users": 245,
-          "views": 163,
-          "viewsPerSession": 0.66,
-          "prevSessions": 153,
-          "deltaSessions": 95,
-          "usersPerSession": 0.988,
-          "suspicious": false
-        },
-        {
-          "country": "Argentina",
-          "sessions": 191,
-          "users": 192,
-          "views": 82,
-          "viewsPerSession": 0.43,
-          "prevSessions": 288,
-          "deltaSessions": -97,
-          "usersPerSession": 1.005,
-          "suspicious": false
-        },
-        {
-          "country": "United Kingdom",
-          "sessions": 188,
-          "users": 184,
-          "views": 156,
-          "viewsPerSession": 0.83,
-          "prevSessions": 202,
-          "deltaSessions": -14,
+          "country": "Vietnam",
+          "sessions": 473,
+          "users": 463,
+          "views": 300,
+          "viewsPerSession": 0.63,
+          "prevSessions": 511,
+          "deltaSessions": -38,
           "usersPerSession": 0.979,
           "suspicious": false
         },
         {
           "country": "India",
-          "sessions": 183,
-          "users": 175,
-          "views": 202,
-          "viewsPerSession": 1.1,
-          "prevSessions": 189,
-          "deltaSessions": -6,
-          "usersPerSession": 0.956,
+          "sessions": 437,
+          "users": 405,
+          "views": 485,
+          "viewsPerSession": 1.11,
+          "prevSessions": 551,
+          "deltaSessions": -114,
+          "usersPerSession": 0.927,
           "suspicious": false
         },
         {
-          "country": "France",
-          "sessions": 174,
-          "users": 171,
-          "views": 111,
-          "viewsPerSession": 0.64,
-          "prevSessions": 165,
-          "deltaSessions": 9,
-          "usersPerSession": 0.983,
+          "country": "Hong Kong",
+          "sessions": 415,
+          "users": 405,
+          "views": 398,
+          "viewsPerSession": 0.96,
+          "prevSessions": 691,
+          "deltaSessions": -276,
+          "usersPerSession": 0.976,
           "suspicious": false
         },
         {
-          "country": "Mexico",
-          "sessions": 171,
-          "users": 171,
-          "views": 73,
-          "viewsPerSession": 0.43,
-          "prevSessions": 190,
-          "deltaSessions": -19,
-          "usersPerSession": 1,
+          "country": "Indonesia",
+          "sessions": 411,
+          "users": 399,
+          "views": 293,
+          "viewsPerSession": 0.71,
+          "prevSessions": 625,
+          "deltaSessions": -214,
+          "usersPerSession": 0.971,
           "suspicious": false
         },
         {
-          "country": "Malaysia",
-          "sessions": 149,
-          "users": 147,
-          "views": 100,
-          "viewsPerSession": 0.67,
-          "prevSessions": 173,
-          "deltaSessions": -24,
-          "usersPerSession": 0.987,
-          "suspicious": false
-        },
-        {
-          "country": "Colombia",
-          "sessions": 141,
-          "users": 140,
-          "views": 59,
-          "viewsPerSession": 0.42,
-          "prevSessions": 157,
-          "deltaSessions": -16,
-          "usersPerSession": 0.993,
+          "country": "United Kingdom",
+          "sessions": 345,
+          "users": 328,
+          "views": 297,
+          "viewsPerSession": 0.86,
+          "prevSessions": 409,
+          "deltaSessions": -64,
+          "usersPerSession": 0.951,
           "suspicious": false
         },
         {
           "country": "Australia",
-          "sessions": 128,
-          "users": 118,
-          "views": 140,
-          "viewsPerSession": 1.09,
-          "prevSessions": 66,
-          "deltaSessions": 62,
-          "usersPerSession": 0.922,
+          "sessions": 331,
+          "users": 301,
+          "views": 363,
+          "viewsPerSession": 1.1,
+          "prevSessions": 173,
+          "deltaSessions": 158,
+          "usersPerSession": 0.909,
           "suspicious": false
         },
         {
-          "country": "Pakistan",
-          "sessions": 110,
-          "users": 110,
-          "views": 42,
-          "viewsPerSession": 0.38,
-          "prevSessions": 122,
-          "deltaSessions": -12,
-          "usersPerSession": 1,
+          "country": "Argentina",
+          "sessions": 301,
+          "users": 300,
+          "views": 134,
+          "viewsPerSession": 0.45,
+          "prevSessions": 1175,
+          "deltaSessions": -874,
+          "usersPerSession": 0.997,
           "suspicious": false
         },
         {
-          "country": "Bangladesh",
-          "sessions": 100,
-          "users": 99,
-          "views": 46,
-          "viewsPerSession": 0.46,
-          "prevSessions": 96,
-          "deltaSessions": 4,
-          "usersPerSession": 0.99,
+          "country": "France",
+          "sessions": 297,
+          "users": 288,
+          "views": 187,
+          "viewsPerSession": 0.63,
+          "prevSessions": 351,
+          "deltaSessions": -54,
+          "usersPerSession": 0.97,
+          "suspicious": false
+        },
+        {
+          "country": "Mexico",
+          "sessions": 292,
+          "users": 291,
+          "views": 137,
+          "viewsPerSession": 0.47,
+          "prevSessions": 690,
+          "deltaSessions": -398,
+          "usersPerSession": 0.997,
+          "suspicious": false
+        },
+        {
+          "country": "Malaysia",
+          "sessions": 244,
+          "users": 238,
+          "views": 171,
+          "viewsPerSession": 0.7,
+          "prevSessions": 501,
+          "deltaSessions": -257,
+          "usersPerSession": 0.975,
+          "suspicious": false
+        },
+        {
+          "country": "Colombia",
+          "sessions": 220,
+          "users": 219,
+          "views": 85,
+          "viewsPerSession": 0.39,
+          "prevSessions": 627,
+          "deltaSessions": -407,
+          "usersPerSession": 0.995,
           "suspicious": false
         },
         {
           "country": "Thailand",
-          "sessions": 100,
-          "users": 98,
-          "views": 56,
-          "viewsPerSession": 0.56,
-          "prevSessions": 76,
-          "deltaSessions": 24,
-          "usersPerSession": 0.98,
+          "sessions": 185,
+          "users": 179,
+          "views": 129,
+          "viewsPerSession": 0.7,
+          "prevSessions": 151,
+          "deltaSessions": 34,
+          "usersPerSession": 0.968,
           "suspicious": false
         },
         {
-          "country": "United Arab Emirates",
-          "sessions": 85,
-          "users": 82,
-          "views": 48,
-          "viewsPerSession": 0.56,
-          "prevSessions": 61,
-          "deltaSessions": 24,
-          "usersPerSession": 0.965,
+          "country": "Bangladesh",
+          "sessions": 182,
+          "users": 181,
+          "views": 80,
+          "viewsPerSession": 0.44,
+          "prevSessions": 370,
+          "deltaSessions": -188,
+          "usersPerSession": 0.995,
           "suspicious": false
         },
         {
-          "country": "Chile",
-          "sessions": 75,
-          "users": 74,
-          "views": 32,
-          "viewsPerSession": 0.43,
-          "prevSessions": 94,
-          "deltaSessions": -19,
-          "usersPerSession": 0.987,
+          "country": "Pakistan",
+          "sessions": 170,
+          "users": 170,
+          "views": 63,
+          "viewsPerSession": 0.37,
+          "prevSessions": 614,
+          "deltaSessions": -444,
+          "usersPerSession": 1,
           "suspicious": false
         },
         {
           "country": "Philippines",
-          "sessions": 75,
-          "users": 70,
-          "views": 51,
-          "viewsPerSession": 0.68,
-          "prevSessions": 105,
-          "deltaSessions": -30,
-          "usersPerSession": 0.933,
+          "sessions": 160,
+          "users": 147,
+          "views": 138,
+          "viewsPerSession": 0.86,
+          "prevSessions": 264,
+          "deltaSessions": -104,
+          "usersPerSession": 0.919,
+          "suspicious": false
+        },
+        {
+          "country": "United Arab Emirates",
+          "sessions": 135,
+          "users": 128,
+          "views": 78,
+          "viewsPerSession": 0.58,
+          "prevSessions": 270,
+          "deltaSessions": -135,
+          "usersPerSession": 0.948,
+          "suspicious": false
+        },
+        {
+          "country": "Russia",
+          "sessions": 119,
+          "users": 117,
+          "views": 49,
+          "viewsPerSession": 0.41,
+          "prevSessions": 741,
+          "deltaSessions": -622,
+          "usersPerSession": 0.983,
           "suspicious": false
         }
       ],
-      "countryCount": 142,
+      "countryCount": 155,
       "unknownCountry": {
-        "current": 126,
-        "previous": 33
+        "current": 142,
+        "previous": 154
       },
       "channels": {
         "current": {
-          "Direct": 28966,
-          "Organic Search": 24467,
-          "Referral": 1512,
-          "AI Assistant": 464,
-          "Unassigned": 253,
-          "Organic Social": 129,
-          "Paid Search": 47,
-          "Paid Other": 11,
-          "SMS": 8,
-          "Display": 7,
+          "Direct": 54072,
+          "Organic Search": 45796,
+          "Referral": 3311,
+          "AI Assistant": 953,
+          "Unassigned": 596,
+          "Organic Social": 236,
+          "Paid Search": 88,
+          "Paid Other": 25,
+          "SMS": 21,
+          "Display": 17,
+          "Email": 4,
           "Organic Video": 3,
-          "Cross-network": 1,
-          "Email": 1
+          "Cross-network": 1
         },
         "previous": {
-          "Direct": 15838,
-          "Organic Search": 13572,
-          "Referral": 1355,
-          "AI Assistant": 493,
-          "Unassigned": 207,
-          "Organic Social": 119,
-          "Paid Search": 50,
-          "Display": 19,
-          "SMS": 15,
-          "Paid Other": 13,
-          "Email": 3,
-          "Organic Video": 1
+          "Direct": 36113,
+          "Organic Search": 28525,
+          "Referral": 2739,
+          "AI Assistant": 1037,
+          "Unassigned": 812,
+          "Organic Social": 225,
+          "Paid Search": 93,
+          "Display": 44,
+          "SMS": 24,
+          "Paid Other": 21,
+          "Email": 13,
+          "Organic Video": 2
         }
       },
       "ai": {
         "channel": "AI Assistant",
-        "current": 464,
-        "previous": 493,
-        "organicCurrent": 24467,
-        "organicPrevious": 13572,
+        "current": 953,
+        "previous": 1037,
+        "organicCurrent": 45796,
+        "organicPrevious": 28525,
         "engines": [
           {
             "engine": "ChatGPT",
-            "sessions": 415,
-            "prevSessions": 441
+            "sessions": 862,
+            "prevSessions": 940
           },
           {
             "engine": "Gemini",
-            "sessions": 24,
-            "prevSessions": 16
+            "sessions": 44,
+            "prevSessions": 36
           },
           {
             "engine": "Perplexity",
-            "sessions": 22,
-            "prevSessions": 34
+            "sessions": 43,
+            "prevSessions": 57
           },
           {
             "engine": "Claude",
-            "sessions": 4,
-            "prevSessions": 2
+            "sessions": 5,
+            "prevSessions": 4
           }
         ],
         "landingPages": [
           {
             "path": "/",
             "url": "https://www.dongascience.com/",
-            "sessions": 23,
-            "prevSessions": 17
-          },
-          {
-            "path": "/ko/news/61804",
-            "url": "https://www.dongascience.com/ko/news/61804",
-            "sessions": 4,
-            "prevSessions": 3
-          },
-          {
-            "path": "/ko/news/62678",
-            "url": "https://www.dongascience.com/ko/news/62678",
-            "sessions": 4,
-            "prevSessions": 0
+            "sessions": 44,
+            "prevSessions": 32
           },
           {
             "path": "/ko/news/78643",
             "url": "https://www.dongascience.com/ko/news/78643",
-            "sessions": 4,
+            "sessions": 9,
+            "prevSessions": 8
+          },
+          {
+            "path": "/ko/news/39507",
+            "url": "https://www.dongascience.com/ko/news/39507",
+            "sessions": 7,
+            "prevSessions": 10
+          },
+          {
+            "path": "/news/78852",
+            "url": "https://www.dongascience.com/news/78852",
+            "sessions": 7,
             "prevSessions": 0
           },
           {
-            "path": "/en/news/78122",
-            "url": "https://www.dongascience.com/en/news/78122",
-            "sessions": 3,
+            "path": "/ko/news/15602",
+            "url": "https://www.dongascience.com/ko/news/15602",
+            "sessions": 6,
             "prevSessions": 0
           },
           {
-            "path": "/en/news/78414",
-            "url": "https://www.dongascience.com/en/news/78414",
-            "sessions": 3,
-            "prevSessions": 0
-          },
-          {
-            "path": "/ko/news/63007",
-            "url": "https://www.dongascience.com/ko/news/63007",
-            "sessions": 3,
-            "prevSessions": 0
-          },
-          {
-            "path": "/ko/news/66672",
-            "url": "https://www.dongascience.com/ko/news/66672",
-            "sessions": 3,
+            "path": "/ko/news/80643",
+            "url": "https://www.dongascience.com/ko/news/80643",
+            "sessions": 6,
             "prevSessions": 0
           },
           {
             "path": "/ko/news/66741",
             "url": "https://www.dongascience.com/ko/news/66741",
-            "sessions": 3,
+            "sessions": 5,
             "prevSessions": 0
           },
           {
             "path": "/ko/news/71793",
             "url": "https://www.dongascience.com/ko/news/71793",
-            "sessions": 3,
+            "sessions": 5,
+            "prevSessions": 8
+          },
+          {
+            "path": "/ko/news/77578",
+            "url": "https://www.dongascience.com/ko/news/77578",
+            "sessions": 5,
             "prevSessions": 0
+          },
+          {
+            "path": "/news/41632",
+            "url": "https://www.dongascience.com/news/41632",
+            "sessions": 5,
+            "prevSessions": 10
           }
         ]
       }
@@ -438,150 +438,194 @@
         "dl.dongascience.com"
       ],
       "sessions": {
-        "current": 2915,
-        "previous": 3705
+        "current": 4816,
+        "previous": 6358
       },
       "countries": [
         {
           "country": "Singapore",
-          "sessions": 1721,
-          "users": 1720,
-          "views": 1680,
-          "viewsPerSession": 0.98,
-          "prevSessions": 558,
-          "deltaSessions": 1163,
-          "usersPerSession": 0.999,
+          "sessions": 2596,
+          "users": 2592,
+          "views": 2528,
+          "viewsPerSession": 0.97,
+          "prevSessions": 1459,
+          "deltaSessions": 1137,
+          "usersPerSession": 0.998,
           "suspicious": true
         },
         {
           "country": "South Korea",
-          "sessions": 663,
-          "users": 550,
-          "views": 2952,
-          "viewsPerSession": 4.45,
-          "prevSessions": 1403,
-          "deltaSessions": -740,
-          "usersPerSession": 0.83,
-          "suspicious": false
-        },
-        {
-          "country": "China",
-          "sessions": 178,
-          "users": 178,
-          "views": 62,
-          "viewsPerSession": 0.35,
-          "prevSessions": 47,
-          "deltaSessions": 131,
-          "usersPerSession": 1,
+          "sessions": 1252,
+          "users": 1004,
+          "views": 5279,
+          "viewsPerSession": 4.22,
+          "prevSessions": 2339,
+          "deltaSessions": -1087,
+          "usersPerSession": 0.802,
           "suspicious": false
         },
         {
           "country": "United States",
-          "sessions": 154,
-          "users": 154,
-          "views": 172,
+          "sessions": 329,
+          "users": 331,
+          "views": 367,
           "viewsPerSession": 1.12,
-          "prevSessions": 660,
-          "deltaSessions": -506,
+          "prevSessions": 987,
+          "deltaSessions": -658,
+          "usersPerSession": 1.006,
+          "suspicious": false
+        },
+        {
+          "country": "China",
+          "sessions": 273,
+          "users": 273,
+          "views": 105,
+          "viewsPerSession": 0.38,
+          "prevSessions": 75,
+          "deltaSessions": 198,
           "usersPerSession": 1,
           "suspicious": false
         },
         {
           "country": "India",
-          "sessions": 113,
-          "users": 113,
-          "views": 113,
+          "sessions": 201,
+          "users": 201,
+          "views": 201,
           "viewsPerSession": 1,
-          "prevSessions": 543,
-          "deltaSessions": -430,
+          "prevSessions": 788,
+          "deltaSessions": -587,
           "usersPerSession": 1,
           "suspicious": false
         },
         {
           "country": "Germany",
-          "sessions": 21,
-          "users": 21,
-          "views": 21,
+          "sessions": 34,
+          "users": 34,
+          "views": 34,
           "viewsPerSession": 1,
-          "prevSessions": 81,
-          "deltaSessions": -60,
+          "prevSessions": 122,
+          "deltaSessions": -88,
           "usersPerSession": 1,
           "suspicious": false
         },
         {
           "country": "New Zealand",
-          "sessions": 14,
-          "users": 14,
-          "views": 14,
+          "sessions": 22,
+          "users": 22,
+          "views": 22,
           "viewsPerSession": 1,
-          "prevSessions": 85,
-          "deltaSessions": -71,
+          "prevSessions": 121,
+          "deltaSessions": -99,
           "usersPerSession": 1,
           "suspicious": false
         },
         {
           "country": "Spain",
-          "sessions": 8,
-          "users": 8,
-          "views": 8,
+          "sessions": 17,
+          "users": 17,
+          "views": 17,
           "viewsPerSession": 1,
-          "prevSessions": 63,
-          "deltaSessions": -55,
-          "usersPerSession": 1,
-          "suspicious": false
-        },
-        {
-          "country": "Romania",
-          "sessions": 6,
-          "users": 6,
-          "views": 6,
-          "viewsPerSession": 1,
-          "prevSessions": 84,
-          "deltaSessions": -78,
+          "prevSessions": 86,
+          "deltaSessions": -69,
           "usersPerSession": 1,
           "suspicious": false
         },
         {
           "country": "United Kingdom",
-          "sessions": 4,
-          "users": 4,
-          "views": 4,
+          "sessions": 14,
+          "users": 14,
+          "views": 14,
           "viewsPerSession": 1,
-          "prevSessions": 36,
-          "deltaSessions": -32,
+          "prevSessions": 51,
+          "deltaSessions": -37,
+          "usersPerSession": 1,
+          "suspicious": false
+        },
+        {
+          "country": "Romania",
+          "sessions": 12,
+          "users": 12,
+          "views": 12,
+          "viewsPerSession": 1,
+          "prevSessions": 119,
+          "deltaSessions": -107,
+          "usersPerSession": 1,
+          "suspicious": false
+        },
+        {
+          "country": "Japan",
+          "sessions": 8,
+          "users": 8,
+          "views": 11,
+          "viewsPerSession": 1.38,
+          "prevSessions": 22,
+          "deltaSessions": -14,
+          "usersPerSession": 1,
+          "suspicious": false
+        },
+        {
+          "country": "Brazil",
+          "sessions": 7,
+          "users": 7,
+          "views": 6,
+          "viewsPerSession": 0.86,
+          "prevSessions": 25,
+          "deltaSessions": -18,
           "usersPerSession": 1,
           "suspicious": false
         },
         {
           "country": "Australia",
-          "sessions": 3,
+          "sessions": 5,
           "users": 1,
-          "views": 20,
-          "viewsPerSession": 6.67,
-          "prevSessions": 16,
-          "deltaSessions": -13,
-          "usersPerSession": 0.333,
+          "views": 28,
+          "viewsPerSession": 5.6,
+          "prevSessions": 21,
+          "deltaSessions": -16,
+          "usersPerSession": 0.2,
           "suspicious": false
         },
         {
           "country": "Canada",
-          "sessions": 3,
-          "users": 3,
-          "views": 3,
+          "sessions": 5,
+          "users": 5,
+          "views": 5,
           "viewsPerSession": 1,
-          "prevSessions": 6,
-          "deltaSessions": -3,
+          "prevSessions": 14,
+          "deltaSessions": -9,
+          "usersPerSession": 1,
+          "suspicious": false
+        },
+        {
+          "country": "Switzerland",
+          "sessions": 5,
+          "users": 5,
+          "views": 5,
+          "viewsPerSession": 1,
+          "prevSessions": 12,
+          "deltaSessions": -7,
           "usersPerSession": 1,
           "suspicious": false
         },
         {
           "country": "Italy",
+          "sessions": 4,
+          "users": 4,
+          "views": 4,
+          "viewsPerSession": 1,
+          "prevSessions": 14,
+          "deltaSessions": -10,
+          "usersPerSession": 1,
+          "suspicious": false
+        },
+        {
+          "country": "Portugal",
           "sessions": 3,
           "users": 3,
           "views": 3,
           "viewsPerSession": 1,
-          "prevSessions": 9,
-          "deltaSessions": -6,
+          "prevSessions": 13,
+          "deltaSessions": -10,
           "usersPerSession": 1,
           "suspicious": false
         },
@@ -591,30 +635,52 @@
           "users": 3,
           "views": 3,
           "viewsPerSession": 1,
+          "prevSessions": 21,
+          "deltaSessions": -18,
+          "usersPerSession": 1,
+          "suspicious": false
+        },
+        {
+          "country": "Finland",
+          "sessions": 2,
+          "users": 2,
+          "views": 2,
+          "viewsPerSession": 1,
           "prevSessions": 12,
-          "deltaSessions": -9,
+          "deltaSessions": -10,
           "usersPerSession": 1,
           "suspicious": false
         },
         {
-          "country": "Brazil",
+          "country": "France",
           "sessions": 2,
           "users": 2,
           "views": 2,
           "viewsPerSession": 1,
-          "prevSessions": 17,
-          "deltaSessions": -15,
+          "prevSessions": 19,
+          "deltaSessions": -17,
           "usersPerSession": 1,
           "suspicious": false
         },
         {
-          "country": "Japan",
+          "country": "Indonesia",
           "sessions": 2,
           "users": 2,
-          "views": 2,
-          "viewsPerSession": 1,
-          "prevSessions": 17,
-          "deltaSessions": -15,
+          "views": 6,
+          "viewsPerSession": 3,
+          "prevSessions": 2,
+          "deltaSessions": 0,
+          "usersPerSession": 1,
+          "suspicious": false
+        },
+        {
+          "country": "Malaysia",
+          "sessions": 2,
+          "users": 2,
+          "views": 3,
+          "viewsPerSession": 1.5,
+          "prevSessions": 1,
+          "deltaSessions": 1,
           "usersPerSession": 1,
           "suspicious": false
         },
@@ -626,28 +692,6 @@
           "viewsPerSession": 8.5,
           "prevSessions": 0,
           "deltaSessions": 2,
-          "usersPerSession": 1,
-          "suspicious": false
-        },
-        {
-          "country": "Portugal",
-          "sessions": 2,
-          "users": 2,
-          "views": 2,
-          "viewsPerSession": 1,
-          "prevSessions": 7,
-          "deltaSessions": -5,
-          "usersPerSession": 1,
-          "suspicious": false
-        },
-        {
-          "country": "Switzerland",
-          "sessions": 2,
-          "users": 2,
-          "views": 2,
-          "viewsPerSession": 1,
-          "prevSessions": 7,
-          "deltaSessions": -5,
           "usersPerSession": 1,
           "suspicious": false
         },
@@ -668,118 +712,86 @@
           "users": 1,
           "views": 1,
           "viewsPerSession": 1,
-          "prevSessions": 5,
-          "deltaSessions": -4,
-          "usersPerSession": 1,
-          "suspicious": false
-        },
-        {
-          "country": "Czechia",
-          "sessions": 1,
-          "users": 1,
-          "views": 1,
-          "viewsPerSession": 1,
-          "prevSessions": 0,
-          "deltaSessions": 1,
-          "usersPerSession": 1,
-          "suspicious": false
-        },
-        {
-          "country": "Finland",
-          "sessions": 1,
-          "users": 1,
-          "views": 1,
-          "viewsPerSession": 1,
           "prevSessions": 7,
           "deltaSessions": -6,
           "usersPerSession": 1,
           "suspicious": false
-        },
-        {
-          "country": "Hong Kong",
-          "sessions": 1,
-          "users": 1,
-          "views": 1,
-          "viewsPerSession": 1,
-          "prevSessions": 2,
-          "deltaSessions": -1,
-          "usersPerSession": 1,
-          "suspicious": false
-        },
-        {
-          "country": "Hungary",
-          "sessions": 1,
-          "users": 1,
-          "views": 1,
-          "viewsPerSession": 1,
-          "prevSessions": 0,
-          "deltaSessions": 1,
-          "usersPerSession": 1,
-          "suspicious": false
         }
       ],
-      "countryCount": 28,
+      "countryCount": 34,
       "unknownCountry": {
-        "current": 2,
-        "previous": 0
+        "current": 5,
+        "previous": 2
       },
       "channels": {
         "current": {
-          "Direct": 2314,
-          "Organic Search": 170,
-          "Unassigned": 99,
-          "Referral": 47,
-          "Paid Search": 35,
-          "AI Assistant": 25,
-          "Organic Social": 24,
-          "Display": 20,
-          "Paid Other": 14,
-          "SMS": 9,
+          "Direct": 3744,
+          "Organic Search": 298,
+          "Unassigned": 175,
+          "Referral": 105,
+          "Paid Search": 67,
+          "AI Assistant": 51,
+          "Display": 44,
+          "Organic Social": 44,
+          "Paid Other": 27,
+          "SMS": 16,
           "Cross-network": 2
         },
         "previous": {
-          "Direct": 2649,
-          "Organic Social": 498,
-          "Organic Search": 249,
-          "Unassigned": 98,
-          "Referral": 94,
-          "AI Assistant": 46,
-          "Paid Search": 29,
-          "Display": 27,
-          "Paid Other": 8,
-          "SMS": 8,
+          "Direct": 4652,
+          "Organic Social": 707,
+          "Organic Search": 452,
+          "Unassigned": 186,
+          "Referral": 154,
+          "AI Assistant": 72,
+          "Display": 61,
+          "Paid Search": 46,
+          "Paid Other": 24,
+          "SMS": 15,
           "Email": 1
         }
       },
       "ai": {
         "channel": "AI Assistant",
-        "current": 25,
-        "previous": 46,
-        "organicCurrent": 170,
-        "organicPrevious": 249,
+        "current": 51,
+        "previous": 72,
+        "organicCurrent": 298,
+        "organicPrevious": 452,
         "engines": [
           {
             "engine": "Perplexity",
-            "sessions": 14,
-            "prevSessions": 17
-          },
-          {
-            "engine": "ChatGPT",
-            "sessions": 10,
+            "sessions": 27,
             "prevSessions": 25
           },
           {
+            "engine": "ChatGPT",
+            "sessions": 22,
+            "prevSessions": 42
+          },
+          {
             "engine": "Gemini",
-            "sessions": 1,
-            "prevSessions": 4
+            "sessions": 2,
+            "prevSessions": 5
           }
         ],
         "landingPages": [
           {
+            "path": "/",
+            "url": "https://dl.dongascience.com/",
+            "sessions": 5,
+            "prevSessions": 11
+          },
+          {
             "path": "/dl/search",
             "url": "https://dl.dongascience.com/dl/search",
+            "sessions": 4,
+            "prevSessions": 9
+          },
+          {
+            "path": "/dl/search/tab/article",
+            "url": "https://dl.dongascience.com/dl/search/tab/article",
             "sessions": 3,
-            "prevSessions": 6
+            "prevSessions": 9
           },
           {
             "path": "/dl/magazine/detail/C202215N026",
@@ -806,10 +818,10 @@
             "prevSessions": 0
           },
           {
-            "path": "/",
-            "url": "https://dl.dongascience.com/",
+            "path": "/dl",
+            "url": "https://dl.dongascience.com/dl",
             "sessions": 1,
-            "prevSessions": 8
+            "prevSessions": 1
           },
           {
             "path": "/dl/cartoon/detail/79",
@@ -818,20 +830,8 @@
             "prevSessions": 0
           },
           {
-            "path": "/dl/magazine/detail/M201508N015",
-            "url": "https://dl.dongascience.com/dl/magazine/detail/M201508N015",
-            "sessions": 1,
-            "prevSessions": 0
-          },
-          {
-            "path": "/dl/magazine/detail/M202108N034",
-            "url": "https://dl.dongascience.com/dl/magazine/detail/M202108N034",
-            "sessions": 1,
-            "prevSessions": 0
-          },
-          {
-            "path": "/dl/magazine/detail/S199403N048",
-            "url": "https://dl.dongascience.com/dl/magazine/detail/S199403N048",
+            "path": "/dl/magazine/detail/C201117N003",
+            "url": "https://dl.dongascience.com/dl/magazine/detail/C201117N003",
             "sessions": 1,
             "prevSessions": 0
           }
@@ -844,95 +844,139 @@
         "dsstore.dongascience.com"
       ],
       "sessions": {
-        "current": 2877,
-        "previous": 5136
+        "current": 6068,
+        "previous": 9508
       },
       "countries": [
         {
           "country": "South Korea",
-          "sessions": 2619,
-          "users": 2287,
-          "views": 7551,
-          "viewsPerSession": 2.88,
-          "prevSessions": 4596,
-          "deltaSessions": -1977,
-          "usersPerSession": 0.873,
+          "sessions": 5394,
+          "users": 4620,
+          "views": 14945,
+          "viewsPerSession": 2.77,
+          "prevSessions": 8665,
+          "deltaSessions": -3271,
+          "usersPerSession": 0.857,
           "suspicious": false
         },
         {
           "country": "United States",
-          "sessions": 128,
-          "users": 128,
-          "views": 177,
-          "viewsPerSession": 1.38,
-          "prevSessions": 160,
-          "deltaSessions": -32,
-          "usersPerSession": 1,
+          "sessions": 366,
+          "users": 365,
+          "views": 462,
+          "viewsPerSession": 1.26,
+          "prevSessions": 320,
+          "deltaSessions": 46,
+          "usersPerSession": 0.997,
           "suspicious": false
         },
         {
           "country": "India",
-          "sessions": 46,
-          "users": 46,
-          "views": 46,
+          "sessions": 98,
+          "users": 98,
+          "views": 98,
           "viewsPerSession": 1,
-          "prevSessions": 52,
-          "deltaSessions": -6,
+          "prevSessions": 99,
+          "deltaSessions": -1,
           "usersPerSession": 1,
           "suspicious": false
         },
         {
           "country": "Germany",
-          "sessions": 14,
-          "users": 14,
-          "views": 14,
+          "sessions": 28,
+          "users": 28,
+          "views": 28,
           "viewsPerSession": 1,
-          "prevSessions": 11,
-          "deltaSessions": 3,
+          "prevSessions": 17,
+          "deltaSessions": 11,
+          "usersPerSession": 1,
+          "suspicious": false
+        },
+        {
+          "country": "Ireland",
+          "sessions": 27,
+          "users": 27,
+          "views": 30,
+          "viewsPerSession": 1.11,
+          "prevSessions": 20,
+          "deltaSessions": 7,
+          "usersPerSession": 1,
+          "suspicious": false
+        },
+        {
+          "country": "Sweden",
+          "sessions": 27,
+          "users": 27,
+          "views": 27,
+          "viewsPerSession": 1,
+          "prevSessions": 21,
+          "deltaSessions": 6,
           "usersPerSession": 1,
           "suspicious": false
         },
         {
           "country": "Romania",
-          "sessions": 11,
-          "users": 11,
-          "views": 11,
+          "sessions": 19,
+          "users": 19,
+          "views": 19,
           "viewsPerSession": 1,
-          "prevSessions": 1,
-          "deltaSessions": 10,
+          "prevSessions": 8,
+          "deltaSessions": 11,
           "usersPerSession": 1,
           "suspicious": false
         },
         {
           "country": "New Zealand",
-          "sessions": 8,
-          "users": 8,
-          "views": 8,
-          "viewsPerSession": 1,
-          "prevSessions": 8,
-          "deltaSessions": 0,
-          "usersPerSession": 1,
-          "suspicious": false
-        },
-        {
-          "country": "Spain",
-          "sessions": 7,
-          "users": 7,
-          "views": 7,
-          "viewsPerSession": 1,
-          "prevSessions": 2,
+          "sessions": 17,
+          "users": 17,
+          "views": 18,
+          "viewsPerSession": 1.06,
+          "prevSessions": 12,
           "deltaSessions": 5,
           "usersPerSession": 1,
           "suspicious": false
         },
         {
-          "country": "Brazil",
-          "sessions": 6,
-          "users": 6,
-          "views": 6,
+          "country": "Singapore",
+          "sessions": 15,
+          "users": 15,
+          "views": 15,
           "viewsPerSession": 1,
-          "prevSessions": 0,
-          "deltaSessions": 6,
+          "prevSessions": 261,
+          "deltaSessions": -246,
+          "usersPerSession": 1,
+          "suspicious": false
+        },
+        {
+          "country": "China",
+          "sessions": 12,
+          "users": 11,
+          "views": 25,
+          "viewsPerSession": 2.08,
+          "prevSessions": 15,
+          "deltaSessions": -3,
+          "usersPerSession": 0.917,
+          "suspicious": false
+        },
+        {
+          "country": "Brazil",
+          "sessions": 10,
+          "users": 10,
+          "views": 10,
+          "viewsPerSession": 1,
+          "prevSessions": 1,
+          "deltaSessions": 9,
+          "usersPerSession": 1,
+          "suspicious": false
+        },
+        {
+          "country": "Spain",
+          "sessions": 10,
+          "users": 10,
+          "views": 10,
+          "viewsPerSession": 1,
+          "prevSessions": 6,
+          "deltaSessions": 4,
           "usersPerSession": 1,
           "suspicious": false
         },
@@ -942,41 +986,74 @@
           "users": 6,
           "views": 16,
           "viewsPerSession": 2.67,
-          "prevSessions": 5,
-          "deltaSessions": 1,
-          "usersPerSession": 1,
-          "suspicious": false
-        },
-        {
-          "country": "Singapore",
-          "sessions": 6,
-          "users": 6,
-          "views": 6,
-          "viewsPerSession": 1,
-          "prevSessions": 254,
-          "deltaSessions": -248,
-          "usersPerSession": 1,
-          "suspicious": false
-        },
-        {
-          "country": "China",
-          "sessions": 5,
-          "users": 5,
-          "views": 5,
-          "viewsPerSession": 1,
-          "prevSessions": 8,
-          "deltaSessions": -3,
+          "prevSessions": 11,
+          "deltaSessions": -5,
           "usersPerSession": 1,
           "suspicious": false
         },
         {
           "country": "Australia",
+          "sessions": 4,
+          "users": 4,
+          "views": 4,
+          "viewsPerSession": 1,
+          "prevSessions": 3,
+          "deltaSessions": 1,
+          "usersPerSession": 1,
+          "suspicious": false
+        },
+        {
+          "country": "Finland",
+          "sessions": 4,
+          "users": 4,
+          "views": 4,
+          "viewsPerSession": 1,
+          "prevSessions": 1,
+          "deltaSessions": 3,
+          "usersPerSession": 1,
+          "suspicious": false
+        },
+        {
+          "country": "Netherlands",
+          "sessions": 4,
+          "users": 4,
+          "views": 4,
+          "viewsPerSession": 1,
+          "prevSessions": 3,
+          "deltaSessions": 1,
+          "usersPerSession": 1,
+          "suspicious": false
+        },
+        {
+          "country": "Switzerland",
+          "sessions": 4,
+          "users": 4,
+          "views": 4,
+          "viewsPerSession": 1,
+          "prevSessions": 1,
+          "deltaSessions": 3,
+          "usersPerSession": 1,
+          "suspicious": false
+        },
+        {
+          "country": "Hong Kong",
           "sessions": 3,
           "users": 3,
           "views": 3,
           "viewsPerSession": 1,
-          "prevSessions": 2,
-          "deltaSessions": 1,
+          "prevSessions": 3,
+          "deltaSessions": 0,
+          "usersPerSession": 1,
+          "suspicious": false
+        },
+        {
+          "country": "United Kingdom",
+          "sessions": 3,
+          "users": 3,
+          "views": 3,
+          "viewsPerSession": 1,
+          "prevSessions": 6,
+          "deltaSessions": -3,
           "usersPerSession": 1,
           "suspicious": false
         },
@@ -986,30 +1063,19 @@
           "users": 2,
           "views": 3,
           "viewsPerSession": 1.5,
-          "prevSessions": 3,
-          "deltaSessions": -1,
+          "prevSessions": 7,
+          "deltaSessions": -5,
           "usersPerSession": 1,
           "suspicious": false
         },
         {
-          "country": "Finland",
+          "country": "France",
           "sessions": 2,
           "users": 2,
           "views": 2,
           "viewsPerSession": 1,
-          "prevSessions": 0,
-          "deltaSessions": 2,
-          "usersPerSession": 1,
-          "suspicious": false
-        },
-        {
-          "country": "Switzerland",
-          "sessions": 2,
-          "users": 2,
-          "views": 2,
-          "viewsPerSession": 1,
-          "prevSessions": 0,
-          "deltaSessions": 2,
+          "prevSessions": 1,
+          "deltaSessions": 1,
           "usersPerSession": 1,
           "suspicious": false
         },
@@ -1025,73 +1091,29 @@
           "suspicious": false
         },
         {
-          "country": "United Kingdom",
-          "sessions": 2,
-          "users": 2,
-          "views": 2,
-          "viewsPerSession": 1,
-          "prevSessions": 4,
-          "deltaSessions": -2,
-          "usersPerSession": 1,
-          "suspicious": false
-        },
-        {
           "country": "Cyprus",
           "sessions": 1,
           "users": 1,
           "views": 1,
           "viewsPerSession": 1,
-          "prevSessions": 0,
-          "deltaSessions": 1,
+          "prevSessions": 1,
+          "deltaSessions": 0,
           "usersPerSession": 1,
           "suspicious": false
         },
         {
-          "country": "France",
+          "country": "Greece",
           "sessions": 1,
           "users": 1,
           "views": 1,
           "viewsPerSession": 1,
-          "prevSessions": 0,
-          "deltaSessions": 1,
+          "prevSessions": 1,
+          "deltaSessions": 0,
           "usersPerSession": 1,
           "suspicious": false
         },
         {
-          "country": "Hong Kong",
-          "sessions": 1,
-          "users": 1,
-          "views": 1,
-          "viewsPerSession": 1,
-          "prevSessions": 3,
-          "deltaSessions": -2,
-          "usersPerSession": 1,
-          "suspicious": false
-        },
-        {
-          "country": "Mexico",
-          "sessions": 1,
-          "users": 1,
-          "views": 1,
-          "viewsPerSession": 1,
-          "prevSessions": 0,
-          "deltaSessions": 1,
-          "usersPerSession": 1,
-          "suspicious": false
-        },
-        {
-          "country": "Netherlands",
-          "sessions": 1,
-          "users": 1,
-          "views": 1,
-          "viewsPerSession": 1,
-          "prevSessions": 2,
-          "deltaSessions": -1,
-          "usersPerSession": 1,
-          "suspicious": false
-        },
-        {
-          "country": "Poland",
+          "country": "Indonesia",
           "sessions": 1,
           "users": 1,
           "views": 1,
@@ -1102,58 +1124,59 @@
           "suspicious": false
         }
       ],
-      "countryCount": 23,
+      "countryCount": 30,
       "unknownCountry": {
-        "current": 2,
-        "previous": 3
+        "current": 3,
+        "previous": 8
       },
       "channels": {
         "current": {
-          "Display": 958,
-          "Direct": 669,
-          "Unassigned": 393,
-          "Organic Search": 264,
-          "SMS": 156,
-          "Paid Search": 155,
-          "Paid Other": 134,
-          "Referral": 99,
-          "Organic Social": 33,
-          "AI Assistant": 10,
-          "Organic Shopping": 6,
-          "Cross-network": 5,
+          "Display": 2273,
+          "Direct": 1283,
+          "Unassigned": 844,
+          "Organic Search": 530,
+          "Paid Search": 324,
+          "SMS": 318,
+          "Paid Other": 279,
+          "Referral": 144,
+          "Organic Social": 89,
+          "AI Assistant": 25,
+          "Organic Shopping": 13,
+          "Cross-network": 8,
           "Mobile Push Notifications": 1
         },
         "previous": {
-          "Display": 2014,
-          "Direct": 995,
-          "Unassigned": 840,
-          "SMS": 380,
-          "Organic Search": 265,
-          "Organic Social": 171,
-          "Paid Search": 151,
-          "Paid Other": 145,
-          "Referral": 67,
-          "AI Assistant": 10,
-          "Organic Shopping": 5,
-          "Cross-network": 3
+          "Display": 3838,
+          "Unassigned": 1766,
+          "Direct": 1724,
+          "SMS": 597,
+          "Organic Search": 523,
+          "Paid Other": 300,
+          "Organic Social": 281,
+          "Paid Search": 251,
+          "Referral": 139,
+          "AI Assistant": 20,
+          "Organic Shopping": 7,
+          "Cross-network": 5,
+          "Email": 1
         }
       },
       "ai": {
         "channel": "AI Assistant",
-        "current": 10,
-        "previous": 10,
-        "organicCurrent": 264,
-        "organicPrevious": 265,
+        "current": 25,
+        "previous": 20,
+        "organicCurrent": 530,
+        "organicPrevious": 523,
         "engines": [
           {
             "engine": "ChatGPT",
-            "sessions": 6,
-            "prevSessions": 9
+            "sessions": 21,
+            "prevSessions": 17
           },
           {
             "engine": "Gemini",
             "sessions": 3,
-            "prevSessions": 1
+            "prevSessions": 3
           },
           {
             "engine": "Perplexity",
@@ -1163,10 +1186,52 @@
         ],
         "landingPages": [
           {
+            "path": "/",
+            "url": "https://dsstore.dongascience.com/",
+            "sessions": 2,
+            "prevSessions": 4
+          },
+          {
+            "path": "/promotion/landing",
+            "url": "https://dsstore.dongascience.com/promotion/landing",
+            "sessions": 2,
+            "prevSessions": 0
+          },
+          {
+            "path": "/sub/category/BcJ7DK0f",
+            "url": "https://dsstore.dongascience.com/sub/category/BcJ7DK0f",
+            "sessions": 2,
+            "prevSessions": 3
+          },
+          {
+            "path": "/sub/secret-note/view/5377",
+            "url": "https://dsstore.dongascience.com/sub/secret-note/view/5377",
+            "sessions": 2,
+            "prevSessions": 1
+          },
+          {
             "path": "/ko/news/23702",
             "url": "https://dsstore.dongascience.com/ko/news/23702",
             "sessions": 1,
             "prevSessions": 0
+          },
+          {
+            "path": "/ko/news/71884",
+            "url": "https://dsstore.dongascience.com/ko/news/71884",
+            "sessions": 1,
+            "prevSessions": 0
+          },
+          {
+            "path": "/ko/news/78931",
+            "url": "https://dsstore.dongascience.com/ko/news/78931",
+            "sessions": 1,
+            "prevSessions": 0
+          },
+          {
+            "path": "/main",
+            "url": "https://dsstore.dongascience.com/main",
+            "sessions": 1,
+            "prevSessions": 1
           },
           {
             "path": "/product/23020061",
@@ -1175,38 +1240,8 @@
             "prevSessions": 0
           },
           {
-            "path": "/product/24020125",
-            "url": "https://dsstore.dongascience.com/product/24020125",
-            "sessions": 1,
-            "prevSessions": 0
-          },
-          {
-            "path": "/product/ZWCSLADH",
-            "url": "https://dsstore.dongascience.com/product/ZWCSLADH",
-            "sessions": 1,
-            "prevSessions": 0
-          },
-          {
-            "path": "/product/dvlbg3VK",
-            "url": "https://dsstore.dongascience.com/product/dvlbg3VK",
-            "sessions": 1,
-            "prevSessions": 0
-          },
-          {
-            "path": "/promotion/landing",
-            "url": "https://dsstore.dongascience.com/promotion/landing",
-            "sessions": 1,
-            "prevSessions": 0
-          },
-          {
-            "path": "/sub/category/LtgipW5Y",
-            "url": "https://dsstore.dongascience.com/sub/category/LtgipW5Y",
-            "sessions": 1,
-            "prevSessions": 0
-          },
-          {
-            "path": "/sub/secret-note/view/5377",
-            "url": "https://dsstore.dongascience.com/sub/secret-note/view/5377",
+            "path": "/product/23090129",
+            "url": "https://dsstore.dongascience.com/product/23090129",
             "sessions": 1,
             "prevSessions": 0
           }
