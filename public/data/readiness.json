@@ -1,6 +1,6 @@
 {
-  "measuredAt": "2026-11-02",
-  "generatedAt": "2026-11-02T06:27:30.270Z",
+  "measuredAt": "2026-11-09",
+  "generatedAt": "2026-11-09T06:53:51.620Z",
   "source": "자동 측정 — robots.txt · sitemap.xml · 상세 페이지 크롤 (서비스당 최대 150건)",
   "caveat": "배점(가중치)은 업계 표준이 아니라 이 문서의 선택이다. 충족률은 실측이므로 서비스 간 순서는 신뢰할 수 있으나, 절대 점수는 배점을 바꾸면 달라진다. \"핵심 상세 수록\" 항목의 분모(전체 콘텐츠 수)만 추정치이며 auto:false 로 표시했다.",
   "services": [
@@ -35,9 +35,9 @@
             "store": 0
           },
           "notes": {
-            "donga": "2026-11-02T02:45:00.000Z · 0일 전",
-            "dl": "2024-04-22T01:12:33+00:00 · 924일 전",
-            "store": "2024-03-05T05:20:22+00:00 · 972일 전"
+            "donga": "2026-11-09T03:10:00.000Z · 0일 전",
+            "dl": "2024-04-22T01:12:33+00:00 · 931일 전",
+            "store": "2024-03-05T05:20:22+00:00 · 979일 전"
           }
         },
         {
@@ -78,13 +78,13 @@
           "auto": true,
           "rule": "충족률 × 15 (연속값)",
           "scores": {
-            "donga": 14.9,
+            "donga": 14.6,
             "dl": 0,
             "store": 15
           },
           "notes": {
-            "donga": "149/150 · 99.3%",
-            "dl": "0/82 · 0.0%",
+            "donga": "146/150 · 97.3%",
+            "dl": "0/86 · 0.0%",
             "store": "150/150 · 100.0%"
           }
         },
@@ -100,7 +100,7 @@
           },
           "notes": {
             "donga": "150/150 · 100.0%",
-            "dl": "78/82 · 95.1% · 같은 제목 최다 2건",
+            "dl": "82/86 · 95.3% · 같은 제목 최다 2건",
             "store": "150/150 · 100.0%"
           }
         },
@@ -111,13 +111,13 @@
           "rule": "있기만 하면 되는 항목이라 배점을 낮췄다. 내용이 갈리는지는 AEO 의 설명 고유성에서 본다",
           "scores": {
             "donga": 3.6,
-            "dl": 4.6,
-            "store": 4
+            "dl": 4.5,
+            "store": 3.8
           },
           "notes": {
             "donga": "108/150 · 72.0%",
-            "dl": "75/82 · 91.5%",
-            "store": "120/150 · 80.0%"
+            "dl": "77/86 · 89.5%",
+            "store": "113/150 · 75.3%"
           }
         },
         {
@@ -155,7 +155,7 @@
           },
           "notes": {
             "donga": "150/150 · 100.0% · WebSite, NewsArticle",
-            "dl": "0/82 · 0.0%",
+            "dl": "0/86 · 0.0%",
             "store": "0/150 · 0.0%"
           }
         },
@@ -171,7 +171,7 @@
           },
           "notes": {
             "donga": "150/150 · 100.0%",
-            "dl": "0/82 · 0.0%",
+            "dl": "0/86 · 0.0%",
             "store": "0/150 · 0.0%"
           }
         },
@@ -182,13 +182,13 @@
           "rule": "meta description 충족률 × 15",
           "scores": {
             "donga": 10.8,
-            "dl": 13.7,
-            "store": 12
+            "dl": 13.4,
+            "store": 11.3
           },
           "notes": {
             "donga": "108/150 · 72.0%",
-            "dl": "75/82 · 91.5%",
-            "store": "120/150 · 80.0%"
+            "dl": "77/86 · 89.5%",
+            "store": "113/150 · 75.3%"
           }
         },
         {
@@ -197,14 +197,14 @@
           "auto": true,
           "rule": "자기만의 설명을 가진 페이지 비율 × 10 — 답변 엔진이 페이지를 구별하려면 요약문이 갈려야 한다",
           "scores": {
-            "donga": 6.9,
-            "dl": 7.4,
-            "store": 7.3
+            "donga": 6.4,
+            "dl": 7.3,
+            "store": 6.9
           },
           "notes": {
-            "donga": "104/150 · 69.3% · 같은 설명 최다 2건",
-            "dl": "61/82 · 74.4% · 같은 설명 최다 8건",
-            "store": "110/150 · 73.3% · 같은 설명 최다 3건"
+            "donga": "96/150 · 64.0% · 같은 설명 최다 3건",
+            "dl": "63/86 · 73.3% · 같은 설명 최다 8건",
+            "store": "104/150 · 69.3% · 같은 설명 최다 3건"
           }
         },
         {
@@ -219,7 +219,7 @@
           },
           "notes": {
             "donga": "0/150 · 0.0%",
-            "dl": "0/82 · 0.0%",
+            "dl": "0/86 · 0.0%",
             "store": "0/150 · 0.0%"
           }
         },
@@ -229,13 +229,13 @@
           "auto": true,
           "rule": "충족률 × 10 (연속값)",
           "scores": {
-            "donga": 9.9,
+            "donga": 9.7,
             "dl": 0,
             "store": 10
           },
           "notes": {
-            "donga": "149/150 · 99.3%",
-            "dl": "0/82 · 0.0%",
+            "donga": "146/150 · 97.3%",
+            "dl": "0/86 · 0.0%",
             "store": "150/150 · 100.0%"
           }
         }
@@ -556,11 +556,11 @@
           "/_next/static/"
         ],
         "samples": [
-          "/_next/static/chunks/cbfddaed-8535001085f2a90d.js",
-          "/_next/static/chunks/d187ef57-328e1bb6fa0cd9c8.js",
-          "/_next/static/chunks/491-a26093c79df285f4.js",
-          "/_next/static/chunks/main-app-c2451a891e20be04.js",
-          "/_next/static/chunks/app/global-error-dd4451e1d7526c4d.js"
+          "/_next/static/chunks/cbfddaed-b971cc1ce2bc56ef.js",
+          "/_next/static/chunks/ea222dd0-958cd42a7e36353c.js",
+          "/_next/static/chunks/449-85acef60435bcb0b.js",
+          "/_next/static/chunks/main-app-4fa6a5ba79c6e803.js",
+          "/_next/static/chunks/app/global-error-f1a92f04aa94c9a9.js"
         ]
       },
       "sitemap": {
@@ -574,7 +574,7 @@
           "list": 18,
           "other": 3
         },
-        "newestLastmod": "2026-11-02T02:45:00.000Z",
+        "newestLastmod": "2026-11-09T03:10:00.000Z",
         "staleDays": 0,
         "dynamic": true
       },
@@ -586,7 +586,7 @@
         "h1": 150,
         "jsonLd": 150,
         "dateModified": 0,
-        "canonical": 149,
+        "canonical": 146,
         "description": 108,
         "titleUnique": {
           "unique": 150,
@@ -594,9 +594,9 @@
           "topDup": 1
         },
         "descUnique": {
-          "unique": 104,
-          "distinct": 106,
-          "topDup": 2
+          "unique": 96,
+          "distinct": 101,
+          "topDup": 3
         },
         "softNotFound": 0,
         "jsonLdTypes": [
@@ -645,7 +645,7 @@
         "raw": "User-Agent: *\nAllow: /\n\n"
       },
       "renderAssets": {
-        "total": 42,
+        "total": 45,
         "blocked": 0,
         "prefixes": [],
         "samples": []
@@ -662,27 +662,27 @@
           "other": 0
         },
         "newestLastmod": "2024-04-22T01:12:33+00:00",
-        "staleDays": 924,
+        "staleDays": 931,
         "dynamic": false
       },
       "detail": {
-        "requested": 82,
-        "ok": 82,
+        "requested": 86,
+        "ok": 86,
         "failed": 0,
         "source": "사이트맵 + GSC 노출",
         "h1": 0,
         "jsonLd": 0,
         "dateModified": 0,
         "canonical": 0,
-        "description": 75,
+        "description": 77,
         "titleUnique": {
-          "unique": 78,
-          "distinct": 80,
+          "unique": 82,
+          "distinct": 84,
           "topDup": 2
         },
         "descUnique": {
-          "unique": 61,
-          "distinct": 65,
+          "unique": 63,
+          "distinct": 67,
           "topDup": 8
         },
         "softNotFound": 0,
@@ -748,7 +748,7 @@
           "other": 0
         },
         "newestLastmod": "2024-03-05T05:20:22+00:00",
-        "staleDays": 972,
+        "staleDays": 979,
         "dynamic": false
       },
       "detail": {
@@ -760,15 +760,15 @@
         "jsonLd": 0,
         "dateModified": 0,
         "canonical": 150,
-        "description": 120,
+        "description": 113,
         "titleUnique": {
           "unique": 150,
           "distinct": 150,
           "topDup": 1
         },
         "descUnique": {
-          "unique": 110,
-          "distinct": 114,
+          "unique": 104,
+          "distinct": 108,
           "topDup": 3
         },
         "softNotFound": 0,
