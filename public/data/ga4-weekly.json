@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-17T08:09:58.521Z",
+  "generatedAt": "2026-11-18T07:43:17.900Z",
   "property": "properties/528374870",
   "dataThrough": "2026-11-15",
   "periods": {
@@ -75,7 +75,7 @@
         {
           "country": "Brazil",
           "sessions": 3059,
-          "users": 3059,
+          "users": 3060,
           "views": 1653,
           "viewsPerSession": 0.54,
           "prevSessions": 3816,
@@ -313,7 +313,7 @@
         "current": {
           "Direct": 138312,
           "Organic Search": 100301,
-          "Unassigned": 11475,
+          "Unassigned": 12856,
           "Referral": 8525,
           "AI Assistant": 2741,
           "Organic Social": 709,
